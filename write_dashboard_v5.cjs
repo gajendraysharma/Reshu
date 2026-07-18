@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+const fs = require('fs');
+
+const content = `import React, { useState } from 'react';
 import { 
   Building2, 
   Target, 
@@ -82,19 +84,19 @@ export default function DashboardReport({ formData, scores }: DashboardReportPro
 
   const getPillarScore = (index: number) => {
     if (!scores || scores.length === 0) return 0;
-    const startIdx = index * 3;
-    const pillarScores = scores.slice(startIdx, startIdx + 3).filter(s => typeof s === 'number' && !isNaN(s) && s > 0);
+    const startIdx = index * 4;
+    const pillarScores = scores.slice(startIdx, startIdx + 4).filter(s => typeof s === 'number' && !isNaN(s) && s > 0);
     if (pillarScores.length === 0) return 0;
     const sum = pillarScores.reduce((a, b) => a + b, 0);
-    return Math.round((sum / (pillarScores.length * 5)) * 100);
+    return Math.round(sum / pillarScores.length);
   };
 
   const getGlobalScore = () => {
     if (!scores || scores.length === 0) return 0;
-    const weights = [0.15, 0.20, 0.15, 0.15, 0.15, 0.10, 0.10];
-    let sum = 0;
-    for (let i = 0; i < 7; i++) { sum += getPillarScore(i) * weights[i]; }
-    return Math.round(sum);
+    const activeScores = scores.filter(s => typeof s === 'number' && !isNaN(s) && s > 0);
+    if (activeScores.length === 0) return 0;
+    const sum = activeScores.reduce((a, b) => a + b, 0);
+    return Math.round(sum / activeScores.length);
   };
 
   const globalScore = getGlobalScore();
@@ -113,7 +115,7 @@ export default function DashboardReport({ formData, scores }: DashboardReportPro
   };
 
   const radarData = pillars.map((pillar, index) => ({
-    subject: pillar.replace(' & ', ' &\n'),
+    subject: pillar.replace(' & ', ' &\\n'),
     A: getPillarScore(index) || 0,
     fullMark: 100,
   }));
@@ -130,10 +132,10 @@ export default function DashboardReport({ formData, scores }: DashboardReportPro
   ];
 
   const kpis = [
-    { title: 'Growth Score™', value: `${globalScore}`, trend: '▲ Computed', color: getScoreColor(globalScore), status: getScoreStatus(globalScore), icon: <BarChart3 className="w-5 h-5 text-white" /> },
-    { title: 'Growth Readiness', value: `${Math.round(globalScore * 0.9)}%`, trend: 'Active', color: '#10B981', status: 'Good', icon: <Zap className="w-5 h-5 text-white" /> },
+    { title: 'Growth Score™', value: \`\${globalScore}\`, trend: '▲ Computed', color: getScoreColor(globalScore), status: getScoreStatus(globalScore), icon: <BarChart3 className="w-5 h-5 text-white" /> },
+    { title: 'Growth Readiness', value: \`\${Math.round(globalScore * 0.9)}%\`, trend: 'Active', color: '#10B981', status: 'Good', icon: <Zap className="w-5 h-5 text-white" /> },
     { title: 'Revenue Opp.', value: 'High', trend: 'High Potential', color: '#F59E0B', status: 'High', icon: <TrendingUp className="w-5 h-5 text-white" /> },
-    { title: 'Ops Maturity', value: `${getPillarScore(3)}%`, trend: 'Computed', color: getScoreColor(getPillarScore(3)), status: getScoreStatus(getPillarScore(3)), icon: <Activity className="w-5 h-5 text-white" /> },
+    { title: 'Ops Maturity', value: \`\${getPillarScore(3)}%\`, trend: 'Computed', color: getScoreColor(getPillarScore(3)), status: getScoreStatus(getPillarScore(3)), icon: <Activity className="w-5 h-5 text-white" /> },
   ];
 
   const pillarSnapshots = pillars.map((p, i) => {
@@ -169,7 +171,7 @@ export default function DashboardReport({ formData, scores }: DashboardReportPro
             <button 
               key={idx} 
               onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left text-xs font-semibold transition-all duration-200 ${activeTab === item.id ? 'bg-[#D4AF37] text-[#0B1A30] shadow-[0_4px_12px_rgba(212,175,55,0.2)]' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
+              className={\`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left text-xs font-semibold transition-all duration-200 \${activeTab === item.id ? 'bg-[#D4AF37] text-[#0B1A30] shadow-[0_4px_12px_rgba(212,175,55,0.2)]' : 'text-slate-400 hover:text-white hover:bg-white/5'}\`}
             >
               <div className={activeTab === item.id ? "text-[#0B1A30]" : "text-slate-500"}>{item.icon}</div>
               {item.label}
@@ -324,7 +326,7 @@ export default function DashboardReport({ formData, scores }: DashboardReportPro
                     <div className="relative w-40 h-40 flex items-center justify-center mb-4">
                       <svg className="absolute inset-0 w-full h-full transform -rotate-180" viewBox="0 0 36 36">
                           <path className="text-slate-100" strokeWidth="3" stroke="currentColor" fill="none" strokeDasharray="75, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                          <path stroke={getScoreColor(globalScore)} strokeDasharray={`${(globalScore / 100) * 75}, 100`} strokeWidth="3.5" fill="none" strokeLinecap="round" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                          <path stroke={getScoreColor(globalScore)} strokeDasharray={\`\${(globalScore / 100) * 75}, 100\`} strokeWidth="3.5" fill="none" strokeLinecap="round" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
                       </svg>
                       <div className="flex flex-col items-center absolute bg-white rounded-full w-[120px] h-[120px] justify-center shadow-[inset_0_0_15px_rgba(0,0,0,0.03)]">
                           <span className="text-5xl font-black text-[#0B1A30]">{globalScore}</span>
@@ -355,7 +357,7 @@ export default function DashboardReport({ formData, scores }: DashboardReportPro
                     <ExpandableCard 
                        key={idx} 
                        title={pillar.name} 
-                       badge={`Score: ${pillar.score}`}
+                       badge={\`Score: \${pillar.score}\`}
                        icon={<Layers className="w-4 h-4"/>}
                     >
                        <div className="space-y-3">
@@ -364,7 +366,7 @@ export default function DashboardReport({ formData, scores }: DashboardReportPro
                              <span className="text-[10px] font-bold px-2 py-0.5 rounded text-white" style={{ backgroundColor: pillar.color }}>{pillar.status}</span>
                           </div>
                           <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
-                             <div className="h-full rounded-full" style={{ width: `${pillar.score}%`, backgroundColor: pillar.color }}></div>
+                             <div className="h-full rounded-full" style={{ width: \`\${pillar.score}%\`, backgroundColor: pillar.color }}></div>
                           </div>
                           <div className="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-slate-100">
                              <div>
@@ -390,8 +392,8 @@ export default function DashboardReport({ formData, scores }: DashboardReportPro
                     <ExpandableCard 
                        key={idx} 
                        title={pillar.name} 
-                       preview={`Status: ${pillar.status} | Detailed analysis and AI diagnosis.`}
-                       badge={`Score: ${pillar.score}/100`}
+                       preview={\`Status: \${pillar.status} | Detailed analysis and AI diagnosis.\`}
+                       badge={\`Score: \${pillar.score}/100\`}
                        icon={<BarChart3 className="w-5 h-5"/>}
                        defaultExpanded={idx === 0}
                     >
@@ -574,7 +576,7 @@ export default function DashboardReport({ formData, scores }: DashboardReportPro
                             <span className="text-[#D4AF37]">{globalScore}/100</span>
                          </div>
                          <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                            <div className="h-full bg-[#D4AF37] rounded-full" style={{width: `${globalScore}%`}}></div>
+                            <div className="h-full bg-[#D4AF37] rounded-full" style={{width: \`\${globalScore}%\`}}></div>
                          </div>
                       </div>
                       <div>
@@ -699,3 +701,5 @@ export default function DashboardReport({ formData, scores }: DashboardReportPro
     </div>
   );
 }
+`
+fs.writeFileSync('src/components/DashboardReport.tsx', content);
