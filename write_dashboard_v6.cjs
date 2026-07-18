@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+const fs = require('fs');
+
+const content = `import React, { useState } from 'react';
 import { 
   Building2, Target, BarChart3, Lightbulb, Cpu, ShieldCheck, Download,
   AlertTriangle, CheckCircle, ArrowUpRight, TrendingUp, Activity, Zap,
@@ -17,7 +19,7 @@ interface DashboardReportProps {
 function ExpandableCard({ title, preview, children, icon, defaultExpanded = false, badge = null, className = "" }: any) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
   return (
-    <div className={`border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm mb-4 transition-all hover:border-slate-300 ${className}`}>
+    <div className={\`border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm mb-4 transition-all hover:border-slate-300 \${className}\`}>
        <div className="p-4 md:p-5 flex items-center justify-between cursor-pointer hover:bg-slate-50/50" onClick={() => setIsExpanded(!isExpanded)}>
           <div className="flex items-center gap-4">
              {icon && <div className="w-10 h-10 rounded-full bg-[#0B2545]/5 flex items-center justify-center text-[#0B2545] shrink-0">{icon}</div>}
@@ -88,7 +90,7 @@ export default function DashboardReport({ formData, scores }: DashboardReportPro
   };
 
   const radarData = pillars.map((pillar, index) => ({
-    subject: pillar.replace(' & ', ' &\n'),
+    subject: pillar.replace(' & ', ' &\\n'),
     Client: getPillarScore(index) || 0,
     Industry: 62, // Static industry average for demo
     fullMark: 100,
@@ -102,14 +104,14 @@ export default function DashboardReport({ formData, scores }: DashboardReportPro
     { id: 'NEXT_STEP', label: 'Diagnostic Booking', icon: <Target className="w-4 h-4" /> },
   ];
 
-  const reportId = `KRG-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+  const reportId = \`KRG-\${Math.random().toString(36).substring(2, 8).toUpperCase()}\`;
   const assessmentDate = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 
   const kpis = [
-    { title: 'Growth Readiness', value: `${Math.round(globalScore * 0.9)}%`, status: getScoreStatus(Math.round(globalScore * 0.9)), color: getScoreColor(Math.round(globalScore * 0.9)), icon: <Zap className="w-5 h-5 text-white" /> },
+    { title: 'Growth Readiness', value: \`\${Math.round(globalScore * 0.9)}%\`, status: getScoreStatus(Math.round(globalScore * 0.9)), color: getScoreColor(Math.round(globalScore * 0.9)), icon: <Zap className="w-5 h-5 text-white" /> },
     { title: 'Revenue Opp', value: 'High', status: 'Strong', color: '#10B981', icon: <TrendingUp className="w-5 h-5 text-white" /> },
-    { title: 'Ops Maturity', value: `${getPillarScore(3)}%`, status: getScoreStatus(getPillarScore(3)), color: getScoreColor(getPillarScore(3)), icon: <Activity className="w-5 h-5 text-white" /> },
-    { title: 'Leadership Score', value: `${getPillarScore(0)}%`, status: getScoreStatus(getPillarScore(0)), color: getScoreColor(getPillarScore(0)), icon: <Star className="w-5 h-5 text-white" /> },
+    { title: 'Ops Maturity', value: \`\${getPillarScore(3)}%\`, status: getScoreStatus(getPillarScore(3)), color: getScoreColor(getPillarScore(3)), icon: <Activity className="w-5 h-5 text-white" /> },
+    { title: 'Leadership Score', value: \`\${getPillarScore(0)}%\`, status: getScoreStatus(getPillarScore(0)), color: getScoreColor(getPillarScore(0)), icon: <Star className="w-5 h-5 text-white" /> },
     { title: 'Overall Risk', value: globalScore >= 70 ? 'Low' : globalScore >= 50 ? 'Moderate' : 'High', status: globalScore >= 70 ? 'Strong' : globalScore >= 50 ? 'Needs Attention' : 'Critical', color: getScoreColor(globalScore), icon: <ShieldCheck className="w-5 h-5 text-white" /> },
     { title: 'AI Confidence', value: '94%', status: 'Strong', color: '#8B5CF6', icon: <Cpu className="w-5 h-5 text-white" /> }, // AI Purple
   ];
@@ -154,7 +156,7 @@ export default function DashboardReport({ formData, scores }: DashboardReportPro
             <button 
               key={idx} 
               onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-xs font-bold transition-all duration-200 ${activeTab === item.id ? 'bg-[#D4AF37] text-[#0B2545] shadow-[0_4px_12px_rgba(212,175,55,0.3)]' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
+              className={\`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-xs font-bold transition-all duration-200 \${activeTab === item.id ? 'bg-[#D4AF37] text-[#0B2545] shadow-[0_4px_12px_rgba(212,175,55,0.3)]' : 'text-slate-400 hover:text-white hover:bg-white/5'}\`}
             >
               <div className={activeTab === item.id ? "text-[#0B2545]" : "text-slate-500"}>{item.icon}</div>
               {item.label}
@@ -209,7 +211,7 @@ export default function DashboardReport({ formData, scores }: DashboardReportPro
                         <div className="relative w-40 h-40 flex items-center justify-center mb-4">
                             <svg className="absolute inset-0 w-full h-full transform -rotate-180" viewBox="0 0 36 36">
                                 <path className="text-slate-200" strokeWidth="3" stroke="currentColor" fill="none" strokeDasharray="75, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                                <path stroke={getScoreColor(globalScore)} strokeDasharray={`${(globalScore / 100) * 75}, 100`} strokeWidth="3.5" fill="none" strokeLinecap="round" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                <path stroke={getScoreColor(globalScore)} strokeDasharray={\`\${(globalScore / 100) * 75}, 100\`} strokeWidth="3.5" fill="none" strokeLinecap="round" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
                             </svg>
                             <div className="flex flex-col items-center absolute bg-white rounded-full w-[120px] h-[120px] justify-center shadow-sm border border-slate-50">
                                 <span className="text-5xl font-black text-[#0B2545]">{globalScore}</span>
@@ -395,7 +397,7 @@ export default function DashboardReport({ formData, scores }: DashboardReportPro
                       <ExpandableCard 
                          key={idx} 
                          title={pillar} 
-                         badge={`Score: ${score}/100`}
+                         badge={\`Score: \${score}/100\`}
                          icon={<Layers className="w-4 h-4"/>}
                       >
                          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -738,3 +740,5 @@ export default function DashboardReport({ formData, scores }: DashboardReportPro
     </div>
   );
 }
+`
+fs.writeFileSync('src/components/DashboardReport.tsx', content);
