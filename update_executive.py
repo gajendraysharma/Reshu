@@ -3,12 +3,23 @@ import re
 with open('src/components/DashboardReport.tsx', 'r') as f:
     content = f.read()
 
-# 1. DYNAMIC GLOBAL SCORE-DRIVEN LOGIC ARCHITECTURE
 def get_dynamic_text():
     return """
                      <p>
-                        Based on the KRG ONE Business Growth Assessment™, <strong>{formData.companyName || 'your business'}</strong> currently operates with an overall Growth Score of <strong>{globalScore}/100</strong>, indicating a <strong>{getScoreStatus(globalScore).toLowerCase()}</strong> state of operational readiness and market positioning.
+                        Based on the KRG ONE Business Growth Assessment™, <strong>{formData.companyName || 'your business'}</strong> currently operates with an overall Growth Score of <strong>{globalScore}/100</strong>, indicating a <strong>{getScoreStatus(globalScore).toLowerCase()}</strong> state of operational readiness and market positioning in the {formData.industry || 'business'} sector.
                      </p>
+                     {(() => {
+                         const lowestPillar = getLowestPillar();
+                         const goal = formData.goal || 'scale operations';
+                         const challenge = (formData.challenges && formData.challenges.length > 0) ? formData.challenges[0] : 'execution bottlenecks';
+                         const industry = formData.industry || 'your sector';
+
+                         return (
+                             <p>
+                                 <strong>Core Dynamic Observation:</strong> While foundational market demand exists within {industry}, current analytical models indicate that inconsistent systems in <strong>{lowestPillar}</strong> are actively generating structural friction. Prior to aggressively pursuing your objective to {goal.toLowerCase()}, you must immediately resolve these <strong>{lowestPillar}</strong> vulnerabilities. Failure to do so will directly amplify your current {challenge.toLowerCase()} and erode enterprise margins.
+                             </p>
+                         );
+                     })()}
                      {(() => {
                          if (globalScore >= 80) {
                              return (
@@ -53,13 +64,6 @@ if match2:
     replacement = f'<div className="prose prose-sm max-w-none text-slate-600 space-y-4">{get_dynamic_text()}                  </div>\n              </div>\n              {{/* KPI Cards */}}'
     content = content.replace(match2.group(0), replacement)
 
-
-# 2. MULTI-CHALLENGE DATA CAPITALIZATION
-old_challenges = '<span className="text-xs font-bold text-red-700 bg-red-50 px-2 py-1 rounded inline-block">{formData.challenges?.length > 0 ? formData.challenges[0] : \'Leadership Dependency\'}</span>'
-new_challenges = '{formData.challenges && formData.challenges.length > 0 ? formData.challenges.map((ch: string, i: number) => <span key={i} className="bg-red-50 text-red-700 px-3 py-1 rounded-md text-xs font-bold mr-2 inline-block mb-1">{ch}</span>) : <span className="bg-red-50 text-red-700 px-3 py-1 rounded-md text-xs font-bold mr-2 inline-block mb-1">Leadership Dependency</span>}'
-
-content = content.replace(old_challenges, new_challenges)
-
 with open('src/components/DashboardReport.tsx', 'w') as f:
     f.write(content)
-
+print("Updated executive summary!")

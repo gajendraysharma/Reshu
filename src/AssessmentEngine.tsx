@@ -12,25 +12,25 @@ export default function AssessmentEngine() {
   const [activePlanTab, setActivePlanTab] = useState<'EXECUTIVE_SUMMARY' | 'PRIORITY_MATRIX' | 'ROADMAP' | 'PILLARS'>('EXECUTIVE_SUMMARY');
   
   const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    mobileNumber: '',
-    role: '',
+    fullName: 'John Doe',
+    email: 'john@example.com',
+    mobileNumber: '1234567890',
+    role: 'Founder/CEO',
     roleOther: '',
-    companyName: '',
-    industry: '',
+    companyName: 'Test Company LLC',
+    industry: 'Technology',
     industryOther: '',
-    businessSize: '',
-    revenue: '',
-    challenges: [] as string[],
+    businessSize: '11-50 employees',
+    revenue: '$1M - $5M',
+    challenges: ['Inconsistent Sales & Revenue Growth', 'Operational Inefficiency & Lack of Systems'],
     challengesOther: '',
-    goal: '',
-    goalOther: '',
-    howHeard: '',
+    goals: ['Scale & Expand the Business', 'Improve Operational Efficiency'],
+    goalsOther: '',
+    howHeard: 'LinkedIn',
     howHeardOther: '',
-    focusArea: '',
-    declarationAccurate: false,
-    declarationPrivacy: false
+    focusArea: 'Operations',
+    declarationAccurate: true,
+    declarationPrivacy: true
   });
   
   const [profileError, setProfileError] = useState('');
@@ -45,46 +45,42 @@ export default function AssessmentEngine() {
     "Technology & Business Innovation"
   ];
 
-  // 21 structural questions (3 per pillar)
-    // 21 structural questions (3 per pillar) + 1 final strategic question
   const allQuestions = [
-    // Leadership & Vision
-    "Does your business have a clearly defined vision and measurable business goals for the next 3 years?",
-    "Are important business decisions based on business data and KPIs rather than intuition?",
-    "Can your business continue operating effectively without your daily involvement?",
-    // Sales & Revenue
-    "Does your business consistently generate enough qualified leads to achieve your monthly sales targets?",
-    "Is your sales process documented, monitored, and regularly reviewed to improve conversion rates?",
-    "Can you accurately forecast your sales revenue for the next 90 days?",
-    // Marketing & Customer Growth
-    "Does your business consistently generate new customers through planned marketing activities?",
-    "Do you have a system to retain existing customers and encourage repeat business?",
-    "Is your business clearly differentiated from competitors in the market?",
-    // Operations & Process
-    "Are your key business processes documented and followed consistently across your organisation?",
-    "Does your business consistently deliver products or services on time while maintaining expected quality?",
-    "Can your current operations efficiently support increasing customer demand without compromising quality or delivery timelines?",
-    // Finance & Business Performance
-    "Do you regularly monitor your business cash flow and financial performance to support informed business decisions?",
-    "Does your business have a clear system to manage customer payments and outstanding credit?",
-    "Do you regularly review the profitability of your products, services, or business operations?",
-    // People & Leadership
-    "Do your employees clearly understand their roles, responsibilities, and performance expectations?",
-    "Do you regularly review employee performance, provide feedback, and support skill development?",
-    "Can your team successfully manage daily business operations without constant supervision from senior management?",
-    // Technology & Business Innovation
-    "Does your business use digital tools or software to manage key business activities such as sales, finance, operations, or customer information?",
-    "Do you use business reports or dashboards to regularly monitor performance and support business decisions?",
-    "Is your business exploring or using technology to improve customer experience, productivity, or future business growth?",
-    // Final Strategic Question (Not Scored)
-    "How confident are you that your business is prepared to achieve its growth goals over the next three years?"
+    // Pillar 1 - Leadership & Vision
+    "Does your business have a clear vision and growth strategy for the next 3–5 years?",
+    "Do you regularly review business performance before making important decisions?",
+    "Can your business operate effectively without the owner's daily involvement?",
+    // Pillar 2 - Sales & Revenue
+    "Does your business generate a consistent flow of new customer enquiries?",
+    "Does your business follow a structured sales process from enquiry to conversion?",
+    "Do you have a systematic process to retain existing customers and generate repeat business?",
+    // Pillar 3 - Marketing & Customer Growth
+    "Do you know which marketing activities generate the best business results?",
+    "Do you actively collect customer feedback, reviews, and referrals?",
+    "Does your business follow a consistent marketing strategy throughout the year?",
+    // Pillar 4 - Operations & Process
+    "Are your key business processes documented and consistently followed?",
+    "Can daily business operations continue smoothly with minimal owner intervention?",
+    "Do you have reliable systems to manage operations, inventory, customer orders, or service delivery?",
+    // Pillar 5 - Finance & Business Performance
+    "Do you receive accurate financial reports regularly to support business decisions?",
+    "Does your business maintain healthy cash flow and financial reserves?",
+    "Do you regularly monitor profitability, expenses, and outstanding customer payments?",
+    // Pillar 6 - People & Organisation
+    "Are employee roles and responsibilities clearly defined?",
+    "Do employees work with measurable performance goals?",
+    "Do you have a structured employee onboarding and training process?",
+    // Pillar 7 - Technology & Innovation
+    "Does your business effectively use digital systems for daily operations?",
+    "Is your business and customer data organized and securely managed?",
+    "Do you use technology, automation, or AI to improve productivity?"
   ];
   const [scores, setScores] = useState<number[]>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('krgone_scores');
       if (saved) return JSON.parse(saved);
     }
-    return new Array(22).fill(0);
+    return new Array(21).fill(0);
   });
   
   useEffect(() => {
@@ -107,7 +103,7 @@ export default function AssessmentEngine() {
   const handleStartAssessment = (e: React.MouseEvent) => {
     e.preventDefault();
     setProfileError('');
-    if (!formData.fullName.trim() || !formData.email.trim() || !formData.mobileNumber.trim() || !formData.role.trim() || !formData.companyName.trim() || !formData.industry.trim() || !formData.businessSize.trim() || !formData.revenue.trim() || !formData.goal || !formData.declarationAccurate || !formData.declarationPrivacy) {
+    if (!formData.fullName.trim() || !formData.email.trim() || !formData.mobileNumber.trim() || !formData.role.trim() || !formData.companyName.trim() || !formData.industry.trim() || !formData.businessSize.trim() || !formData.revenue.trim() || formData.goals.length === 0 || !formData.declarationAccurate || !formData.declarationPrivacy) {
       setProfileError('Please fill in all required fields and accept the declarations to proceed.');
       return;
     }
@@ -130,23 +126,40 @@ export default function AssessmentEngine() {
     });
   };
 
+  const handleGoalToggle = (goalStr: string) => {
+    setFormData(prev => {
+      const isSelected = prev.goals.includes(goalStr);
+      if (isSelected) {
+        return { ...prev, goals: prev.goals.filter(g => g !== goalStr) };
+      } else {
+        if (prev.goals.length >= 3) return prev;
+        return { ...prev, goals: [...prev.goals, goalStr] };
+      }
+    });
+  };
+
   // 2. Real-time Computations
   const getPillarScore = (pillarIdx: number): number => {
     const start = pillarIdx * 3;
-    const total = scores[start] + scores[start+1] + scores[start+2];
-    return Math.round((total / 15) * 100);
+    const val1 = scores[start] || 0;
+    const val2 = scores[start+1] || 0;
+    const val3 = scores[start+2] || 0;
+    if (val1 === 0 || val2 === 0 || val3 === 0) {
+      return 0;
+    }
+    const total = val1 + val2 + val3;
+    return Math.round((total / 12) * 100) || 0;
   };
 
 
   const getMaturityLevel = (score: number) => {
-    if (score < 40) return "Critical";
-    if (score < 60) return "Developing";
-    if (score < 75) return "Stable";
-    if (score < 90) return "Growing";
-    return "High Performing";
+    if (score >= 85) return "Growth Ready";
+    if (score >= 70) return "Growing Business";
+    if (score >= 55) return "Developing Business";
+    return "Immediate Growth Required";
   };
   const getGlobalScore = (): number => {
-    const weights = [0.15, 0.20, 0.15, 0.15, 0.15, 0.10, 0.10];
+    const weights = [0.18, 0.17, 0.14, 0.16, 0.15, 0.10, 0.10];
     let sum = 0;
     for (let i = 0; i < 7; i++) { sum += getPillarScore(i) * weights[i]; }
     return Math.round(sum);
@@ -179,7 +192,7 @@ export default function AssessmentEngine() {
     setSplashingOption(value);
 
     // Auto advance logic
-    if (currentQuestionIdx < 21) {
+    if (currentQuestionIdx < 20) {
       setTimeout(() => {
         setCurrentQuestionIdx(prev => prev + 1);
         setSplashingOption(null);
@@ -193,7 +206,7 @@ export default function AssessmentEngine() {
 
   const getProgressPercentage = () => {
     if (view === 'PROFILE') return 25;
-    if (view === 'ASSESSMENT') return 25 + (currentQuestionIdx / 21) * 50;
+    if (view === 'ASSESSMENT') return 25 + (currentQuestionIdx / 20) * 50;
     if (view === 'RESULTS') return 85;
     if (view === 'GROWTH_PLAN') return 100;
     return 0;
@@ -348,13 +361,13 @@ export default function AssessmentEngine() {
                         </div>
                         <div>
                           <h4 className="text-[15px] font-bold text-slate-900">Business Challenges</h4>
-                          <p className="text-[13px] text-slate-600 mt-1">What are your biggest business challenges right now?<br/><span className="text-[10px]">(Select up to 3)</span></p>
+                          <p className="text-[13px] text-slate-600 mt-1">What are your biggest business challenges today?<br/><span className="text-[10px]">(Select up to 3)</span></p>
                         </div>
                       </div>
-                      <div className="grid grid-cols-2 gap-y-2 gap-x-4">
-                        {['Low Sales Growth', 'High Operational Costs', 'Cash Flow Issues', 'Customer Retention', 'Sales Team Performance', 'Marketing ROI', 'Operational Efficiency', 'Scaling the Business', 'Competition', 'Technology Adoption', 'Talent & Leadership', 'Other'].map(ch => (
-                          <label key={ch} className="flex items-center gap-2.5 text-[14px] text-slate-700 cursor-pointer mb-1">
-                            <input type="checkbox" checked={formData.challenges.includes(ch)} onChange={() => handleChallengeToggle(ch)} disabled={!formData.challenges.includes(ch) && formData.challenges.length >= 3} className="w-4 h-4 accent-red-500 cursor-pointer" />
+                      <div className="grid grid-cols-1 gap-y-2 gap-x-4">
+                        {['Inconsistent Sales & Revenue Growth', 'Low Profitability or Cash Flow Issues', 'Customer Acquisition & Retention', 'Operational Inefficiency & Lack of Systems', 'Team Productivity & Leadership Challenges', 'Business Growth Strategy & Scaling', 'Other'].map(ch => (
+                          <label key={ch} className="flex items-center gap-2.5 text-[14px] text-slate-700 cursor-pointer mb-1 leading-tight">
+                            <input type="checkbox" checked={formData.challenges.includes(ch)} onChange={() => handleChallengeToggle(ch)} disabled={!formData.challenges.includes(ch) && formData.challenges.length >= 3} className="w-4 h-4 accent-red-500 cursor-pointer shrink-0" />
                             {ch}
                           </label>
                         ))}
@@ -373,21 +386,22 @@ export default function AssessmentEngine() {
                           <Target className="w-4 h-4 text-emerald-600" />
                         </div>
                         <div>
-                          <h4 className="text-[15px] font-bold text-slate-900">Business Goal</h4>
-                          <p className="text-[13px] text-slate-600 mt-1">What is your primary business goal?<br/><span className="text-[10px]">(Select one)</span></p>
+                          <h4 className="text-[15px] font-bold text-slate-900">Business Goals</h4>
+                          <p className="text-[13px] text-slate-600 mt-1">What are your primary business goals for the next 12 months?<br/><span className="text-[10px]">(Select up to 3)</span></p>
                         </div>
                       </div>
-                      <div className="grid grid-cols-2 gap-y-2 gap-x-4">
-                        {['Increase Revenue', 'Improve Profitability', 'Improve Sales Performance', 'Scale the Business', 'Improve Operations', 'Need Overall Growth Guidance', 'Other'].map(gl => (
-                          <label key={gl} className="flex items-center gap-2.5 text-[14px] text-slate-700 cursor-pointer mb-1">
-                            <input type="radio" name="goal" value={gl} checked={formData.goal === gl} onChange={e => setFormData({...formData, goal: e.target.value})} className="w-4 h-4 accent-emerald-600 cursor-pointer" />
+                      <div className="grid grid-cols-1 gap-y-2 gap-x-4">
+                        {['Increase Revenue & Sales', 'Improve Profitability & Cash Flow', 'Scale & Expand the Business', 'Acquire & Retain More Customers', 'Improve Operational Efficiency', 'Build a Future-Ready Business (Technology & AI)', 'Other'].map(gl => (
+                          <label key={gl} className="flex items-center gap-2.5 text-[14px] text-slate-700 cursor-pointer mb-1 leading-tight">
+                            <input type="checkbox" checked={formData.goals.includes(gl)} onChange={() => handleGoalToggle(gl)} disabled={!formData.goals.includes(gl) && formData.goals.length >= 3} className="w-4 h-4 accent-emerald-600 cursor-pointer shrink-0" />
                             {gl}
                           </label>
                         ))}
                       </div>
-                      {formData.goal === 'Other' && (
+                      <p className="text-[10px] text-emerald-600 mt-2 font-medium">Select up to 3 goals</p>
+                      {formData.goals.includes('Other') && (
                         <div className="mt-3">
-                          <input type="text" value={formData.goalOther} onChange={e => setFormData({...formData, goalOther: e.target.value})} placeholder="Please specify your goal" className="w-full border border-slate-300 rounded-lg px-3.5 py-2.5 text-[14px] outline-none focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37] transition-all bg-white placeholder-slate-400" />
+                          <input type="text" value={formData.goalsOther} onChange={e => setFormData({...formData, goalsOther: e.target.value})} placeholder="Please specify your goal" className="w-full border border-slate-300 rounded-lg px-3.5 py-2.5 text-[14px] outline-none focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37] transition-all bg-white placeholder-slate-400" />
                         </div>
                       )}
                     </div>
@@ -658,10 +672,10 @@ export default function AssessmentEngine() {
                 <div className="flex flex-col">
                   <span className="text-[10px] font-black tracking-widest text-[#b38f25] font-mono uppercase mb-1 drop-shadow-[0_1px_1px_rgba(255,255,255,1)] flex items-center gap-2">
                     <span className="w-1.5 h-1.5 bg-[#d4af37] shadow-[0_0_8px_#d4af37] rounded-full animate-pulse"></span>
-                    {currentQuestionIdx === 21 ? 'Final Strategic Question (Not Scored)' : `Question ${currentQuestionIdx + 1} of 21`}
+                    {`Question ${currentQuestionIdx + 1} of 21`}
                   </span>
                   <h4 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 drop-shadow-[0_1px_1px_rgba(255,255,255,1)]">
-                    {currentQuestionIdx === 21 ? 'Strategic Confidence' : pillars[activePillarIdx]}
+                    {pillars[activePillarIdx]}
                   </h4>
                 </div>
                 <span className="text-xs font-mono font-black text-[#8f7016] bg-amber-50/80 border border-amber-200/50 px-3 py-1.5 rounded-md shadow-[inset_0_1px_2px_rgba(255,255,255,1),0_2px_10px_rgba(212,175,55,0.15)] backdrop-blur-sm animate-pulse">{Math.min(100, Math.round(((currentQuestionIdx)/21)*100))}% DONE</span>
@@ -674,22 +688,13 @@ export default function AssessmentEngine() {
 
               <div className="space-y-3 mt-8">
                 <span className="text-[10px] font-black tracking-wider text-slate-400 font-mono uppercase text-center block mb-3 drop-shadow-[0_1px_1px_rgba(255,255,255,1)]">Select Matrix Evaluation Score</span>
-                <div className="grid grid-cols-5 gap-2 md:gap-3">
-                  {(currentQuestionIdx === 21 
-                    ? [
-                        { val: 1, label: 'Very Low' },
-                        { val: 2, label: 'Low' },
-                        { val: 3, label: 'Moderate' },
-                        { val: 4, label: 'High' },
-                        { val: 5, label: 'Very High' }
-                      ]
-                    : [
-                        { val: 1, label: 'Critical' },
-                        { val: 2, label: 'Basic' },
-                        { val: 3, label: 'Developing' },
-                        { val: 4, label: 'Mature' },
-                        { val: 5, label: 'Best Practice' }
-                      ]).map(({ val, label }) => (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
+                  {[
+                    { val: 1, label: 'Poor / No System' },
+                    { val: 2, label: 'Average / Basic Setup' },
+                    { val: 3, label: 'Good / Systemized' },
+                    { val: 4, label: 'Excellent / Automated' }
+                  ].map(({ val, label }) => (
                     <button 
                       key={val} 
                       type="button" 
@@ -712,7 +717,7 @@ export default function AssessmentEngine() {
 
             <div className="relative z-10 flex justify-between items-center pt-8 border-t border-slate-200/80 mt-8" style={{ transform: 'translateZ(10px)' }}>
               <button type="button" onClick={() => currentQuestionIdx > 0 && setCurrentQuestionIdx(prev => prev - 1)} disabled={currentQuestionIdx === 0} className="text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-slate-800 disabled:opacity-30 disabled:hover:text-slate-400 transition-colors drop-shadow-[0_1px_1px_rgba(255,255,255,1)]">← Previous</button>
-              {currentQuestionIdx < 21 ? (
+              {currentQuestionIdx < 20 ? (
                 <button type="button" onClick={() => setCurrentQuestionIdx(prev => prev + 1)} className="px-6 py-2.5 bg-white border-t-2 border-l-2 border-b-4 border-r-4 border-t-white border-l-white border-b-slate-300 border-r-slate-300 text-slate-800 text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-slate-50 shadow-[4px_6px_10px_rgba(0,0,0,0.05)] transform transition-all duration-200 hover:-translate-y-1 active:translate-y-1 active:border-b-2 active:border-r-2 active:border-t-4 active:border-l-4 active:shadow-inner">Next Question →</button>
               ) : (
                 <button type="button" onClick={() => setView('RESULTS')} className="px-6 py-3 bg-gradient-to-r from-[#d4af37] to-[#b38f25] text-white text-xs font-black uppercase tracking-wider rounded-xl hover:brightness-110 shadow-[4px_6px_15px_rgba(212,175,55,0.4)] border-t-2 border-l-2 border-b-4 border-r-4 border-t-amber-200 border-l-amber-200 border-b-amber-700 border-r-amber-700 transform transition-all duration-200 hover:-translate-y-1 active:translate-y-1 active:border-b-2 active:border-r-2 active:border-t-4 active:border-l-4">Compile All Results →</button>
@@ -723,11 +728,11 @@ export default function AssessmentEngine() {
           {/* Right Live Polygon Preview */}
           <div className="lg:col-span-3 bg-[#0a1128] rounded-[24px] p-6 text-white flex flex-col relative overflow-hidden border-t-2 border-l-2 border-b-4 border-r-4 border-t-slate-700/50 border-l-slate-700/50 border-b-black border-r-black shadow-[8px_8px_16px_rgba(0,0,0,0.6),-4px_-4px_12px_rgba(255,255,255,0.05)] transform transition-transform duration-300">
             {/* Ambient radar glow */}
-            <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-[#d4af37]/10 blur-[50px] rounded-full pointer-events-none"></div>
+            <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-slate-500/5 blur-[50px] rounded-full pointer-events-none"></div>
 
             <div className="relative z-10 border-b border-slate-800/80 pb-2 mb-2 flex justify-between items-start">
               <div>
-                <span className="text-[9px] font-bold text-amber-500 font-mono tracking-widest block mb-1 drop-shadow-[0_0_4px_rgba(245,158,11,0.5)]">LIVE TRACKING</span>
+                <span className="text-[9px] font-bold text-slate-500 font-mono tracking-widest block mb-1">LIVE TRACKING</span>
                 <h5 className="text-sm font-black text-white uppercase mt-0.5 tracking-tight">Growth Snapshot™</h5>
               </div>
               <div className="flex flex-col items-end">
@@ -737,15 +742,8 @@ export default function AssessmentEngine() {
             </div>
             
             <div className="my-8 flex justify-center relative z-10">
-              <svg className="w-40 h-40 transform -rotate-90 drop-shadow-[0_0_12px_rgba(212,175,55,0.3)]" viewBox="0 0 100 100">
-                <defs>
-                  <radialGradient id="radarGlow" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stopColor="rgba(212,175,55,0.2)" />
-                    <stop offset="100%" stopColor="rgba(212,175,55,0)" />
-                  </radialGradient>
-                </defs>
-                <circle cx="50" cy="50" r="45" fill="url(#radarGlow)" />
-                {/* Radar Grid */}
+              <svg className="w-40 h-40 transform -rotate-90" viewBox="0 0 100 100">
+                {/* Inactive grey Radar Grid */}
                 <circle cx="50" cy="50" r="40" fill="none" stroke="#1e293b" strokeWidth="0.5" strokeDasharray="2,2" />
                 <circle cx="50" cy="50" r="28" fill="none" stroke="#1e293b" strokeWidth="0.5" strokeDasharray="1,3" />
                 <circle cx="50" cy="50" r="16" fill="none" stroke="#1e293b" strokeWidth="0.5" strokeDasharray="1,3" />
@@ -753,48 +751,50 @@ export default function AssessmentEngine() {
                 <line x1="50" y1="5" x2="50" y2="95" stroke="#1e293b" strokeWidth="0.5" />
                 <line x1="5" y1="50" x2="95" y2="50" stroke="#1e293b" strokeWidth="0.5" />
                 
+                {/* Inactive grey/placeholder polygon */}
                 <polygon 
                   points={[0, 1, 2, 3, 4, 5, 6].map(i => {
                     const angle = (i * 360) / 7;
-                    const r = (getPillarScore(i) / 100) * 40;
+                    const r = 18; // Inactive baseline placeholder radius
                     const x = 50 + r * Math.cos((angle * Math.PI) / 180);
                     const y = 50 + r * Math.sin((angle * Math.PI) / 180);
                     return `${x},${y}`;
                   }).join(' ')}
-                  fill="rgba(212, 175, 55, 0.25)" 
-                  stroke="#d4af37" 
-                  strokeWidth="1.5"
+                  fill="rgba(71, 85, 105, 0.2)" 
+                  stroke="#475569" 
+                  strokeWidth="1.2"
+                  strokeDasharray="2,2"
                   className="transition-all duration-1000 ease-in-out"
                 />
                 
-                {/* Inner glowing points */}
+                {/* Inactive points */}
                 {[0, 1, 2, 3, 4, 5, 6].map(i => {
                     const angle = (i * 360) / 7;
-                    const r = (getPillarScore(i) / 100) * 40;
+                    const r = 18;
                     const x = 50 + r * Math.cos((angle * Math.PI) / 180);
                     const y = 50 + r * Math.sin((angle * Math.PI) / 180);
-                    return <circle key={i} cx={x} cy={y} r="1.5" fill="#fff" className="transition-all duration-1000 ease-in-out" style={{ filter: 'drop-shadow(0px 0px 3px #d4af37)'}} />;
+                    return <circle key={i} cx={x} cy={y} r="1" fill="#475569" className="transition-all duration-1000 ease-in-out" />;
                   })}
               </svg>
             </div>
 
             <div className="space-y-3 relative z-10 flex-grow">
               <div className="bg-slate-900/50 border border-slate-800 rounded-lg p-3 backdrop-blur-sm flex justify-between items-center shadow-inner">
-                <span className="text-[10px] text-slate-400 font-mono tracking-wide uppercase">Score Matrix™</span>
-                <span className="text-sm font-black text-[#d4af37] drop-shadow-[0_0_5px_rgba(212,175,55,0.6)]">{currentQuestionIdx === 0 ? 'Pending' : `${getGlobalScore()}%`}</span>
+                <span className="text-[10px] text-slate-400 font-mono tracking-wide uppercase">Questions Answered</span>
+                <span className="text-xs font-bold text-white">{currentQuestionIdx} <span className="text-slate-600">/ 21</span></span>
               </div>
               <div className="bg-slate-900/50 border border-slate-800 rounded-lg p-3 backdrop-blur-sm flex justify-between items-center shadow-inner">
-                <span className="text-[10px] text-slate-400 font-mono tracking-wide uppercase">Data Points</span>
-                <span className="text-xs font-bold text-white">{Math.min(21, currentQuestionIdx)} <span className="text-slate-600">/ 21</span></span>
+                <span className="text-[10px] text-slate-400 font-mono tracking-wide uppercase">Current Pillar</span>
+                <span className="text-[11px] font-bold text-[#d4af37] text-right truncate max-w-[130px]" title={pillars[activePillarIdx]}>{pillars[activePillarIdx]}</span>
               </div>
               <div className="bg-slate-900/50 border border-slate-800 rounded-lg p-3 backdrop-blur-sm flex justify-between items-center shadow-inner">
-                <span className="text-[10px] text-slate-400 font-mono tracking-wide uppercase">Time EST.</span>
-                <span className="text-xs font-bold text-white">{Math.max(1, Math.ceil((22 - currentQuestionIdx) / 3))} <span className="text-slate-600">min</span></span>
+                <span className="text-[10px] text-slate-400 font-mono tracking-wide uppercase">Estimated Time Remaining</span>
+                <span className="text-xs font-bold text-white">{Math.max(1, Math.ceil((21 - currentQuestionIdx) * 0.3))} <span className="text-slate-600">min</span></span>
               </div>
               
               <div className="pt-2">
                 <div className="flex justify-between items-center mb-1.5">
-                  <span className="text-[10px] text-slate-500 font-mono tracking-widest uppercase">Completion</span>
+                  <span className="text-[10px] text-slate-500 font-mono tracking-widest uppercase">Assessment Progress</span>
                   <span className="text-[10px] font-bold text-amber-500 font-mono">{Math.min(100, Math.round((currentQuestionIdx / 21) * 100))}%</span>
                 </div>
                 <div className="w-full bg-slate-900 border border-slate-800 h-2 rounded-full overflow-hidden shadow-inner relative">
@@ -806,9 +806,9 @@ export default function AssessmentEngine() {
 
             {/* Terminal decoration */}
             <div className="mt-4 pt-3 border-t border-slate-800/80 relative z-10 flex flex-col gap-1 overflow-hidden h-12">
-                <span className="text-[7px] font-mono text-slate-400 leading-tight">{"0x" + Math.random().toString(16).substring(2, 8).toUpperCase()} - RECALIBRATING METRICS...</span>
-                <span className="text-[7px] font-mono text-slate-500 leading-tight opacity-75">{"0x" + Math.random().toString(16).substring(2, 8).toUpperCase()} - SYNC NODE {(currentQuestionIdx % 7).toString().padStart(2, '0')}</span>
-                <span className="text-[7px] font-mono text-[#d4af37] leading-tight opacity-100 animate-pulse mt-0.5">STREAMING TELEMETRY TO DASHBOARD...</span>
+                <span className="text-[7px] font-mono text-slate-500 leading-tight">{"0x" + Math.random().toString(16).substring(2, 8).toUpperCase()} - WAITING FOR COMPLETE INPUTS...</span>
+                <span className="text-[7px] font-mono text-slate-600 leading-tight opacity-75">{"0x" + Math.random().toString(16).substring(2, 8).toUpperCase()} - CALIBRATION MODE ACTIVE</span>
+                <span className="text-[7px] font-mono text-slate-500 leading-tight mt-0.5">METRICS LOCK UNTIL SUBMISSION</span>
             </div>
           </div>
         </div>
