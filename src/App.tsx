@@ -75,7 +75,7 @@ const navigationConfig = [
   { title: "Contact Us", href: "#", action: null, dropdown: null }
 ];
 
-export default function App() {
+export function App() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [activeAppView, setActiveAppView] = useState<'LANDING' | 'ASSESSMENT_PORTAL'>('LANDING');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -2167,3 +2167,5 @@ export default function App() {
     </div>
   );
 }
+
+export default App;

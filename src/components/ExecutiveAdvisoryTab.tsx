@@ -8,6 +8,8 @@ interface ExecutiveAdvisoryTabProps {
   lowestPillar: { name: string; score: number };
   handlePrintPDF: () => void;
   setActiveTab: (tab: string) => void;
+  isGeneratingPDF?: boolean;
+  pdfStatusMessage?: string;
 }
 
 const PILLARS = [
@@ -21,23 +23,25 @@ const PILLARS = [
 ];
 
 export const ExecutiveAdvisoryTab: React.FC<ExecutiveAdvisoryTabProps> = ({
-  formData,
-  globalScore,
-  pillarScores,
-  lowestPillar,
+  formData = {},
+  globalScore = 70,
+  pillarScores = [],
+  lowestPillar = { name: 'Operations & Process', score: 58 },
   handlePrintPDF,
   setActiveTab,
+  isGeneratingPDF = false,
+  pdfStatusMessage = '',
 }) => {
-  const compName = formData.companyName || 'ABC Manufacturing Pvt. Ltd.';
-  const ownerName = formData.fullName || 'Gajendra Kumar Sharma';
-  const industryType = formData.industry || 'Manufacturing';
-  const revenueTier = formData.revenue || '₹ 5 – 20 Cr';
-  const employeeCount = formData.employees || '50 – 100';
-  const selectedChallenges = formData.challenges && formData.challenges.length > 0 
+  const compName = formData?.companyName || 'ABC Manufacturing Pvt. Ltd.';
+  const ownerName = formData?.fullName || 'Gajendra Kumar Sharma';
+  const industryType = formData?.industry || 'Manufacturing';
+  const revenueTier = formData?.revenue || '₹ 5 – 20 Cr';
+  const employeeCount = formData?.employees || '50 – 100';
+  const selectedChallenges = formData?.challenges && formData.challenges.length > 0 
     ? formData.challenges 
     : ['High Operational Costs', 'Manual Dependency', 'Inconsistent Lead Generation'];
   const primaryChallenge = selectedChallenges.join(', ');
-  const businessGoals = formData.goals && formData.goals.length > 0 
+  const businessGoals = formData?.goals && formData.goals.length > 0 
     ? formData.goals.join(', ') 
     : 'Increase Profit Margins & Scale Operations';
 
@@ -349,10 +353,20 @@ export const ExecutiveAdvisoryTab: React.FC<ExecutiveAdvisoryTabProps> = ({
         <div className="flex items-center gap-3 w-full sm:w-auto">
           <button
             onClick={handlePrintPDF}
-            className="flex-1 sm:flex-none px-5 py-3 bg-slate-900 hover:bg-slate-800 text-white text-xs font-black uppercase tracking-wider rounded-xl transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-2 cursor-pointer"
+            disabled={isGeneratingPDF}
+            className="flex-1 sm:flex-none px-5 py-3 bg-slate-900 hover:bg-slate-800 text-white text-xs font-black uppercase tracking-wider rounded-xl transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
           >
-            <Download className="w-4 h-4 text-amber-400" />
-            <span>Download Advisory Dossier</span>
+            {isGeneratingPDF ? (
+              <>
+                <div className="w-4 h-4 border-2 border-amber-400 border-t-transparent rounded-full animate-spin"></div>
+                <span>{pdfStatusMessage || 'Generating Dossier...'}</span>
+              </>
+            ) : (
+              <>
+                <Download className="w-4 h-4 text-amber-400" />
+                <span>Download Advisory Dossier</span>
+              </>
+            )}
           </button>
           <button
             onClick={() => setActiveTab('booking')}
@@ -366,3 +380,5 @@ export const ExecutiveAdvisoryTab: React.FC<ExecutiveAdvisoryTabProps> = ({
     </div>
   );
 };
+
+export default ExecutiveAdvisoryTab;

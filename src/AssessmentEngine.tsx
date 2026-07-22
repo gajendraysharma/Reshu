@@ -5,7 +5,7 @@ import { User, Building2, Target, Info, CheckSquare, BarChart3, PieChart, FileTe
 
 type ViewState = 'PROFILE' | 'ASSESSMENT' | 'RESULTS' | 'GROWTH_PLAN';
 
-export default function AssessmentEngine() {
+export function AssessmentEngine() {
   // 1. Core State Handlers
   const [view, setView] = useState<ViewState>('PROFILE');
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState<number>(0);
@@ -985,3 +985,5 @@ export default function AssessmentEngine() {
     </div>
   );
 }
+
+export default AssessmentEngine;

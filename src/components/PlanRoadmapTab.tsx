@@ -17,7 +17,7 @@ interface PlanRoadmapTabProps {
   globalScore?: number;
 }
 
-export const PlanRoadmapTab: React.FC<PlanRoadmapTabProps> = ({ formData, globalScore = 65 }) => {
+export const PlanRoadmapTab: React.FC<PlanRoadmapTabProps> = ({ formData = {}, globalScore = 65 }) => {
   // Track completed items if user wants to interactively check them off
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({
     'c1-1': true,
@@ -295,3 +295,5 @@ export const PlanRoadmapTab: React.FC<PlanRoadmapTabProps> = ({ formData, global
     </div>
   );
 };
+
+export default PlanRoadmapTab;

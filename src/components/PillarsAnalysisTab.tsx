@@ -149,8 +149,8 @@ export const PillarsAnalysisTab: React.FC<PillarsAnalysisTabProps> = ({
   pillarScores,
   setActiveTab
 }) => {
-  const industryName = formData.industry || formData.industryType || "Manufacturing";
-  const companyName = formData.companyName || "ABC Manufacturing Pvt. Ltd.";
+  const industryName = formData?.industry || formData?.industryType || "Manufacturing";
+  const companyName = formData?.companyName || "ABC Manufacturing Pvt. Ltd.";
 
   const pillars = DEFAULT_PILLARS.map((p, index) => {
     const score = (pillarScores && pillarScores[index] !== undefined) ? pillarScores[index] : p.defaultScore;
@@ -521,4 +521,6 @@ export const PillarsAnalysisTab: React.FC<PillarsAnalysisTabProps> = ({
     </div>
   );
 };
+
+export default PillarsAnalysisTab;
 

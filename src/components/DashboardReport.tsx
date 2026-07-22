@@ -140,13 +140,15 @@ const QUESTION_DIAGNOSTICS: Record<number, { focusArea: string; questionText: st
   }
 };
 
-export default function DashboardReport({ formData = {}, scores = [], onResetAssessment }: any) {
+export function DashboardReport({ formData = {}, scores = [], onResetAssessment }: any) {
   const [activeTab, setActiveTab] = useState('overview');
   const [bookingConfirmed, setBookingConfirmed] = useState(false);
   const [selectedDate, setSelectedDate] = useState('July 24, 2026');
   const [selectedTime, setSelectedTime] = useState('11:30 AM IST');
   const [copiedLink, setCopiedLink] = useState(false);
   const [completedTasks, setCompletedTasks] = useState<Record<string, boolean>>({});
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [pdfStatusMessage, setPdfStatusMessage] = useState('');
 
   const [currentDateTime, setCurrentDateTime] = useState<Date>(new Date());
 
@@ -176,6 +178,7 @@ export default function DashboardReport({ formData = {}, scores = [], onResetAss
   const [availableSpace, setAvailableSpace] = useState(0);
 
   useEffect(() => {
+    let animFrameId: number;
     const updateHeights = () => {
       if (!leftSidebarRef.current || !rightSidebarRef.current || !activeTabContentRef.current) return;
       
@@ -185,36 +188,47 @@ export default function DashboardReport({ formData = {}, scores = [], onResetAss
       
       const maxSidebar = Math.max(leftHeight, rightHeight);
       const space = maxSidebar - centerHeight;
-      setAvailableSpace(space > 0 ? space : 0);
+      const newSpace = space > 0 ? space : 0;
+      setAvailableSpace(prev => (prev !== newSpace ? newSpace : prev));
+    };
+
+    const handleResize = () => {
+      cancelAnimationFrame(animFrameId);
+      animFrameId = requestAnimationFrame(updateHeights);
     };
 
     // Run initially after mounting/rendering
-    setTimeout(updateHeights, 100);
+    const timeoutId = setTimeout(updateHeights, 100);
 
-    const observer = new ResizeObserver(() => {
-      updateHeights();
-    });
+    let observer: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== 'undefined') {
+      observer = new ResizeObserver(() => {
+        handleResize();
+      });
 
-    if (leftSidebarRef.current) observer.observe(leftSidebarRef.current);
-    if (rightSidebarRef.current) observer.observe(rightSidebarRef.current);
-    if (activeTabContentRef.current) observer.observe(activeTabContentRef.current);
+      if (leftSidebarRef.current) observer.observe(leftSidebarRef.current);
+      if (rightSidebarRef.current) observer.observe(rightSidebarRef.current);
+      if (activeTabContentRef.current) observer.observe(activeTabContentRef.current);
+    }
 
-    window.addEventListener('resize', updateHeights);
+    window.addEventListener('resize', handleResize);
 
     return () => {
-      observer.disconnect();
-      window.removeEventListener('resize', updateHeights);
+      clearTimeout(timeoutId);
+      cancelAnimationFrame(animFrameId);
+      if (observer) observer.disconnect();
+      window.removeEventListener('resize', handleResize);
     };
   }, [activeTab, completedTasks, selectedDate, selectedTime, bookingConfirmed]);
 
   // Fallback defaults to match the image exactly
-  const compName = formData.companyName || 'ABC Manufacturing Pvt. Ltd.';
-  const ownerName = formData.fullName || 'Gajendra Kumar Sharma';
-  const industryType = formData.industry || 'Manufacturing';
-  const revenueTier = formData.revenue || '₹ 5 – 20 Cr';
-  const employeeCount = formData.employees || '50 – 100';
-  const businessGoal = formData.goals?.join(', ') || 'Increase Sales & Market Share';
-  const topChallenge = formData.challenges?.[0] || 'High Operational Costs';
+  const compName = formData?.companyName || 'ABC Manufacturing Pvt. Ltd.';
+  const ownerName = formData?.fullName || 'Gajendra Kumar Sharma';
+  const industryType = formData?.industry || 'Manufacturing';
+  const revenueTier = formData?.revenue || '₹ 5 – 20 Cr';
+  const employeeCount = formData?.employees || '50 – 100';
+  const businessGoal = formData?.goals?.join(', ') || 'Increase Sales & Market Share';
+  const topChallenge = formData?.challenges?.[0] || 'High Operational Costs';
 
   const PILLARS = [
     "Leadership & Vision",
@@ -539,24 +553,143 @@ export default function DashboardReport({ formData = {}, scores = [], onResetAss
   const dynamicStrengths = getDynamicStrengths();
   const dynamicImprovements = getDynamicImprovements();
 
-  // Handles instant browser-native PDF export via window.print without freezing UI thread
-  const handlePrintPDF = () => {
+  // Instant, high-resolution PDF generation and print trigger
+  const handlePrintPDF = async () => {
+    if (isGeneratingPDF) return;
+    setIsGeneratingPDF(true);
+    setPdfStatusMessage('Preparing PDF...');
+
     try {
-      window.print();
-    } catch (e) {
-      console.error('Print trigger error:', e);
+      const element = document.getElementById('krg-print-dossier-root');
+      if (element) {
+        // Save current style values
+        const prevStyleDisplay = element.style.display;
+        const prevStylePos = element.style.position;
+        const prevStyleLeft = element.style.left;
+        const prevStyleTop = element.style.top;
+        const prevStyleWidth = element.style.width;
+        const prevStyleZIndex = element.style.zIndex;
+        const prevStyleBg = element.style.background;
+
+        // Temporarily render element visibly for html2canvas capture
+        element.style.display = 'block';
+        element.style.position = 'fixed';
+        element.style.left = '0';
+        element.style.top = '0';
+        element.style.width = '210mm';
+        element.style.zIndex = '999999';
+        element.style.background = '#ffffff';
+
+        // Dynamically import html2pdf.js
+        // @ts-ignore
+        const html2pdfModule = await import('html2pdf.js');
+        const html2pdfFn: any = (html2pdfModule as any).default || html2pdfModule;
+
+        const cleanCompName = (formData?.companyName || 'Company').replace(/[^a-zA-Z0-9]/g, '_');
+        const opt = {
+          margin: 0,
+          filename: `KRG_ONE_Diagnostic_Report_${cleanCompName}.pdf`,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true, logging: false },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        setPdfStatusMessage('Downloading PDF...');
+        await html2pdfFn().set(opt).from(element).save();
+
+        // Restore original style state
+        element.style.display = prevStyleDisplay;
+        element.style.position = prevStylePos;
+        element.style.left = prevStyleLeft;
+        element.style.top = prevStyleTop;
+        element.style.width = prevStyleWidth;
+        element.style.zIndex = prevStyleZIndex;
+        element.style.background = prevStyleBg;
+
+        setIsGeneratingPDF(false);
+        setPdfStatusMessage('');
+        return;
+      }
+    } catch (err) {
+      console.warn('html2pdf direct export failed, opening print window fallback:', err);
     }
+
+    // Fallback if html2pdf fails or in restricted environment
+    setPdfStatusMessage('Opening Print Window...');
+    setTimeout(() => {
+      setIsGeneratingPDF(false);
+      setPdfStatusMessage('');
+
+      try {
+        const printElement = document.getElementById('krg-print-dossier-root');
+        if (printElement) {
+          const printWin = window.open('', '_blank');
+          if (printWin) {
+            printWin.document.write(`
+              <!DOCTYPE html>
+              <html>
+                <head>
+                  <title>KRGONE Business Growth Diagnostic Report</title>
+                  <script src="https://cdn.tailwindcss.com"></script>
+                  <style>
+                    @media print {
+                      @page { size: A4 portrait; margin: 0; }
+                      body { margin: 0 !important; padding: 0 !important; background: white !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+                      .print-page { page-break-after: always !important; break-after: page !important; page-break-inside: avoid !important; break-inside: avoid !important; margin: 0 !important; box-shadow: none !important; width: 210mm !important; height: 297mm !important; min-height: 297mm !important; max-height: 297mm !important; }
+                      .no-print { display: none !important; }
+                    }
+                    body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+                    .print-page { background: white; width: 210mm; min-height: 297mm; height: 297mm; max-height: 297mm; padding: 8mm 10mm; margin-bottom: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); box-sizing: border-box; overflow: hidden; position: relative; }
+                  </style>
+                </head>
+                <body>
+                  <div style="position: fixed; top: 15px; right: 20px; z-index: 10000; display: flex; gap: 10px;" class="no-print">
+                    <button onclick="window.print()" style="background: #0A1128; color: #D4AF37; border: 1px solid #D4AF37; padding: 10px 20px; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+                      🖨️ Save as PDF / Print Report
+                    </button>
+                    <button onclick="window.close()" style="background: #e2e8f0; color: #1e293b; border: none; padding: 10px 16px; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 14px;">
+                      Close
+                    </button>
+                  </div>
+                  ${printElement.innerHTML}
+                  <script>
+                    setTimeout(() => {
+                      window.print();
+                    }, 800);
+                  </script>
+                </body>
+              </html>
+            `);
+            printWin.document.close();
+            return;
+          }
+        }
+        window.print();
+      } catch (e) {
+        console.error('Print trigger error:', e);
+      }
+    }, 200);
   };
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans">
       {/* Dynamic CSS injecting high-impact print layout */}
       <style>{`
+        @media screen {
+          .no-screen {
+            display: none !important;
+          }
+        }
         @media print {
-          body { background: white !important; margin: 0 !important; padding: 0 !important; }
-          aside, main, nav, header, button { display: none !important; }
-          .no-print { display: none !important; }
-          .print-dossier-root { display: block !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
+          body { background: white !important; margin: 0 !important; padding: 0 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+          aside, main, nav, header, button, .no-print { display: none !important; }
+          .no-screen, .print-dossier-root { display: block !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
+          .print-page {
+            page-break-after: always !important;
+            break-after: page !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+          }
           @page { size: A4 portrait; margin: 0; }
         }
         /* Hide scrollbar for Chrome, Safari and Opera */
@@ -606,10 +739,20 @@ export default function DashboardReport({ formData = {}, scores = [], onResetAss
             )}
             <button
               onClick={handlePrintPDF}
-              className="bg-[#0F172A] hover:bg-slate-800 text-white flex items-center gap-2 px-4 py-2 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 text-xs font-bold cursor-pointer"
+              disabled={isGeneratingPDF}
+              className="bg-[#0F172A] hover:bg-slate-800 text-white flex items-center gap-2 px-4 py-2 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 text-xs font-bold cursor-pointer disabled:opacity-60 min-w-[130px] justify-center"
             >
-              <Download className="w-3.5 h-3.5 text-amber-400" />
-              <span>Download PDF</span>
+              {isGeneratingPDF ? (
+                <>
+                  <div className="w-3.5 h-3.5 border-2 border-amber-400 border-t-transparent rounded-full animate-spin"></div>
+                  <span>{pdfStatusMessage || 'Generating...'}</span>
+                </>
+              ) : (
+                <>
+                  <Download className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Download PDF</span>
+                </>
+              )}
             </button>
           </div>
         </div>
@@ -1822,6 +1965,8 @@ export default function DashboardReport({ formData = {}, scores = [], onResetAss
             lowestPillar={lowestPillar}
             handlePrintPDF={handlePrintPDF}
             setActiveTab={setActiveTab}
+            isGeneratingPDF={isGeneratingPDF}
+            pdfStatusMessage={pdfStatusMessage}
           />
         )}
         {/* Legacy advisory code suppressed */}
@@ -2715,9 +2860,17 @@ export default function DashboardReport({ formData = {}, scores = [], onResetAss
                 <p className="text-[10px] text-slate-500 leading-relaxed mb-4">Complete macro audit analysis and technical roadmap compiled into a PDF document.</p>
                 <button
                   onClick={handlePrintPDF}
-                  className="w-full bg-[#0F172A] hover:bg-slate-800 text-white font-extrabold text-[10px] uppercase tracking-wider py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                  disabled={isGeneratingPDF}
+                  className="w-full bg-[#0F172A] hover:bg-slate-800 text-white font-extrabold text-[10px] uppercase tracking-wider py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 min-h-[36px]"
                 >
-                  <span>Export PDF Report</span>
+                  {isGeneratingPDF ? (
+                    <>
+                      <div className="w-3.5 h-3.5 border-2 border-amber-400 border-t-transparent rounded-full animate-spin"></div>
+                      <span>{pdfStatusMessage || 'Generating...'}</span>
+                    </>
+                  ) : (
+                    <span>Export PDF Report</span>
+                  )}
                 </button>
               </div>
 
@@ -3117,3 +3270,5 @@ export default function DashboardReport({ formData = {}, scores = [], onResetAss
     </div>
   );
 }
+
+export default DashboardReport;
