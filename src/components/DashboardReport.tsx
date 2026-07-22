@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import {
   ShieldCheck, LayoutDashboard, BarChart3, TrendingUp, Cpu, Building2, Calendar, Download, PhoneCall,
   User, Factory, Users, Coins, CheckCircle2, AlertTriangle, ArrowUpRight, Activity, Target, AlertCircle, Clock, Award,
-  ChevronRight, Check, Sparkles, Send, Share2, Printer, Briefcase, GitBranch, Star, Shield, Rocket, Info
+  ChevronRight, Check, Sparkles, Send, Share2, Printer, Briefcase, GitBranch, Star, Shield, Rocket, Info, RotateCcw
 } from 'lucide-react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 import { ExecutiveAdvisoryTab } from './ExecutiveAdvisoryTab';
@@ -139,7 +139,7 @@ const QUESTION_DIAGNOSTICS: Record<number, { focusArea: string; questionText: st
   }
 };
 
-export default function DashboardReport({ formData = {}, scores = [] }: any) {
+export default function DashboardReport({ formData = {}, scores = [], onResetAssessment }: any) {
   const [activeTab, setActiveTab] = useState('overview');
   const [bookingConfirmed, setBookingConfirmed] = useState(false);
   const [selectedDate, setSelectedDate] = useState('July 24, 2026');
@@ -208,15 +208,13 @@ export default function DashboardReport({ formData = {}, scores = [] }: any) {
   const getPillarScores = () => {
     const hasScores = scores && scores.length > 0 && scores.some((s: number) => s > 0);
     if (!hasScores) {
-      return [72, 68, 65, 58, 80, 70, 75]; // Matches the image's high-tier profile
+      return [72, 68, 65, 58, 80, 70, 75]; // Matches default profile
     }
     return PILLARS.map((_, i) => {
       const start = i * 3;
-      const val1 = scores[start] || 0;
-      const val2 = scores[start + 1] || 0;
-      const val3 = scores[start + 2] || 0;
-      const total = val1 + val2 + val3;
-      return Math.round((total / 12) * 100) || 0;
+      const pAns = [scores[start], scores[start + 1], scores[start + 2]].filter((s: number) => s > 0);
+      if (pAns.length === 0) return 0;
+      return Math.round((pAns.reduce((a: number, b: number) => a + b, 0) / (pAns.length * 4)) * 100);
     });
   };
 
@@ -224,11 +222,19 @@ export default function DashboardReport({ formData = {}, scores = [] }: any) {
 
   const getGlobalScore = () => {
     const hasScores = scores && scores.length > 0 && scores.some((s: number) => s > 0);
-    if (!hasScores) return 72; // Sits at the beautiful 72/100 shown in the image
+    if (!hasScores) return 72;
     const weights = [0.18, 0.17, 0.14, 0.16, 0.15, 0.10, 0.10];
     let sum = 0;
-    for (let i = 0; i < 7; i++) { sum += pillarScores[i] * weights[i]; }
-    return Math.round(sum);
+    let weightSum = 0;
+    for (let i = 0; i < 7; i++) {
+      const pAns = [scores[i * 3], scores[i * 3 + 1], scores[i * 3 + 2]].filter((s: number) => s > 0);
+      if (pAns.length > 0) {
+        sum += pillarScores[i] * weights[i];
+        weightSum += weights[i];
+      }
+    }
+    if (weightSum === 0) return 72;
+    return Math.round(sum / weightSum);
   };
 
   const globalScore = getGlobalScore();
@@ -555,6 +561,15 @@ export default function DashboardReport({ formData = {}, scores = [] }: any) {
               <Calendar className="w-3.5 h-3.5 text-slate-400" />
               <span>Assessment Date: <strong>18 July 2026</strong></span>
             </div>
+            {onResetAssessment && (
+              <button
+                onClick={onResetAssessment}
+                className="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 flex items-center gap-2 px-4 py-2 rounded-lg shadow-sm hover:shadow transition-all duration-200 text-xs font-bold"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Reset & Retake</span>
+              </button>
+            )}
             <button
               onClick={handlePrintPDF}
               className="bg-[#0F172A] hover:bg-slate-800 text-white flex items-center gap-2 px-4 py-2 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 text-xs font-bold"

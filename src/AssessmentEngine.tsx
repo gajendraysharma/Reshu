@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import DashboardReport from './components/DashboardReport';
-import { User, Building2, Target, Info, CheckSquare, BarChart3, PieChart, FileText, LayoutGrid, Lightbulb, Lock, Layers, Cpu, CheckCircle2, ShieldCheck, PartyPopper } from 'lucide-react';
+import { User, Building2, Target, Info, CheckSquare, BarChart3, PieChart, FileText, LayoutGrid, Lightbulb, Lock, Layers, Cpu, CheckCircle2, ShieldCheck, PartyPopper, RotateCcw } from 'lucide-react';
 
 type ViewState = 'PROFILE' | 'ASSESSMENT' | 'RESULTS' | 'GROWTH_PLAN';
 
@@ -139,16 +139,24 @@ export default function AssessmentEngine() {
   };
 
   // 2. Real-time Computations
+  const answeredCount = scores.filter(s => s > 0).length;
+  const answeredPct = Math.round((answeredCount / 21) * 100);
+
+  const handleResetAssessment = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('krgone_scores');
+      localStorage.removeItem('krgone_currentQuestionIdx');
+    }
+    setScores(new Array(21).fill(0));
+    setCurrentQuestionIdx(0);
+    setView('PROFILE');
+  };
+
   const getPillarScore = (pillarIdx: number): number => {
     const start = pillarIdx * 3;
-    const val1 = scores[start] || 0;
-    const val2 = scores[start+1] || 0;
-    const val3 = scores[start+2] || 0;
-    if (val1 === 0 || val2 === 0 || val3 === 0) {
-      return 0;
-    }
-    const total = val1 + val2 + val3;
-    return Math.round((total / 12) * 100) || 0;
+    const pAns = [scores[start], scores[start + 1], scores[start + 2]].filter(s => s > 0);
+    if (pAns.length === 0) return 0;
+    return Math.round((pAns.reduce((a, b) => a + b, 0) / (pAns.length * 4)) * 100);
   };
 
   const getMaturityLevel = (score: number) => {
@@ -161,8 +169,17 @@ export default function AssessmentEngine() {
   const getGlobalScore = (): number => {
     const weights = [0.18, 0.17, 0.14, 0.16, 0.15, 0.10, 0.10];
     let sum = 0;
-    for (let i = 0; i < 7; i++) { sum += getPillarScore(i) * weights[i]; }
-    return Math.round(sum);
+    let weightSum = 0;
+    for (let i = 0; i < 7; i++) {
+      const pScore = getPillarScore(i);
+      const pAns = [scores[i * 3], scores[i * 3 + 1], scores[i * 3 + 2]].filter(s => s > 0);
+      if (pAns.length > 0) {
+        sum += pScore * weights[i];
+        weightSum += weights[i];
+      }
+    }
+    if (weightSum === 0) return 0;
+    return Math.round(sum / weightSum);
   };
 
   const activePillarIdx = Math.floor(currentQuestionIdx / 3);
@@ -237,7 +254,7 @@ export default function AssessmentEngine() {
 
   const getProgressPercentage = () => {
     if (view === 'PROFILE') return 25;
-    if (view === 'ASSESSMENT') return 25 + (currentQuestionIdx / 20) * 50;
+    if (view === 'ASSESSMENT') return Math.min(85, Math.round(25 + (answeredCount / 21) * 60));
     if (view === 'RESULTS') return 85;
     if (view === 'GROWTH_PLAN') return 100;
     return 0;
@@ -660,12 +677,12 @@ export default function AssessmentEngine() {
                   <span className={`text-xs font-bold truncate pr-1 ${activePillarIdx === idx ? 'text-amber-400 drop-shadow-[0_0_2px_rgba(212,175,55,0.5)]' : ''}`}>{name}</span>
                   <div className="flex gap-1">
                     {[0, 1, 2].map(i => {
+                      const qIdx = idx * 3 + i;
+                      const isQAnswered = scores[qIdx] > 0;
+                      const isQCurrent = currentQuestionIdx === qIdx;
                       let state = 'pending';
-                      if (activePillarIdx > idx) state = 'completed';
-                      else if (activePillarIdx === idx) {
-                        if (i < (currentQuestionIdx % 3)) state = 'completed';
-                        else if (i === (currentQuestionIdx % 3)) state = 'current';
-                      }
+                      if (isQAnswered) state = 'completed';
+                      else if (isQCurrent) state = 'current';
 
                       return (
                         <div key={i} className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${state === 'completed' ? 'bg-[#d4af37] shadow-[0_0_4px_#d4af37]' : state === 'current' ? 'bg-[#d4af37] animate-ping opacity-75 ring-2 ring-[#d4af37]/50' : 'bg-slate-700/50'}`} />
@@ -710,7 +727,7 @@ export default function AssessmentEngine() {
                     {pillars[activePillarIdx]}
                   </h4>
                 </div>
-                <span className="text-xs font-mono font-black text-[#8f7016] bg-amber-50/80 border border-amber-200/50 px-3 py-1.5 rounded-md shadow-[inset_0_1px_2px_rgba(255,255,255,1),0_2px_10px_rgba(212,175,55,0.15)] backdrop-blur-sm animate-pulse">{Math.min(100, Math.round(((currentQuestionIdx)/21)*100))}% DONE</span>
+                <span className="text-xs font-mono font-black text-[#8f7016] bg-amber-50/80 border border-amber-200/50 px-3 py-1.5 rounded-md shadow-[inset_0_1px_2px_rgba(255,255,255,1),0_2px_10px_rgba(212,175,55,0.15)] backdrop-blur-sm animate-pulse">{answeredPct}% DONE</span>
               </div>
 
               <div className="my-8 bg-white/40 border-t-2 border-l-2 border-b-4 border-r-4 border-t-white border-l-white border-b-slate-200 border-r-slate-200 p-6 md:p-8 rounded-2xl backdrop-blur-md shadow-[inset_0_4px_10px_rgba(255,255,255,0.8),4px_4px_15px_rgba(0,0,0,0.05)] relative overflow-hidden group transition-all duration-500 transform hover:translate-y-[-2px]">
@@ -893,7 +910,7 @@ export default function AssessmentEngine() {
             <div className="space-y-3 relative z-10 flex-grow">
               <div className="bg-slate-900/50 border border-slate-800 rounded-lg p-3 backdrop-blur-sm flex justify-between items-center shadow-inner">
                 <span className="text-[10px] text-slate-400 font-mono tracking-wide uppercase">Questions Answered</span>
-                <span className="text-xs font-bold text-white">{currentQuestionIdx} <span className="text-slate-600">/ 21</span></span>
+                <span className="text-xs font-bold text-white">{answeredCount} <span className="text-slate-600">/ 21</span></span>
               </div>
               <div className="bg-slate-900/50 border border-slate-800 rounded-lg p-3 backdrop-blur-sm flex justify-between items-center shadow-inner">
                 <span className="text-[10px] text-slate-400 font-mono tracking-wide uppercase">Current Pillar</span>
@@ -901,18 +918,29 @@ export default function AssessmentEngine() {
               </div>
               <div className="bg-slate-900/50 border border-slate-800 rounded-lg p-3 backdrop-blur-sm flex justify-between items-center shadow-inner">
                 <span className="text-[10px] text-slate-400 font-mono tracking-wide uppercase">Estimated Time Remaining</span>
-                <span className="text-xs font-bold text-white">{Math.max(1, Math.ceil((21 - currentQuestionIdx) * 0.3))} <span className="text-slate-600">min</span></span>
+                <span className="text-xs font-bold text-white">{answeredCount === 21 ? 0 : Math.max(1, Math.ceil((21 - answeredCount) * 0.3))} <span className="text-slate-600">min</span></span>
               </div>
               
               <div className="pt-2">
                 <div className="flex justify-between items-center mb-1.5">
                   <span className="text-[10px] text-slate-500 font-mono tracking-widest uppercase">Assessment Progress</span>
-                  <span className="text-[10px] font-bold text-amber-500 font-mono">{Math.min(100, Math.round((currentQuestionIdx / 21) * 100))}%</span>
+                  <span className="text-[10px] font-bold text-amber-500 font-mono">{answeredPct}%</span>
                 </div>
                 <div className="w-full bg-slate-900 border border-slate-800 h-2 rounded-full overflow-hidden shadow-inner relative">
                   <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9InRyYW5zcGFyZW50Ii8+PGxpbmUgeDE9IjAiIHkxPSI0IiB4Mj0iNCIgeTI9IjAiIHN0cm9rZT0iIzFmMjkzNyIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9zdmc+')] opacity-50 z-10"></div>
-                  <div className="bg-gradient-to-r from-amber-600 to-[#d4af37] h-full transition-all duration-700 ease-out shadow-[0_0_8px_rgba(212,175,55,0.8)] relative z-0" style={{ width: `${Math.min(100, (currentQuestionIdx / 21) * 100)}%` }}></div>
+                  <div className="bg-gradient-to-r from-amber-600 to-[#d4af37] h-full transition-all duration-700 ease-out shadow-[0_0_8px_rgba(212,175,55,0.8)] relative z-0" style={{ width: `${answeredPct}%` }}></div>
                 </div>
+              </div>
+
+              <div className="pt-3">
+                <button
+                  type="button"
+                  onClick={handleResetAssessment}
+                  className="w-full py-2 px-3 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 hover:border-rose-500/50 text-rose-400 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all flex items-center justify-center gap-1.5 shadow-sm"
+                >
+                  <RotateCcw className="w-3 h-3" />
+                  <span>Reset Assessment</span>
+                </button>
               </div>
             </div>
 
@@ -927,7 +955,7 @@ export default function AssessmentEngine() {
       )}
       {/* FINAL DASHBOARD */}
       {view === 'RESULTS' && (
-        <DashboardReport formData={formData} scores={scores} />
+        <DashboardReport formData={formData} scores={scores} onResetAssessment={handleResetAssessment} />
       )}
     </div>
   );
