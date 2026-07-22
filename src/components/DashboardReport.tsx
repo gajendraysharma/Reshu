@@ -147,6 +147,27 @@ export default function DashboardReport({ formData = {}, scores = [], onResetAss
   const [copiedLink, setCopiedLink] = useState(false);
   const [completedTasks, setCompletedTasks] = useState<Record<string, boolean>>({});
 
+  const [currentDateTime, setCurrentDateTime] = useState<Date>(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentDateTime(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formattedDate = currentDateTime.toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  });
+  const formattedTime = currentDateTime.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true
+  });
+
   const leftSidebarRef = useRef<HTMLElement>(null);
   const rightSidebarRef = useRef<HTMLElement>(null);
   const activeTabContentRef = useRef<HTMLDivElement>(null);
@@ -241,15 +262,18 @@ export default function DashboardReport({ formData = {}, scores = [], onResetAss
 
   // McKinsey-level diagnostic calculations
   const getLowestPillar = () => {
+    if (!pillarScores || pillarScores.length === 0) {
+      return { name: PILLARS[0] || 'Operations & Process', score: 50 };
+    }
     let lowestIdx = 0;
-    let lowestScore = pillarScores[0];
+    let lowestScore = pillarScores[0] ?? 50;
     for (let i = 1; i < pillarScores.length; i++) {
-      if (pillarScores[i] < lowestScore) {
+      if ((pillarScores[i] ?? 0) < lowestScore) {
         lowestScore = pillarScores[i];
         lowestIdx = i;
       }
     }
-    return { name: PILLARS[lowestIdx], score: lowestScore };
+    return { name: PILLARS[lowestIdx] || 'Operations & Process', score: lowestScore };
   };
   const lowestPillar = getLowestPillar();
 
@@ -557,9 +581,14 @@ export default function DashboardReport({ formData = {}, scores = [], onResetAss
             <p className="text-xs text-slate-500">Your business at a glance</p>
           </div>
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1 text-xs text-slate-500 bg-white px-3 py-2 rounded-lg border border-slate-200 shadow-sm font-mono">
+            <div className="flex items-center gap-1.5 text-xs text-slate-600 bg-white px-3.5 py-2 rounded-lg border border-slate-200 shadow-sm font-mono">
               <Calendar className="w-3.5 h-3.5 text-slate-400" />
-              <span>Assessment Date: <strong>18 July 2026</strong></span>
+              <Clock className="w-3.5 h-3.5 text-slate-400" />
+              <span>Assessment Date & Time: <strong className="text-slate-900 font-bold">{formattedDate}, {formattedTime}</strong></span>
+              <span className="flex h-2 w-2 relative ml-1" title="Real-time live sync active">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
             </div>
             {onResetAssessment && (
               <button
@@ -1072,7 +1101,7 @@ export default function DashboardReport({ formData = {}, scores = [], onResetAss
                         <div className="space-y-4">
                           <div>
                             <span className="font-black text-slate-800 text-sm block leading-tight">
-                              {IMMEDIATE_PRIORITY_LOOKUP[lowestPillar.name]?.action || "Build Standard Operating Processes (SOPs)"}
+                              {IMMEDIATE_PRIORITY_LOOKUP[lowestPillar?.name || '']?.action || "Build Standard Operating Processes (SOPs)"}
                             </span>
                           </div>
                           <div className="space-y-2">
@@ -1086,7 +1115,7 @@ export default function DashboardReport({ formData = {}, scores = [], onResetAss
                             </div>
                           </div>
                           <p className="text-xs text-slate-500 font-semibold mt-4 pt-4 border-t border-slate-200/50 leading-relaxed">
-                            {IMMEDIATE_PRIORITY_LOOKUP[lowestPillar.name]?.desc || "Systemizing key processes will improve efficiency, reduce errors and unlock scalability."}
+                            {IMMEDIATE_PRIORITY_LOOKUP[lowestPillar?.name || '']?.desc || "Systemizing key processes will improve efficiency, reduce errors and unlock scalability."}
                           </p>
                         </div>
                       </div>
@@ -1105,7 +1134,7 @@ export default function DashboardReport({ formData = {}, scores = [], onResetAss
                         </div>
                         <div className="mt-3.5 space-y-2 text-xs text-slate-600 leading-relaxed font-semibold">
                           <p>
-                            1. **Decouple Core Workflow Dependencies**: Establish process guidelines inside <strong>{lowestPillar.name}</strong> to relieve 40%+ of active founder bottlenecks.
+                            1. **Decouple Core Workflow Dependencies**: Establish process guidelines inside <strong>{lowestPillar?.name ?? 'Operations'}</strong> to relieve 40%+ of active founder bottlenecks.
                           </p>
                           <p>
                             2. **Deploy Programmatic Retention Systems**: Protect your baseline by formalizing customer satisfaction check-ins and collecting referral reviews systematically.
@@ -1121,7 +1150,7 @@ export default function DashboardReport({ formData = {}, scores = [], onResetAss
                         <span className="text-[9px] font-black text-amber-400 tracking-wider uppercase block mb-0.5">Partner Consultation</span>
                         <h4 className="text-xs font-black text-white uppercase tracking-wider">Book Growth Diagnostic™</h4>
                         <p className="text-[10px] text-slate-300 leading-relaxed font-semibold font-sans">
-                          Schedule your private, 1-on-1 Business Growth Diagnostic™ call to systemize {lowestPillar.name.split(" & ")[0]} and capitalize on your untapped {dynamicHiddenRev} revenue potential.
+                          Schedule your private, 1-on-1 Business Growth Diagnostic™ call to systemize {(lowestPillar?.name || 'Operations').split(" & ")[0]} and capitalize on your untapped {dynamicHiddenRev} revenue potential.
                         </p>
                       </div>
                       <button

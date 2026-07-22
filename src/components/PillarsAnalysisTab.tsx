@@ -270,8 +270,8 @@ export const PillarsAnalysisTab: React.FC<PillarsAnalysisTabProps> = ({
           </div>
           <div>
             <span className="text-xs font-semibold text-slate-500 block">Strongest Pillar</span>
-            <span className="text-sm font-bold text-emerald-600 block line-clamp-1">{strongest.title.replace(/^\d+\.\s*/, '')}</span>
-            <span className="text-sm font-extrabold text-slate-800">{strongest.score}% <span className="text-[10px] font-normal text-slate-400">(Benchmark: {strongest.benchmark}%)</span></span>
+            <span className="text-sm font-bold text-emerald-600 block line-clamp-1">{strongest?.title?.replace(/^\d+\.\s*/, '') ?? ''}</span>
+            <span className="text-sm font-extrabold text-slate-800">{strongest?.score ?? 0}% <span className="text-[10px] font-normal text-slate-400">(Benchmark: {strongest?.benchmark ?? 0}%)</span></span>
           </div>
         </div>
 
@@ -282,8 +282,8 @@ export const PillarsAnalysisTab: React.FC<PillarsAnalysisTabProps> = ({
           </div>
           <div>
             <span className="text-xs font-semibold text-slate-500 block">Primary Bottleneck</span>
-            <span className="text-sm font-bold text-rose-600 block line-clamp-1">{weakest.title.replace(/^\d+\.\s*/, '')}</span>
-            <span className="text-sm font-extrabold text-slate-800">{weakest.score}% <span className="text-[10px] font-normal text-slate-400">(Benchmark: {weakest.benchmark}%)</span></span>
+            <span className="text-sm font-bold text-rose-600 block line-clamp-1">{weakest?.title?.replace(/^\d+\.\s*/, '') ?? ''}</span>
+            <span className="text-sm font-extrabold text-slate-800">{weakest?.score ?? 0}% <span className="text-[10px] font-normal text-slate-400">(Benchmark: {weakest?.benchmark ?? 0}%)</span></span>
           </div>
         </div>
 

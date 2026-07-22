@@ -72,7 +72,7 @@ export const ExecutiveAdvisoryTab: React.FC<ExecutiveAdvisoryTabProps> = ({
             <strong className="text-amber-950 font-black uppercase tracking-wide block mb-1">
               The Owner-Dependency Barrier:
             </strong>
-            Your assessment answers reveal a critical operational dependency on the founder layer under <strong>{ownerName}</strong>'s oversight. Because daily validation, strategic planning, and performance management require your constant personal oversight, your team is restricted to running routine tasks. This lack of decentralization caps your ultimate enterprise valuation, as a company dependent on its owner cannot be easily scaled, sold, or institutionalized. Primary friction points in <strong>{lowestPillar.name}</strong> ({lowestPillar.score}%) must be systematically resolved.
+            Your assessment answers reveal a critical operational dependency on the founder layer under <strong>{ownerName}</strong>'s oversight. Because daily validation, strategic planning, and performance management require your constant personal oversight, your team is restricted to running routine tasks. This lack of decentralization caps your ultimate enterprise valuation, as a company dependent on its owner cannot be easily scaled, sold, or institutionalized. Primary friction points in <strong>{lowestPillar?.name ?? 'Operations'}</strong> ({lowestPillar?.score ?? 0}%) must be systematically resolved.
           </p>
         </div>
       );
@@ -89,7 +89,7 @@ export const ExecutiveAdvisoryTab: React.FC<ExecutiveAdvisoryTabProps> = ({
             <strong className="text-emerald-950 font-black uppercase tracking-wide block mb-1">
               Strategic Capital Allocation Matrix:
             </strong>
-            The objective for your enterprise must shift from protective management to aggressive market dominance. With an established core framework in <strong>{highestPillar.name}</strong> ({highestPillar.score}%), you are prime to utilize your internal stability to deploy high-yield automation models, acquire market share from lower-tier competitors, and execute structured expansions into new regional verticals toward your goal of <em>"{businessGoals}"</em>.
+            The objective for your enterprise must shift from protective management to aggressive market dominance. With an established core framework in <strong>{highestPillar?.name ?? 'Leadership'}</strong> ({highestPillar?.score ?? 0}%), you are prime to utilize your internal stability to deploy high-yield automation models, acquire market share from lower-tier competitors, and execute structured expansions into new regional verticals toward your goal of <em>"{businessGoals}"</em>.
           </p>
         </div>
       );
@@ -100,7 +100,7 @@ export const ExecutiveAdvisoryTab: React.FC<ExecutiveAdvisoryTabProps> = ({
             <strong className="text-indigo-950 font-black uppercase tracking-wide block mb-1">
               Mid-Tier Operational Transition:
             </strong>
-            An analytical review of <strong>{compName}</strong> operating within the <strong>{industryType}</strong> vertical indicates a solid operational baseline of <strong>{globalScore}%</strong> that is beginning to show stress under higher volume. While generating consistent revenue in the <strong>{revenueTier}</strong> bracket, your core processes remain partially dependent on manual execution and key-person knowledge in <strong>{lowestPillar.name}</strong> ({lowestPillar.score}%).
+            An analytical review of <strong>{compName}</strong> operating within the <strong>{industryType}</strong> vertical indicates a solid operational baseline of <strong>{globalScore}%</strong> that is beginning to show stress under higher volume. While generating consistent revenue in the <strong>{revenueTier}</strong> bracket, your core processes remain partially dependent on manual execution and key-person knowledge in <strong>{lowestPillar?.name ?? 'Operations'}</strong> ({lowestPillar?.score ?? 0}%).
           </p>
           <p>
             <strong className="text-indigo-950 font-black uppercase tracking-wide block mb-1">

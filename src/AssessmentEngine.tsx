@@ -77,8 +77,17 @@ export default function AssessmentEngine() {
   ];
   const [scores, setScores] = useState<number[]>(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('krgone_scores');
-      if (saved) return JSON.parse(saved);
+      try {
+        const saved = localStorage.getItem('krgone_scores');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length === 21) {
+            return parsed;
+          }
+        }
+      } catch (e) {
+        // ignore
+      }
     }
     return new Array(21).fill(0);
   });
@@ -87,17 +96,24 @@ export default function AssessmentEngine() {
     if (typeof window !== 'undefined') {
       const savedIdx = localStorage.getItem('krgone_currentQuestionIdx');
       if (savedIdx !== null) {
-        setCurrentQuestionIdx(parseInt(savedIdx, 10));
+        const idx = parseInt(savedIdx, 10);
+        if (!isNaN(idx) && idx >= 0 && idx < 21) {
+          setCurrentQuestionIdx(idx);
+        }
       }
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('krgone_scores', JSON.stringify(scores));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('krgone_scores', JSON.stringify(scores));
+    }
   }, [scores]);
 
   useEffect(() => {
-    localStorage.setItem('krgone_currentQuestionIdx', currentQuestionIdx.toString());
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('krgone_currentQuestionIdx', currentQuestionIdx.toString());
+    }
   }, [currentQuestionIdx]);
 
   const handleStartAssessment = (e: React.MouseEvent) => {
@@ -110,6 +126,15 @@ export default function AssessmentEngine() {
     if (!formData.email.includes('@')) {
       setProfileError('Please enter a valid email address.');
       return;
+    }
+    // Fresh Assessment Reset: reset scores and question index to 0
+    const freshScores = new Array(21).fill(0);
+    setScores(freshScores);
+    setCurrentQuestionIdx(0);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('krgone_scores', JSON.stringify(freshScores));
+      localStorage.setItem('krgone_currentQuestionIdx', '0');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
     setView('ASSESSMENT');
   };
@@ -182,7 +207,7 @@ export default function AssessmentEngine() {
     return Math.round(sum / weightSum);
   };
 
-  const activePillarIdx = Math.floor(currentQuestionIdx / 3);
+  const activePillarIdx = Math.min(6, Math.max(0, Math.floor(currentQuestionIdx / 3)));
   const [splashingOption, setSplashingOption] = useState<number | null>(null);
   const [analysisStep, setAnalysisStep] = useState(0);
   const [hoveredRadarPillar, setHoveredRadarPillar] = useState<number | null>(null);
@@ -890,9 +915,9 @@ export default function AssessmentEngine() {
                 </svg>
 
                 {/* Live Tooltip when hovering over a vertex */}
-                {hoveredRadarPillar !== null && (
+                {hoveredRadarPillar !== null && livePillarData[hoveredRadarPillar] && (
                   <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-slate-900 border border-amber-500/50 text-white text-[10px] font-bold px-2.5 py-1 rounded-md shadow-xl z-30 whitespace-nowrap pointer-events-none">
-                    <span className="text-amber-400">{pillars[hoveredRadarPillar]}</span>: {livePillarData[hoveredRadarPillar].score}%
+                    <span className="text-amber-400">{pillars[hoveredRadarPillar] ?? ''}</span>: {livePillarData[hoveredRadarPillar]?.score ?? 0}%
                   </div>
                 )}
               </div>
@@ -901,9 +926,9 @@ export default function AssessmentEngine() {
               <div className="mt-3 w-full bg-slate-900/80 border border-slate-800 rounded-lg p-2 flex items-center justify-between text-[10px] font-mono">
                 <div className="flex items-center gap-1.5 overflow-hidden">
                   <div className="w-2 h-2 rounded-full bg-[#d4af37] animate-pulse"></div>
-                  <span className="text-slate-300 truncate font-sans font-bold">{pillars[activePillarIdx]}</span>
+                  <span className="text-slate-300 truncate font-sans font-bold">{pillars[activePillarIdx] ?? ''}</span>
                 </div>
-                <span className="text-amber-400 font-bold ml-2 shrink-0">{livePillarData[activePillarIdx].score}%</span>
+                <span className="text-amber-400 font-bold ml-2 shrink-0">{livePillarData[activePillarIdx]?.score ?? 0}%</span>
               </div>
             </div>
 
@@ -914,7 +939,7 @@ export default function AssessmentEngine() {
               </div>
               <div className="bg-slate-900/50 border border-slate-800 rounded-lg p-3 backdrop-blur-sm flex justify-between items-center shadow-inner">
                 <span className="text-[10px] text-slate-400 font-mono tracking-wide uppercase">Current Pillar</span>
-                <span className="text-[11px] font-bold text-[#d4af37] text-right truncate max-w-[130px]" title={pillars[activePillarIdx]}>{pillars[activePillarIdx]}</span>
+                <span className="text-[11px] font-bold text-[#d4af37] text-right truncate max-w-[130px]" title={pillars[activePillarIdx] ?? ''}>{pillars[activePillarIdx] ?? ''}</span>
               </div>
               <div className="bg-slate-900/50 border border-slate-800 rounded-lg p-3 backdrop-blur-sm flex justify-between items-center shadow-inner">
                 <span className="text-[10px] text-slate-400 font-mono tracking-wide uppercase">Estimated Time Remaining</span>
