@@ -26,7 +26,7 @@ export const ExecutiveAdvisoryTab: React.FC<ExecutiveAdvisoryTabProps> = ({
   pillarScores,
   lowestPillar,
   handlePrintPDF,
-  setActiveTab
+  setActiveTab,
 }) => {
   const compName = formData.companyName || 'ABC Manufacturing Pvt. Ltd.';
   const ownerName = formData.fullName || 'Gajendra Kumar Sharma';

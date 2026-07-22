@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import PrintDossier from './PrintDossier';
 import {
   ShieldCheck, LayoutDashboard, BarChart3, TrendingUp, Cpu, Building2, Calendar, Download, PhoneCall,
   User, Factory, Users, Coins, CheckCircle2, AlertTriangle, ArrowUpRight, Activity, Target, AlertCircle, Clock, Award,
@@ -538,9 +539,13 @@ export default function DashboardReport({ formData = {}, scores = [], onResetAss
   const dynamicStrengths = getDynamicStrengths();
   const dynamicImprovements = getDynamicImprovements();
 
-  // Handles browser-based print to generate beautiful PDF files
+  // Handles instant browser-native PDF export via window.print without freezing UI thread
   const handlePrintPDF = () => {
-    window.print();
+    try {
+      window.print();
+    } catch (e) {
+      console.error('Print trigger error:', e);
+    }
   };
 
   return (
@@ -548,11 +553,11 @@ export default function DashboardReport({ formData = {}, scores = [], onResetAss
       {/* Dynamic CSS injecting high-impact print layout */}
       <style>{`
         @media print {
-          aside { display: none !important; }
-          main { padding: 0 !important; width: 100% !important; height: auto !important; overflow: visible !important; }
+          body { background: white !important; margin: 0 !important; padding: 0 !important; }
+          aside, main, nav, header, button { display: none !important; }
           .no-print { display: none !important; }
-          .print-full { width: 100% !important; max-width: 100% !important; }
-          .page-break { page-break-before: always; }
+          .print-dossier-root { display: block !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
+          @page { size: A4 portrait; margin: 0; }
         }
         /* Hide scrollbar for Chrome, Safari and Opera */
         .scrollbar-none::-webkit-scrollbar {
@@ -593,7 +598,7 @@ export default function DashboardReport({ formData = {}, scores = [], onResetAss
             {onResetAssessment && (
               <button
                 onClick={onResetAssessment}
-                className="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 flex items-center gap-2 px-4 py-2 rounded-lg shadow-sm hover:shadow transition-all duration-200 text-xs font-bold"
+                className="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 flex items-center gap-2 px-4 py-2 rounded-lg shadow-sm hover:shadow transition-all duration-200 text-xs font-bold cursor-pointer"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span>Reset & Retake</span>
@@ -601,9 +606,9 @@ export default function DashboardReport({ formData = {}, scores = [], onResetAss
             )}
             <button
               onClick={handlePrintPDF}
-              className="bg-[#0F172A] hover:bg-slate-800 text-white flex items-center gap-2 px-4 py-2 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 text-xs font-bold"
+              className="bg-[#0F172A] hover:bg-slate-800 text-white flex items-center gap-2 px-4 py-2 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 text-xs font-bold cursor-pointer"
             >
-              <Download className="w-3.5 h-3.5" />
+              <Download className="w-3.5 h-3.5 text-amber-400" />
               <span>Download PDF</span>
             </button>
           </div>
@@ -2710,9 +2715,9 @@ export default function DashboardReport({ formData = {}, scores = [], onResetAss
                 <p className="text-[10px] text-slate-500 leading-relaxed mb-4">Complete macro audit analysis and technical roadmap compiled into a PDF document.</p>
                 <button
                   onClick={handlePrintPDF}
-                  className="w-full bg-[#0F172A] hover:bg-slate-800 text-white font-extrabold text-[10px] uppercase tracking-wider py-2 rounded-lg transition-colors"
+                  className="w-full bg-[#0F172A] hover:bg-slate-800 text-white font-extrabold text-[10px] uppercase tracking-wider py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  Export PDF Report
+                  <span>Export PDF Report</span>
                 </button>
               </div>
 
@@ -3101,6 +3106,14 @@ export default function DashboardReport({ formData = {}, scores = [], onResetAss
         </div> {/* END OF GLOBAL TWO-COLUMN WORKSPACE */}
 
       </main>
+
+      {/* 20-PAGE EXECUTIVE PDF REPORT */}
+      <PrintDossier
+        formData={formData}
+        scores={scores}
+        globalScore={globalScore}
+        pillarScores={pillarScores}
+      />
     </div>
   );
 }

@@ -1,389 +1,943 @@
 import React from 'react';
-import { FileText, Activity, Layers, Target, Clock, CheckCircle, Award, Phone, Mail, ChevronRight, BarChart3, Globe, ShieldCheck } from 'lucide-react';
+import {
+  CheckCircle2, AlertTriangle, Check
+} from 'lucide-react';
 
-export default function PrintDossier({ formData, scores, globalScore, pillars, getPillarScore, getScoreColor, getScoreStatus, getScoreRating, getLowestPillar, assessmentDate, reportId }: any) {
-  const goal = formData.goal || 'scale operations';
-  const challenge = (formData.challenges && formData.challenges.length > 0) ? formData.challenges[0] : 'execution bottlenecks';
-  const industry = formData.industry || 'your sector';
-  const lowestPillar = getLowestPillar();
-  const companyName = formData.companyName || 'Confidential Client';
+export default function PrintDossier({
+  formData = {},
+  scores = [],
+  globalScore = 78,
+  pillarScores = [],
+  reportId = 'KRG-98421-B',
+  assessmentDate = ''
+}: {
+  formData?: any;
+  scores?: number[];
+  globalScore?: number;
+  pillarScores?: number[];
+  reportId?: string;
+  assessmentDate?: string;
+}) {
+  const companyName = formData.companyName || 'ABC Pvt. Ltd.';
+  const ownerName = formData.fullName || formData.ownerName || 'Mr. John Doe';
+  const industry = formData.industry || 'Manufacturing';
+  const revenue = formData.revenue || '₹3.2 Cr';
+  const employees = formData.employees || '32';
+  const businessAge = formData.businessAge || '6 Years';
+  const targetMarket = formData.targetMarket || 'B2B';
+  const businessModel = formData.businessModel || 'Product + Services';
+  const geography = formData.geography || 'Rajasthan, India';
+  const formattedDate = assessmentDate || new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  const docReportId = reportId || 'KRG-98421-B';
 
-  const Header = () => (
-    <div className="flex justify-between items-end border-b-2 border-[#D4AF37] pb-4 mb-8">
+  const pillarList = [
+    { name: 'Leadership & Vision', defaultScore: 76, benchmark: 62, top10: 88, priority: 'High', timeline: '0-30 Days' },
+    { name: 'Sales', defaultScore: 72, benchmark: 58, top10: 86, priority: 'High', timeline: '0-30 Days' },
+    { name: 'Marketing', defaultScore: 64, benchmark: 55, top10: 83, priority: 'High', timeline: '0-60 Days' },
+    { name: 'Operations', defaultScore: 70, benchmark: 60, top10: 85, priority: 'High', timeline: '0-60 Days' },
+    { name: 'Finance', defaultScore: 74, benchmark: 61, top10: 87, priority: 'Medium', timeline: '30-60 Days' },
+    { name: 'Technology', defaultScore: 62, benchmark: 52, top10: 81, priority: 'Medium', timeline: '30-90 Days' },
+    { name: 'People', defaultScore: 69, benchmark: 52, top10: 88, priority: 'Medium', timeline: '30-60 Days' },
+  ];
+
+  const pillars = pillarList.map((p, idx) => {
+    const score = (pillarScores && pillarScores[idx] !== undefined && pillarScores[idx] > 0) ? pillarScores[idx] : p.defaultScore;
+    return { ...p, score };
+  });
+
+  const getPageTitle = (page: number) => {
+    const titles: Record<number, string> = {
+      2: "Executive Summary",
+      3: "Company Snapshot",
+      4: "Overall Business Health",
+      5: "Pillar 1: Leadership & Vision",
+      6: "Pillar 2: Sales",
+      7: "Pillar 3: Marketing",
+      8: "Pillar 4: Operations",
+      9: "Pillar 5: Finance",
+      10: "Pillar 6: Technology",
+      11: "Pillar 7: People",
+      12: "Cross-Pillar Insights",
+      13: "Revenue Opportunity Analysis",
+      14: "Industry Benchmark",
+      15: "Business Risk Assessment",
+      16: "90-Day Growth Roadmap",
+      17: "Priority Action Matrix",
+      18: "AI Strategic Advisory",
+      19: "KPI Dashboard",
+      20: "Final Recommendation & Next Engagement"
+    };
+    return titles[page] || "Business Growth Diagnostic™ Report";
+  };
+
+  const Header = ({ page }: { page: number }) => (
+    <div className="flex justify-between items-center border-b-2 border-[#D4AF37] pb-2 mb-3 shrink-0">
+      <div className="flex items-center gap-2">
+        <div className="w-7 h-7 rounded-md bg-[#0A1128] border border-[#D4AF37] flex items-center justify-center font-black text-[#D4AF37] text-[10px] shadow-xs">
+          KRG
+        </div>
+        <div>
+          <h1 className="text-sm font-serif font-black text-[#0A1128] tracking-tight leading-none">
+            KRG <span className="text-[#D4AF37]">ONE</span>
+          </h1>
+          <p className="text-[7.5px] uppercase tracking-widest text-slate-500 font-extrabold">
+            Business Growth Consulting
+          </p>
+        </div>
+      </div>
+      <div className="text-right">
+        <h2 className="text-[11px] font-bold text-[#0A1128] uppercase tracking-wider">{getPageTitle(page)}</h2>
+        <p className="text-[7.5px] text-slate-400 font-mono">Business Growth Diagnostic™ Report</p>
+      </div>
+    </div>
+  );
+
+  const Footer = ({ page }: { page: number }) => (
+    <div className="flex justify-between items-center border-t border-slate-200 pt-2 mt-auto shrink-0 text-[8px] text-slate-400 font-mono">
       <div>
-        <h1 className="text-3xl font-serif font-bold text-[#0B2545] tracking-tight">KRG <span className="text-[#D4AF37]">ONE</span></h1>
-        <p className="text-xs uppercase tracking-widest text-slate-500 font-bold mt-1">Turning Knowledge into Revenue Growth</p>
+        <span className="font-bold text-[#0A1128]">CONFIDENTIAL</span> &bull; KRG ONE Business Growth Operating System™
       </div>
-      <div className="text-right text-[10px] text-slate-500 font-mono">
-        <p>Contact: 7300300330</p>
-        <p>enquiry.krgone@gmail.com</p>
-        <p>krgone.vercel.app</p>
-      </div>
-    </div>
-  );
-
-  const Footer = ({ page, total }: { page: number, total: number }) => (
-    <div className="fixed bottom-0 left-0 w-full flex justify-between items-end border-t border-slate-200 pt-4 mt-8 pb-4 px-8 bg-white z-50 text-[9px] text-slate-400">
-      <div className="max-w-md">
-        <p>KRG ONE, 10/B, GokulDham Apartment, Gokul Nagar, Kalwar Road, Opp. Power House, Jaipur, Rajasthan, India – 302012</p>
-      </div>
-      <div className="text-right flex flex-col items-end">
-        <p className="mb-1 uppercase tracking-wider font-bold">Confidential Document. Distribution prohibited without express written permission.</p>
-        <p className="font-mono bg-slate-100 px-2 py-1 rounded text-slate-600 font-bold">Page {page} of {total}</p>
-      </div>
-    </div>
-  );
-
-  const Watermark = () => (
-    <div className="fixed inset-0 pointer-events-none flex items-center justify-center z-[-1] opacity-[0.03]">
-      <div className="transform -rotate-45 text-8xl font-black text-slate-900 whitespace-nowrap tracking-tighter">
-        CONFIDENTIAL - KRG ONE
+      <div className="flex items-center gap-2">
+        <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-bold">Page {page} of 20</span>
       </div>
     </div>
   );
 
   const Page = ({ children, pageNumber }: { children: React.ReactNode, pageNumber: number }) => (
-    <div className="print-page w-full min-h-[297mm] bg-white p-12 relative overflow-hidden break-after-page flex flex-col justify-between" style={{ pageBreakAfter: 'always' }}>
-      <Watermark />
-      <div>
-        {pageNumber > 0 && <Header />}
+    <div
+      className="print-page w-[210mm] h-[297mm] min-h-[297mm] max-h-[297mm] bg-white p-6 relative overflow-hidden break-after-page flex flex-col justify-between box-border mx-auto"
+      style={{ pageBreakAfter: 'always', breakAfter: 'page' }}
+    >
+      {pageNumber > 1 && <Header page={pageNumber} />}
+      <div className="flex-1 flex flex-col justify-between overflow-hidden my-auto py-1">
         {children}
       </div>
-      {pageNumber > 0 && <Footer page={pageNumber} total={5} />}
+      {pageNumber > 1 && <Footer page={pageNumber} />}
     </div>
   );
 
-  return (
-    <div className="hidden print:block w-full bg-white text-slate-900 font-sans">
-      <style dangerouslySetInnerHTML={{__html: `
-        @media print {
-          @page { size: A4; margin: 0; }
-          body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: white; }
-          .hide-scrollbar { overflow: visible !important; }
-        }
-      `}} />
+  const renderPillarPage = (pillarIndex: number, pageNumber: number) => {
+    const pillar = pillars[pillarIndex];
+    const pName = pillar.name;
+    const pScore = pillar.score;
+    const benchmark = pillar.benchmark;
+    const top10 = pillar.top10;
 
-      {/* COVER PAGE */}
-      <Page pageNumber={0}>
-        <div className="flex flex-col items-center justify-center min-h-[250mm] text-center border-8 border-[#0B2545] p-12 relative">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 blur-[80px] rounded-full"></div>
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#0B2545]/10 blur-[80px] rounded-full"></div>
-          
-          <h1 className="text-6xl font-serif font-black text-[#0B2545] tracking-tight mb-4">KRG <span className="text-[#D4AF37]">ONE</span></h1>
-          <p className="text-sm uppercase tracking-[0.3em] text-slate-500 font-bold mb-16">Turning Knowledge into Revenue Growth</p>
-          
-          <h2 className="text-4xl font-bold text-slate-900 mb-6 uppercase tracking-wider">Executive Business Snapshot™</h2>
-          <p className="text-xl text-[#D4AF37] italic font-serif mb-24">Your Personalized Business Growth Intelligence Report</p>
-          
-          <div className="w-full max-w-lg bg-[#F8FAFC] border border-slate-200 p-8 rounded-2xl text-left shadow-lg relative z-10">
-            <h3 className="text-[10px] uppercase tracking-widest font-bold text-slate-400 mb-6 border-b border-slate-200 pb-2">Diagnostic Metadata</h3>
-            <div className="space-y-4">
-              <div className="flex justify-between border-b border-slate-100 pb-2">
-                <span className="text-xs font-bold text-slate-500 uppercase">Prepared For</span>
-                <span className="text-sm font-bold text-[#0B2545]">{companyName}</span>
+    const situationalText: Record<number, string> = {
+      0: "Clear vision and strong leadership drive business direction, but systemization and delegation frameworks require immediate structure.",
+      1: "Good sales team with strong relationships, but sales processes are not fully standardized, leading to conversion leaks.",
+      2: "Low digital presence and reliance on referrals make lead acquisition unpredictable across quarter cycles.",
+      3: "Operations are functional but not fully standardized or documented, causing delivery bottlenecks during volume surges.",
+      4: "Basic financial controls in place with stable gross margins, but cash flow forecasting and budgeting require higher visibility.",
+      5: "Limited use of modern automation tools; software systems are disconnected and rely heavily on manual entry.",
+      6: "Good team stability and culture, but capability building, performance management, and role clarity need formal frameworks."
+    };
+
+    const strengthsList: Record<number, string[]> = {
+      0: ["Strong Leadership Vision & Direction", "Founder Commitment & Drive"],
+      1: ["Strong Existing Client Relationships", "High Product Trust & Repeat Inquiries"],
+      2: ["Strong Word-of-Mouth Brand Reputation", "Existing Loyal Customer Base"],
+      3: ["High Product Quality & Delivery Integrity", "Timely Order Execution"],
+      4: ["Strict Cost Control Mechanics", "Profitable Base Operations"],
+      5: ["Basic Functional Systems in Place", "Receptive to Digital Tools"],
+      6: ["Loyal & Experienced Core Staff", "Low Employee Attrition"]
+    };
+
+    const weaknessesList: Record<number, string[]> = {
+      0: ["High Founder Oversight Dependency", "Limited Delegation Infrastructure"],
+      1: ["Inconsistent Sales Follow-up Process", "Low CRM Adoption & Pipeline Tracking"],
+      2: ["Underdeveloped Digital Lead Generation", "Lack of Structured Marketing Strategy"],
+      3: ["Unwritten SOPs & Process Knowledge", "Capacity Planning Bottlenecks"],
+      4: ["Informal Financial Reporting", "Irregular Cash Flow Forecasting"],
+      5: ["Manual Data Entry Between Systems", "Lack of Automated Workflows"],
+      6: ["Informal Performance Management", "Lack of Structured Training Frameworks"]
+    };
+
+    const businessImpact: Record<number, string> = {
+      0: "Limits decision speed and restricts growth to personal founder bandwidth.",
+      1: "Leads not converted efficiently, resulting in lost revenue opportunities.",
+      2: "Restricts business expansion and makes revenue growth unpredictable.",
+      3: "Inconsistent delivery timelines and operational scaling friction.",
+      4: "Restricts cash flow visibility and delays strategic capital allocation.",
+      5: "Low team productivity and higher administrative manual effort.",
+      6: "Limits overall execution bandwidth and future leadership pipeline."
+    };
+
+    const aiObservation: Record<number, string> = {
+      0: "Leadership quality is a key strength. Build delegation systems to scale.",
+      1: "Standardize the sales process and adopt CRM tracking to boost conversion.",
+      2: "Invest in digital presence and inbound lead engines for steady pipelines.",
+      3: "Document core SOPs and improve workflow planning systems.",
+      4: "Implement formal financial reporting and rolling cash flow forecasts.",
+      5: "Adopt modern cloud tools and workflow automation to boost speed.",
+      6: "Build clear performance metrics and invest in continuous training."
+    };
+
+    return (
+      <Page pageNumber={pageNumber}>
+        <div className="space-y-3.5">
+          <div className="bg-[#0A1128] text-white rounded-xl p-4 flex justify-between items-center border border-[#D4AF37]/40">
+            <div>
+              <span className="text-[10px] text-[#D4AF37] font-bold uppercase tracking-widest">{pName} Assessment</span>
+              <div className="text-3xl font-black text-[#D4AF37] mt-0.5">{pScore} <span className="text-xs font-normal text-slate-300">/ 100</span></div>
+            </div>
+            <div className="text-right space-y-1">
+              <span className="text-[10px] text-slate-300 block">Industry Avg: <strong className="text-white">{benchmark}%</strong></span>
+              <span className="text-[10px] text-[#D4AF37] block font-bold">Top 10%: {top10}%</span>
+            </div>
+          </div>
+
+          <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-1">
+            <h3 className="text-xs font-bold text-[#0A1128] uppercase tracking-wider">Current Situation Analysis</h3>
+            <p className="text-xs text-slate-700 leading-relaxed">{situationalText[pillarIndex] || "Systems functional but require documentation."}</p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-emerald-50/70 border border-emerald-200 rounded-xl p-3.5">
+              <h4 className="text-xs font-bold text-emerald-900 uppercase tracking-wider mb-2 flex items-center gap-1">
+                <Check className="w-3.5 h-3.5 text-emerald-600" /> Core Strengths
+              </h4>
+              <ul className="text-xs text-slate-700 space-y-1 font-medium">
+                {(strengthsList[pillarIndex] || ["Strong Foundation", "Quality Focus"]).map((st, i) => (
+                  <li key={i} className="flex items-center gap-1.5">&bull; {st}</li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="bg-rose-50/70 border border-rose-200 rounded-xl p-3.5">
+              <h4 className="text-xs font-bold text-rose-900 uppercase tracking-wider mb-2 flex items-center gap-1">
+                <AlertTriangle className="w-3.5 h-3.5 text-rose-600" /> Key Weaknesses
+              </h4>
+              <ul className="text-xs text-slate-700 space-y-1 font-medium">
+                {(weaknessesList[pillarIndex] || ["Lack of SOPs", "Manual Friction"]).map((wk, i) => (
+                  <li key={i} className="flex items-center gap-1.5">&bull; {wk}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-white border border-slate-200 rounded-xl p-3.5">
+              <h4 className="text-[10px] uppercase font-bold text-slate-400 block mb-1">Business Impact</h4>
+              <p className="text-xs text-slate-700 font-medium leading-relaxed">{businessImpact[pillarIndex]}</p>
+            </div>
+            <div className="bg-white border border-slate-200 rounded-xl p-3.5">
+              <h4 className="text-[10px] uppercase font-bold text-slate-400 block mb-1">AI Strategic Advisory</h4>
+              <p className="text-xs text-[#0A1128] font-semibold leading-relaxed">{aiObservation[pillarIndex]}</p>
+            </div>
+          </div>
+
+          <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 flex justify-between items-center text-xs">
+            <div>
+              <span className="text-slate-400 font-bold uppercase text-[9px] block">Strategic Priority</span>
+              <span className="font-bold text-rose-600 uppercase">{pillar.priority} Priority</span>
+            </div>
+            <div>
+              <span className="text-slate-400 font-bold uppercase text-[9px] block">Execution Timeline</span>
+              <span className="font-bold text-[#0A1128]">{pillar.timeline}</span>
+            </div>
+          </div>
+        </div>
+      </Page>
+    );
+  };
+
+  return (
+    <div id="krg-print-dossier-root" className="hidden print:block print-dossier-root w-full bg-white text-slate-900 font-sans">
+      {/* Page 1: Cover Page */}
+      <Page pageNumber={1}>
+        <div className="flex flex-col justify-between h-full border-4 border-[#0A1128] p-7 relative bg-white">
+          <div className="flex justify-between items-start border-b border-slate-200 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#0A1128] border border-[#D4AF37] flex items-center justify-center font-black text-[#D4AF37] text-sm shadow-md">
+                KRG
               </div>
-              <div className="flex justify-between border-b border-slate-100 pb-2">
-                <span className="text-xs font-bold text-slate-500 uppercase">Owner / Leader</span>
-                <span className="text-sm font-bold text-[#0B2545]">{formData.fullName || 'Not Provided'}</span>
+              <div>
+                <h1 className="text-2xl font-serif font-black text-[#0A1128] tracking-tight">
+                  KRG <span className="text-[#D4AF37]">ONE</span>
+                </h1>
+                <p className="text-[10px] uppercase tracking-[0.25em] text-slate-500 font-extrabold">
+                  Business Growth Consulting
+                </p>
               </div>
-              <div className="flex justify-between border-b border-slate-100 pb-2">
+            </div>
+            <span className="bg-[#0A1128] text-[#D4AF37] text-[9px] font-bold uppercase tracking-widest px-3 py-1.5 rounded border border-[#D4AF37]/30">
+              Confidential Report
+            </span>
+          </div>
+
+          <div className="my-auto py-6 text-center space-y-6">
+            <div className="inline-block bg-[#0A1128] text-white px-8 py-6 rounded-2xl border-2 border-[#D4AF37] shadow-xl w-full max-w-lg mx-auto">
+              <h2 className="text-2xl font-black text-[#D4AF37] uppercase tracking-wider mb-2 font-sans">
+                Business Growth Diagnostic™ Report
+              </h2>
+              <p className="text-xs text-slate-300 font-medium tracking-wide">
+                Professional PDF Report & Operational Assessment
+              </p>
+            </div>
+
+            <div className="max-w-md mx-auto bg-slate-50 border border-slate-200 rounded-xl p-5 text-left space-y-3 shadow-xs">
+              <div className="flex justify-between items-center border-b border-slate-200 pb-2">
+                <span className="text-xs font-bold text-slate-500 uppercase">Organization</span>
+                <span className="text-sm font-black text-[#0A1128]">{companyName}</span>
+              </div>
+              <div className="flex justify-between items-center border-b border-slate-200 pb-2">
                 <span className="text-xs font-bold text-slate-500 uppercase">Industry Sector</span>
-                <span className="text-sm font-bold text-[#0B2545]">{industry}</span>
+                <span className="text-sm font-bold text-[#0A1128]">{industry}</span>
               </div>
-              <div className="flex justify-between border-b border-slate-100 pb-2">
+              <div className="flex justify-between items-center border-b border-slate-200 pb-2">
                 <span className="text-xs font-bold text-slate-500 uppercase">Assessment Date</span>
-                <span className="text-sm font-bold text-[#0B2545]">{assessmentDate}</span>
+                <span className="text-sm font-bold text-[#0A1128]">{formattedDate}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-xs font-bold text-slate-500 uppercase">Report ID</span>
-                <span className="text-xs font-mono text-slate-500">{reportId}</span>
+              <div className="flex justify-between items-center border-b border-slate-200 pb-2">
+                <span className="text-xs font-bold text-slate-500 uppercase">Prepared For</span>
+                <span className="text-sm font-bold text-[#0A1128]">{ownerName}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-xs font-bold text-slate-500 uppercase">Report Identifier</span>
+                <span className="text-xs font-mono font-bold text-slate-600">{docReportId}</span>
               </div>
             </div>
           </div>
-          
-          <div className="mt-24 text-[10px] uppercase tracking-widest font-black text-red-600 bg-red-50 border border-red-200 px-6 py-2 rounded">
-            Strictly Confidential Report
+
+          <div className="border-t border-slate-200 pt-3 flex justify-between items-center text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+            <span>Business Growth Operating System™</span>
+            <span className="text-[#0A1128] font-black">KRG ONE &bull; Jaipur, India</span>
           </div>
         </div>
       </Page>
 
-      {/* PAGE 1: EXECUTIVE OVERVIEW */}
-      <Page pageNumber={1}>
-        <h2 className="text-2xl font-bold text-[#0B2545] border-b border-slate-200 pb-2 mb-6">Page 1: Executive Overview™</h2>
-        
-        <div className="grid grid-cols-2 gap-8 mb-8">
-          <div className="bg-slate-50 p-6 rounded-xl border border-slate-200">
-             <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Business Profile</h3>
-             <div className="space-y-3">
-                <div><span className="text-[10px] uppercase text-slate-400 block">Company Name</span><span className="text-sm font-bold">{companyName}</span></div>
-                <div><span className="text-[10px] uppercase text-slate-400 block">Annual Revenue</span><span className="text-sm font-bold">{formData.revenue || 'Not Provided'}</span></div>
-                <div><span className="text-[10px] uppercase text-slate-400 block">Business Goal</span><span className="text-sm font-bold text-emerald-700">{goal}</span></div>
-                <div>
-                   <span className="text-[10px] uppercase text-slate-400 block mb-1">Identified Challenges</span>
-                   <div className="flex flex-wrap gap-1">
-                      {formData.challenges && formData.challenges.length > 0 ? formData.challenges.map((ch: string, i: number) => <span key={i} className="bg-red-50 text-red-700 px-2 py-0.5 rounded text-[10px] font-bold border border-red-100">{ch}</span>) : <span className="bg-red-50 text-red-700 px-2 py-0.5 rounded text-[10px] font-bold">Leadership Dependency</span>}
-                   </div>
-                </div>
-             </div>
-          </div>
-          
-          <div className="bg-[#0B2545] text-white p-6 rounded-xl flex flex-col items-center justify-center relative overflow-hidden">
-             <div className="absolute top-0 right-0 w-32 h-32 bg-[#D4AF37]/20 blur-[40px] rounded-full"></div>
-             <h3 className="text-[10px] font-bold text-slate-300 uppercase tracking-widest mb-4 z-10">Overall Business Growth Score™</h3>
-             <div className="text-7xl font-black text-[#D4AF37] mb-2 z-10">{globalScore}</div>
-             <div className="flex gap-4 mt-4 z-10">
-                <div className="text-center"><span className="block text-[9px] uppercase text-slate-400">Rating</span><span className="text-lg font-bold">{getScoreRating(globalScore)}</span></div>
-                <div className="text-center"><span className="block text-[9px] uppercase text-slate-400">Status</span><span className="text-sm font-bold px-2 py-1 bg-white/10 rounded mt-1 block" style={{color: getScoreColor(globalScore)}}>{getScoreStatus(globalScore)}</span></div>
-             </div>
-          </div>
-        </div>
-
-        <div className="bg-white border border-slate-200 rounded-xl p-8 shadow-sm">
-           <h3 className="text-sm font-bold text-[#0B2545] uppercase tracking-widest mb-4 flex items-center gap-2">
-              <FileText className="w-4 h-4 text-[#D4AF37]" /> Executive Business Summary™
-           </h3>
-           <div className="prose prose-sm max-w-none text-slate-700 space-y-4">
-              <p>
-                 Based on the KRG ONE Business Growth Assessment™, <strong>{companyName}</strong> currently operates with an overall Growth Score of <strong>{globalScore}/100</strong>, indicating a <strong>{getScoreStatus(globalScore).toLowerCase()}</strong> state of operational readiness and market positioning in the {industry} sector.
-              </p>
-              <p>
-                 <strong>Core Dynamic Observation:</strong> While foundational market demand exists within {industry}, current analytical models indicate that inconsistent systems in <strong>{lowestPillar}</strong> are actively generating structural friction. Prior to aggressively pursuing your objective to {goal.toLowerCase()}, you must immediately resolve these <strong>{lowestPillar}</strong> vulnerabilities. Failure to do so will directly amplify your current {challenge.toLowerCase()} and erode enterprise margins.
-              </p>
-              {globalScore >= 80 ? (
-                 <>
-                     <p><strong>Strategic Positioning:</strong> Your enterprise exhibits exceptional operational maturity, strong internal systems, and minimal owner dependency. You have successfully cleared the standard growth bottlenecks that crush most MSMEs.</p>
-                     <p><strong>Immediate Priority:</strong> Do not play defensive. Your core objective now is aggressive market expansion, capital optimization, and leveraging your structured framework to dominate your sector.</p>
-                 </>
-              ) : globalScore >= 50 ? (
-                 <>
-                     <p><strong>Core Scaling Bottleneck:</strong> The enterprise has solid baseline mechanics but suffers from critical dependencies on the owner for key day-to-day decisions, creating an active execution ceiling.</p>
-                     <p><strong>Immediate Priority:</strong> Transition from reactive firefighting to formal systems engineering by standardizing core operations.</p>
-                 </>
-              ) : (
-                 <>
-                     <p><strong>Enterprise Vulnerability Alert:</strong> The diagnostic reveals severe structural deficiencies across multiple core pillars. The enterprise is highly exposed to severe operational leakage, cash-flow volatility, and systemic risk due to an absolute lack of documented processes.</p>
-                     <p><strong>Immediate Priority:</strong> Urgent stabilization is required. You must immediately isolate your highest profit leakage zones and deploy emergency workflow controls.</p>
-                 </>
-              )}
-           </div>
-           
-           <div className="bg-[#F8FAFC] border-l-4 border-[#D4AF37] p-4 rounded-r-lg mt-6">
-              <strong className="text-[#0B2545] text-xs uppercase tracking-widest block mb-1">Executive Recommendation</strong>
-              {globalScore >= 80 ? (
-                  <p className="text-sm m-0 text-slate-700">How KRG ONE Accelerates You: We help high-performing firms design advanced scaling blueprints, execute strategic market entries, and multiply valuation metrics to prepare for enterprise-level dominance.</p>
-              ) : globalScore >= 50 ? (
-                  <p className="text-sm m-0 text-slate-700">How KRG ONE Supports You: We deploy functional process optimization tracks to remove structural drag and stabilize growth metrics.</p>
-              ) : (
-                  <p className="text-sm m-0 text-slate-700">How KRG ONE Saves Your Margins: This is a high-alert scenario. Our senior turnaround consultants work directly with you to plug immediate operational leaks, secure your cash pipelines, and build emergency checklists to keep your business alive and stable.</p>
-              )}
-           </div>
-        </div>
-      </Page>
-
-      {/* PAGE 2: BUSINESS HEALTH DASHBOARD */}
+      {/* Page 2: Executive Summary */}
       <Page pageNumber={2}>
-        <h2 className="text-2xl font-bold text-[#0B2545] border-b border-slate-200 pb-2 mb-6">Page 2: Business Health Dashboard™</h2>
-        
-        <div className="grid grid-cols-2 gap-8">
-           <div className="space-y-6">
-              <h3 className="text-sm font-bold text-slate-700 uppercase tracking-widest border-b border-slate-100 pb-2">7-Pillar Scorecard</h3>
-              {pillars.map((pillar: string, idx: number) => {
-                 const score = getPillarScore(idx);
-                 const status = getScoreStatus(score);
-                 const color = getScoreColor(score);
-                 return (
-                    <div key={idx} className="flex justify-between items-center border-b border-slate-100 pb-3">
-                       <span className="text-sm font-bold text-slate-800 w-1/2">{pillar}</span>
-                       <div className="w-1/4">
-                          <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
-                             <div className="h-full rounded-full" style={{width: `${score}%`, backgroundColor: color}}></div>
-                          </div>
-                       </div>
-                       <span className="text-xs font-bold w-1/4 text-right" style={{color}}>{score}/100</span>
-                    </div>
-                 );
-              })}
-           </div>
-           <div className="space-y-6">
-              <h3 className="text-sm font-bold text-slate-700 uppercase tracking-widest border-b border-slate-100 pb-2">Strengths & Priorities</h3>
-              
-              <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-5 mb-4">
-                 <h4 className="text-[10px] uppercase font-bold text-emerald-800 mb-3 tracking-widest">Core Strengths</h4>
-                 {(() => {
-                    const strengths = pillars.map((p: string, i: number) => ({name: p, score: getPillarScore(i)})).filter((s: any) => s.score >= 85).sort((a: any, b: any) => b.score - a.score);
-                    return strengths.length > 0 ? strengths.map((s: any, idx: number) => (
-                        <div key={idx} className="flex justify-between text-sm mb-2">
-                           <span className="font-medium text-emerald-900">{s.name}</span>
-                           <span className="font-bold text-emerald-700">{s.score}%</span>
-                        </div>
-                    )) : <div className="text-xs font-bold text-slate-400 italic">No pillars currently operating at an elite level.</div>;
-                 })()}
-              </div>
-              
-              <div className="bg-red-50 border border-red-100 rounded-xl p-5">
-                 <h4 className="text-[10px] uppercase font-bold text-red-800 mb-3 tracking-widest">Priority Improvement Areas</h4>
-                 {(() => {
-                    const weaknesses = pillars.map((p: string, i: number) => ({name: p, score: getPillarScore(i)})).filter((s: any) => s.score < 70).sort((a: any, b: any) => a.score - b.score);
-                    return weaknesses.length > 0 ? weaknesses.map((s: any, idx: number) => (
-                        <div key={idx} className="flex justify-between text-sm mb-2">
-                           <span className="font-medium text-red-900">{s.name}</span>
-                           <span className="font-bold text-red-700">{s.score}%</span>
-                        </div>
-                    )) : <div className="text-xs font-bold text-slate-400 italic">Core foundations are structurally secure.</div>;
-                 })()}
-              </div>
-           </div>
-        </div>
-      </Page>
+        <div className="space-y-4">
+          <div className="grid grid-cols-12 gap-3 items-stretch">
+            <div className="col-span-4 bg-[#0A1128] text-white rounded-xl p-4 border border-[#D4AF37]/40 flex flex-col items-center justify-center text-center shadow-xs">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-slate-300 mb-1">Business Health Score</span>
+              <div className="text-5xl font-black text-[#D4AF37] my-1">{globalScore}<span className="text-xl text-slate-400 font-normal">/100</span></div>
+              <span className="text-[10px] font-bold px-2.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 uppercase mt-1">
+                {globalScore >= 75 ? 'Growth Ready' : globalScore >= 60 ? 'Scaling Ready' : 'Turnaround Needed'}
+              </span>
+            </div>
 
-      {/* PAGE 3: KRG ONE AI GROWTH ADVISORY */}
-      <Page pageNumber={3}>
-        <h2 className="text-2xl font-bold text-[#0B2545] border-b border-slate-200 pb-2 mb-6">Page 3: KRG ONE AI Growth Advisory™</h2>
-        <div className="space-y-8">
-           <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-              <h3 className="text-sm font-bold text-[#0B2545] uppercase tracking-widest mb-4">Strategic Revenue Optimization Opportunities</h3>
-              <p className="text-sm text-slate-700 leading-relaxed mb-4">
-                 Based on the correlation between your <strong>{lowestPillar}</strong> deficit and your goal to <strong>{goal}</strong>, our analytical models identify significant latent revenue trapped within current workflows.
-              </p>
-              <ul className="space-y-3 text-sm text-slate-700 list-disc pl-5">
-                 <li><strong>Standardization Multiplier:</strong> Documenting the top 20% of repetitive tasks in {lowestPillar} can yield an immediate 15-25% recovery in weekly leadership time, which must be reallocated directly to high-margin sales activities.</li>
-                 <li><strong>Client Acquisition Drag:</strong> Your current challenges with {challenge.toLowerCase()} are directly exacerbated by operational friction. Smooth delivery creates a compounding referral engine.</li>
-                 <li><strong>Owner Depedency Tax:</strong> The business is currently capped by your personal bandwidth. Without institutional systems, hiring more headcount will only increase chaos, not throughput.</li>
+            <div className="col-span-8 grid grid-cols-3 gap-2.5">
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 flex flex-col justify-center">
+                <span className="text-[9px] uppercase font-bold text-slate-400 block mb-1">Revenue Opportunity</span>
+                <span className="text-base font-black text-[#0A1128]">₹2.4 Cr</span>
+                <span className="text-[8.5px] text-emerald-600 font-semibold mt-0.5">12-18 Mo Potential</span>
+              </div>
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 flex flex-col justify-center">
+                <span className="text-[9px] uppercase font-bold text-slate-400 block mb-1">Growth Potential</span>
+                <span className="text-base font-black text-emerald-600">High</span>
+                <span className="text-[8.5px] text-slate-500 font-medium mt-0.5">Strong Demand</span>
+              </div>
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 flex flex-col justify-center">
+                <span className="text-[9px] uppercase font-bold text-slate-400 block mb-1">Risk Level</span>
+                <span className="text-base font-black text-amber-600">Medium</span>
+                <span className="text-[8.5px] text-slate-500 font-medium mt-0.5">Manageable</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-3.5">
+              <h3 className="text-xs font-bold text-emerald-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" /> Top 3 Strengths
+              </h3>
+              <ul className="text-xs text-slate-700 space-y-1.5 font-medium">
+                <li className="flex items-center gap-1.5">&bull; Strong Revenue Growth Track Record</li>
+                <li className="flex items-center gap-1.5">&bull; High Customer Retention & Trust</li>
+                <li className="flex items-center gap-1.5">&bull; Superior Product & Service Quality</li>
               </ul>
-           </div>
-           
-           <div>
-              <h3 className="text-sm font-bold text-[#0B2545] uppercase tracking-widest mb-4">Enterprise Business Risks Priority Matrix</h3>
-              <table className="w-full text-left text-sm border-collapse">
-                 <thead>
-                    <tr className="bg-slate-50 border-b border-slate-200">
-                       <th className="py-3 px-4 font-bold text-slate-600 uppercase text-[10px] tracking-widest">Risk Factor</th>
-                       <th className="py-3 px-4 font-bold text-slate-600 uppercase text-[10px] tracking-widest">Severity</th>
-                       <th className="py-3 px-4 font-bold text-slate-600 uppercase text-[10px] tracking-widest">Impact Horizon</th>
-                    </tr>
-                 </thead>
-                 <tbody>
-                    <tr className="border-b border-slate-100">
-                       <td className="py-3 px-4 font-medium text-slate-800">Key Person Dependency (Owner)</td>
-                       <td className="py-3 px-4"><span className="text-red-700 font-bold bg-red-50 px-2 py-1 rounded text-xs">High</span></td>
-                       <td className="py-3 px-4 text-slate-600">Immediate</td>
-                    </tr>
-                    <tr className="border-b border-slate-100">
-                       <td className="py-3 px-4 font-medium text-slate-800">Inconsistent Service/Product Quality</td>
-                       <td className="py-3 px-4"><span className="text-orange-700 font-bold bg-orange-50 px-2 py-1 rounded text-xs">Medium-High</span></td>
-                       <td className="py-3 px-4 text-slate-600">30-60 Days</td>
-                    </tr>
-                    <tr className="border-b border-slate-100">
-                       <td className="py-3 px-4 font-medium text-slate-800">Margin Erosion via Operational Waste</td>
-                       <td className="py-3 px-4"><span className="text-red-700 font-bold bg-red-50 px-2 py-1 rounded text-xs">High</span></td>
-                       <td className="py-3 px-4 text-slate-600">Immediate</td>
-                    </tr>
-                 </tbody>
-              </table>
-           </div>
+            </div>
+
+            <div className="bg-rose-50/70 border border-rose-200/80 rounded-xl p-3.5">
+              <h3 className="text-xs font-bold text-rose-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                <AlertTriangle className="w-4 h-4 text-rose-600" /> Top 3 Risks
+              </h3>
+              <ul className="text-xs text-slate-700 space-y-1.5 font-medium">
+                <li className="flex items-center gap-1.5">&bull; Sales Conversion Bottlenecks</li>
+                <li className="flex items-center gap-1.5">&bull; Founder Operational Dependency</li>
+                <li className="flex items-center gap-1.5">&bull; Underutilized Digital Marketing Engine</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-1.5">
+            <h3 className="text-xs font-bold text-[#0A1128] uppercase tracking-wider">Overall Strategic Opinion</h3>
+            <p className="text-xs text-slate-700 leading-relaxed font-normal">
+              <strong>{companyName}</strong> shows strong growth momentum with significant opportunities to improve systems and scale profitably. Operating in the <strong>{industry}</strong> vertical, your baseline quality and market trust position you well for national expansion.
+            </p>
+            <p className="text-xs text-slate-700 leading-relaxed font-normal">
+              However, operational dependencies on key individuals create friction that caps scaling throughput. By implementing standardized SOPs and an automated sales pipeline, you can decouple growth from personal bandwidth.
+            </p>
+          </div>
+
+          <div className="bg-[#0A1128] text-white rounded-xl p-3.5 border border-[#D4AF37]/50 flex items-center justify-between">
+            <div>
+              <span className="text-[9px] text-[#D4AF37] font-bold uppercase tracking-widest block">Immediate Priority Focus</span>
+              <p className="text-xs font-bold text-white mt-0.5">Improve Sales System & Operational Efficiency (Days 1–30 Sprints)</p>
+            </div>
+            <span className="px-3 py-1 bg-[#D4AF37] text-[#0A1128] text-[10px] font-black uppercase rounded shadow-xs">
+              High Priority
+            </span>
+          </div>
         </div>
       </Page>
 
-      {/* PAGE 4: 90-DAY BUSINESS GROWTH ROADMAP */}
+      {/* Page 3: Company Snapshot */}
+      <Page pageNumber={3}>
+        <div className="space-y-4">
+          <div className="border border-slate-200 rounded-xl overflow-hidden shadow-xs">
+            <div className="bg-[#0A1128] text-white px-4 py-2 flex justify-between items-center">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-[#D4AF37]">Organization Snapshot Matrix</h3>
+              <span className="text-[10px] text-slate-300 font-mono">Confidential Profile</span>
+            </div>
+            <div className="p-4 bg-slate-50 grid grid-cols-2 gap-3.5">
+              <div className="flex justify-between items-center border-b border-slate-200 pb-2">
+                <span className="text-xs text-slate-500 font-bold">Industry Sector</span>
+                <span className="text-xs font-bold text-[#0A1128]">{industry}</span>
+              </div>
+              <div className="flex justify-between items-center border-b border-slate-200 pb-2">
+                <span className="text-xs text-slate-500 font-bold">Annual Revenue</span>
+                <span className="text-xs font-bold text-[#0A1128]">{revenue}</span>
+              </div>
+              <div className="flex justify-between items-center border-b border-slate-200 pb-2">
+                <span className="text-xs text-slate-500 font-bold">Total Workforce</span>
+                <span className="text-xs font-bold text-[#0A1128]">{employees} Staff Members</span>
+              </div>
+              <div className="flex justify-between items-center border-b border-slate-200 pb-2">
+                <span className="text-xs text-slate-500 font-bold">Business Operating Age</span>
+                <span className="text-xs font-bold text-[#0A1128]">{businessAge}</span>
+              </div>
+              <div className="flex justify-between items-center border-b border-slate-200 pb-2">
+                <span className="text-xs text-slate-500 font-bold">Target Market Segment</span>
+                <span className="text-xs font-bold text-[#0A1128]">{targetMarket}</span>
+              </div>
+              <div className="flex justify-between items-center border-b border-slate-200 pb-2">
+                <span className="text-xs text-slate-500 font-bold">Primary Business Model</span>
+                <span className="text-xs font-bold text-[#0A1128]">{businessModel}</span>
+              </div>
+              <div className="flex justify-between items-center col-span-2 pt-0.5">
+                <span className="text-xs text-slate-500 font-bold">Geographic Footprint</span>
+                <span className="text-xs font-bold text-[#0A1128]">{geography}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-1.5">
+            <h3 className="text-xs font-bold text-[#0A1128] uppercase tracking-wider">Business Context & Operating Profile</h3>
+            <p className="text-xs text-slate-700 leading-relaxed font-normal">
+              Mid-sized {industry.toLowerCase()} enterprise with strong product demand in regional markets looking to scale nationally. The leadership team demonstrates deep domain expertise, but operational workflows require systematic documentation to support team delegation and higher deal volumes.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3.5">
+            <div className="bg-amber-50/60 border border-amber-200/80 rounded-xl p-3.5">
+              <h4 className="text-xs font-bold text-amber-900 uppercase tracking-wider mb-2">Key Growth Objectives</h4>
+              <div className="flex flex-wrap gap-1.5">
+                {(formData.goals && formData.goals.length > 0 ? formData.goals : ["Scale Operations", "Increase Market Share", "Automate Workflows"]).map((goal: string, idx: number) => (
+                  <span key={idx} className="bg-white text-amber-900 border border-amber-300 text-[10px] font-bold px-2 py-0.5 rounded shadow-xs">
+                    {goal}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-rose-50/60 border border-rose-200/80 rounded-xl p-3.5">
+              <h4 className="text-xs font-bold text-rose-900 uppercase tracking-wider mb-2">Primary Identified Challenges</h4>
+              <div className="flex flex-wrap gap-1.5">
+                {(formData.challenges && formData.challenges.length > 0 ? formData.challenges : ["High Operational Costs", "Founder Dependency", "Sales Conversion"]).map((ch: string, idx: number) => (
+                  <span key={idx} className="bg-white text-rose-900 border border-rose-300 text-[10px] font-bold px-2 py-0.5 rounded shadow-xs">
+                    {ch}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </Page>
+
+      {/* Page 4: Overall Business Health */}
       <Page pageNumber={4}>
-        <h2 className="text-2xl font-bold text-[#0B2545] border-b border-slate-200 pb-2 mb-6">Page 4: 90-Day Business Growth Roadmap™</h2>
-        <div className="space-y-6">
-           
-           <div className="border-l-2 border-[#D4AF37] pl-6 relative">
-              <div className="absolute w-3 h-3 bg-[#D4AF37] rounded-full -left-[7px] top-1"></div>
-              <h3 className="text-lg font-bold text-[#0B2545] mb-2">Phase 1: Immediate Risk Mitigation (Days 1–30)</h3>
-              <p className="text-sm text-slate-600 mb-4">Focus entirely on plugging margin leaks and establishing basic control systems to buy back the owner's time.</p>
-              <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                 <h4 className="text-[10px] uppercase font-bold text-slate-500 tracking-widest mb-2">Success Indicators</h4>
-                 <ul className="text-sm text-slate-800 font-medium space-y-1">
-                    <li>✓ Identify Top 3 process bottlenecks in {lowestPillar}.</li>
-                    <li>✓ Draft and deploy 5 critical Standard Operating Procedures (SOPs).</li>
-                    <li>✓ Establish a daily 15-minute leadership sync.</li>
-                 </ul>
-              </div>
-           </div>
+        <div className="space-y-4">
+          <div className="bg-[#0A1128] text-white rounded-xl p-4 flex justify-between items-center border border-[#D4AF37]/40">
+            <div>
+              <span className="text-[10px] uppercase font-bold text-[#D4AF37]">Overall Business Health Score</span>
+              <h3 className="text-2xl font-black text-white mt-0.5">{globalScore} / 100 <span className="text-xs font-normal text-emerald-400 ml-2">(Above Average)</span></h3>
+            </div>
+            <div className="text-right">
+              <span className="text-[9px] uppercase text-slate-300 block">Industry Benchmark</span>
+              <span className="text-xs font-bold text-[#D4AF37]">Top 10%: 88 / 100</span>
+            </div>
+          </div>
 
-           <div className="border-l-2 border-[#0B2545] pl-6 relative">
-              <div className="absolute w-3 h-3 bg-[#0B2545] rounded-full -left-[7px] top-1"></div>
-              <h3 className="text-lg font-bold text-[#0B2545] mb-2">Phase 2: Process Standardization (Days 31–60)</h3>
-              <p className="text-sm text-slate-600 mb-4">Transition from emergency control to documented, repeatable workflow infrastructure.</p>
-              <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                 <h4 className="text-[10px] uppercase font-bold text-slate-500 tracking-widest mb-2">Success Indicators</h4>
-                 <ul className="text-sm text-slate-800 font-medium space-y-1">
-                    <li>✓ Map complete end-to-end customer journey.</li>
-                    <li>✓ Implement basic cloud-based task management architecture.</li>
-                    <li>✓ Train team leaders on execution consistency without owner approval.</li>
-                 </ul>
+          <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-2.5">
+            <h3 className="text-xs font-bold text-[#0A1128] uppercase tracking-wider mb-1">7-Pillar Diagnostic Scores vs Industry Benchmark</h3>
+            {pillars.map((pillar, idx) => (
+              <div key={idx} className="space-y-1">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="font-bold text-slate-800">{pillar.name}</span>
+                  <div className="flex gap-2.5 text-[11px] font-mono">
+                    <span className="text-[#0A1128] font-bold">{pillar.score}%</span>
+                    <span className="text-slate-400">(Avg: {pillar.benchmark}%)</span>
+                  </div>
+                </div>
+                <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden flex">
+                  <div className="bg-[#0A1128] h-full rounded-full transition-all" style={{ width: `${pillar.score}%` }}></div>
+                </div>
               </div>
-           </div>
+            ))}
+          </div>
 
-           <div className="border-l-2 border-emerald-600 pl-6 relative">
-              <div className="absolute w-3 h-3 bg-emerald-600 rounded-full -left-[7px] top-1"></div>
-              <h3 className="text-lg font-bold text-[#0B2545] mb-2">Phase 3: Scaling & Automation (Days 61–90)</h3>
-              <p className="text-sm text-slate-600 mb-4">Leverage stabilized systems to handle higher volume without breaking the team.</p>
-              <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                 <h4 className="text-[10px] uppercase font-bold text-slate-500 tracking-widest mb-2">Success Indicators</h4>
-                 <ul className="text-sm text-slate-800 font-medium space-y-1">
-                    <li>✓ Launch targeted acquisition campaigns to feed the stabilized funnel.</li>
-                    <li>✓ Implement automated performance KPI tracking dashboards.</li>
-                    <li>✓ Shift owner role strictly to strategy and capital allocation.</li>
-                 </ul>
-              </div>
-           </div>
-
+          <div className="grid grid-cols-4 gap-2.5">
+            <div className="bg-white border border-slate-200 rounded-xl p-3 text-center">
+              <span className="text-[9px] uppercase font-bold text-slate-400 block">Business Readiness</span>
+              <span className="text-base font-black text-[#0A1128] mt-0.5 block">72%</span>
+              <span className="text-[8.5px] font-bold text-emerald-600">Good Status</span>
+            </div>
+            <div className="bg-white border border-slate-200 rounded-xl p-3 text-center">
+              <span className="text-[9px] uppercase font-bold text-slate-400 block">Growth Index</span>
+              <span className="text-base font-black text-emerald-600 mt-0.5 block">81%</span>
+              <span className="text-[8.5px] font-bold text-emerald-600">High Momentum</span>
+            </div>
+            <div className="bg-white border border-slate-200 rounded-xl p-3 text-center">
+              <span className="text-[9px] uppercase font-bold text-slate-400 block">Risk Index</span>
+              <span className="text-base font-black text-amber-600 mt-0.5 block">48%</span>
+              <span className="text-[8.5px] font-bold text-amber-600">Medium Exposure</span>
+            </div>
+            <div className="bg-white border border-slate-200 rounded-xl p-3 text-center">
+              <span className="text-[9px] uppercase font-bold text-slate-400 block">Overall Rating</span>
+              <span className="text-base font-black text-[#0A1128] mt-0.5 block">Above Avg</span>
+              <span className="text-[8.5px] font-bold text-slate-500">Tier 2 Enterprise</span>
+            </div>
+          </div>
         </div>
       </Page>
 
-      {/* PAGE 5: BUSINESS GROWTH DIAGNOSTIC PITCH */}
-      <Page pageNumber={5}>
-        <div className="flex flex-col items-center justify-center min-h-[250mm] text-center">
-           <h2 className="text-3xl font-serif font-black text-[#0B2545] mb-6 max-w-2xl">Ready to Build a High-Performance, Automated Enterprise?</h2>
-           <p className="text-lg text-slate-600 mb-12 max-w-2xl">
-              Your diagnostic report outlines the strategic path, but execution requires precision. Book your 1-on-1 strategy session with our senior consultants today.
-           </p>
+      {/* Pages 5–11: 7 Pillars */}
+      {renderPillarPage(0, 5)}
+      {renderPillarPage(1, 6)}
+      {renderPillarPage(2, 7)}
+      {renderPillarPage(3, 8)}
+      {renderPillarPage(4, 9)}
+      {renderPillarPage(5, 10)}
+      {renderPillarPage(6, 11)}
 
-           <div className="w-full max-w-3xl bg-[#0B2545] p-10 rounded-2xl text-left shadow-2xl relative overflow-hidden mb-12">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 blur-[80px] rounded-full pointer-events-none"></div>
-              
-              <div className="flex justify-between items-center mb-8 border-b border-white/10 pb-6">
-                 <div>
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] text-[10px] font-bold uppercase tracking-widest mb-2 border border-[#D4AF37]/30">
-                       Strategic Action Required
-                    </span>
-                    <h3 className="text-2xl font-bold text-white">1-on-1 Business Growth Diagnostic™</h3>
-                    <p className="text-slate-400 text-sm mt-1">60-Minute Custom Strategy Session</p>
-                 </div>
-                 <div className="text-right">
-                    <p className="text-xs text-slate-400 uppercase tracking-widest font-bold line-through">Standard Retainer: ₹9,999</p>
-                    <p className="text-3xl font-black text-[#D4AF37] mt-1">Special: ₹1,499</p>
-                 </div>
-              </div>
+      {/* Page 12: Cross-Pillar Insights */}
+      <Page pageNumber={12}>
+        <div className="space-y-4">
+          <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
+            <h3 className="text-xs font-bold text-[#0A1128] uppercase tracking-wider">Cross-Pillar Systemic Flow</h3>
+            <p className="text-xs text-slate-600">How operational vulnerabilities in one pillar create ripple effects across the entire enterprise:</p>
 
-              <div className="grid grid-cols-2 gap-6">
-                 {[
-                    "Deep Root Cause Systems Audit",
-                    "Custom Implementation Blueprint",
-                    "Revenue Leakage Identification",
-                    "Actionable 90-Day Milestones",
-                    "Live Strategic Q&A with Senior Advisor",
-                    "Post-Session Digital Toolkit Access"
-                 ].map((item, i) => (
-                    <div key={i} className="flex gap-3 items-start">
-                       <CheckCircle className="w-5 h-5 text-[#D4AF37] shrink-0" />
-                       <span className="text-sm text-slate-200 font-medium">{item}</span>
-                    </div>
-                 ))}
+            <div className="grid grid-cols-5 gap-2 text-center text-[10px] font-bold">
+              <div className="bg-rose-50 border border-rose-200 p-2.5 rounded-lg text-rose-900">
+                <span className="block text-[8px] text-rose-500 font-mono mb-0.5">TRIGGER</span>
+                Marketing ROI Decline
               </div>
-           </div>
+              <div className="bg-amber-50 border border-amber-200 p-2.5 rounded-lg text-amber-900">
+                <span className="block text-[8px] text-amber-500 font-mono mb-0.5">IMPACT</span>
+                Sales Conversion Weakness
+              </div>
+              <div className="bg-slate-100 border border-slate-300 p-2.5 rounded-lg text-slate-900">
+                <span className="block text-[8px] text-slate-500 font-mono mb-0.5">CORE FRICTION</span>
+                Operational Bottleneck
+              </div>
+              <div className="bg-amber-50 border border-amber-200 p-2.5 rounded-lg text-amber-900">
+                <span className="block text-[8px] text-amber-500 font-mono mb-0.5">FINANCIAL RISK</span>
+                Cash Flow Pressure
+              </div>
+              <div className="bg-rose-50 border border-rose-200 p-2.5 rounded-lg text-rose-900">
+                <span className="block text-[8px] text-rose-500 font-mono mb-0.5">CAPITAL IMPACT</span>
+                Growth Stagnation
+              </div>
+            </div>
+          </div>
 
-           <div className="text-center space-y-4">
-              <p className="text-sm font-bold text-slate-500 uppercase tracking-widest">Secure Your Session Immediately</p>
-              <div className="flex justify-center gap-8 text-lg font-bold text-[#0B2545]">
-                 <p className="flex items-center gap-2"><Phone className="w-5 h-5 text-[#D4AF37]"/> +91 7300300330</p>
-                 <p className="flex items-center gap-2"><Mail className="w-5 h-5 text-[#D4AF37]"/> enquiry.krgone@gmail.com</p>
+          <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-1.5">
+            <h3 className="text-xs font-bold text-[#0A1128] uppercase tracking-wider">Systemic Root Cause Analysis</h3>
+            <p className="text-xs text-slate-700 leading-relaxed">
+              Lack of standardized operating procedures and process documentation leading to low efficiency and lost sales opportunities. Because team members rely on verbal instructions, handoffs between sales, operations, and finance incur significant friction, extending turnaround times.
+            </p>
+          </div>
+
+          <div className="bg-[#0A1128] text-white rounded-xl p-4 border border-[#D4AF37]/40 space-y-2">
+            <h3 className="text-xs font-bold text-[#D4AF37] uppercase tracking-wider">Cross-Pillar Alignment Strategy</h3>
+            <ul className="text-xs text-slate-200 space-y-1.5 font-medium">
+              <li>&bull; Connect CRM pipeline directly to Operations order processing templates.</li>
+              <li>&bull; Establish automated payment milestones to eliminate cash flow lags.</li>
+              <li>&bull; Transition founder from daily gatekeeper to weekly KPI auditor.</li>
+            </ul>
+          </div>
+        </div>
+      </Page>
+
+      {/* Page 13: Revenue Opportunity Analysis */}
+      <Page pageNumber={13}>
+        <div className="space-y-4">
+          <div className="bg-[#0A1128] text-white rounded-xl p-5 border border-[#D4AF37] text-center shadow-xs">
+            <span className="text-[10px] uppercase font-bold text-[#D4AF37] tracking-widest block mb-1">Total Hidden Revenue Potential</span>
+            <div className="text-4xl font-black text-[#D4AF37] my-1">₹2.4 Cr</div>
+            <span className="text-xs text-slate-300 font-medium">(Realizable over 12–18 Months Execution)</span>
+          </div>
+
+          <div className="border border-slate-200 rounded-xl overflow-hidden">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-slate-100 border-b border-slate-200 text-[#0A1128] font-bold">
+                <tr>
+                  <th className="p-3 uppercase">Opportunity Stream</th>
+                  <th className="p-3 uppercase">Estimated Value</th>
+                  <th className="p-3 uppercase">Primary Driver</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 bg-white">
+                <tr>
+                  <td className="p-3 font-bold text-slate-800">Revenue Leakage Recovery</td>
+                  <td className="p-3 font-black text-rose-600">₹60 Lakh</td>
+                  <td className="p-3 text-slate-600">Plug lead drop-off & quote follow-up lags</td>
+                </tr>
+                <tr>
+                  <td className="p-3 font-bold text-slate-800">Margin Improvement</td>
+                  <td className="p-3 font-black text-emerald-600">₹40 Lakh</td>
+                  <td className="p-3 text-slate-600">Eliminate operational waste & inventory lag</td>
+                </tr>
+                <tr>
+                  <td className="p-3 font-bold text-slate-800">Upsell Potential</td>
+                  <td className="p-3 font-black text-[#0A1128]">₹50 Lakh</td>
+                  <td className="p-3 text-slate-600">Structured client expansion offers</td>
+                </tr>
+                <tr>
+                  <td className="p-3 font-bold text-slate-800">Cross-Sell Potential</td>
+                  <td className="p-3 font-black text-[#0A1128]">₹30 Lakh</td>
+                  <td className="p-3 text-slate-600">Systematic product recommendations</td>
+                </tr>
+                <tr>
+                  <td className="p-3 font-bold text-slate-800">Pricing Optimization</td>
+                  <td className="p-3 font-black text-emerald-600">₹20 Lakh</td>
+                  <td className="p-3 text-slate-600">Value-based pricing adjustments</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-xs text-slate-700 leading-relaxed font-medium">
+            <strong>Executive Takeaway:</strong> Capturing even 50% of this identified potential (₹1.2 Cr) over the next 12 months requires minimal extra capital expenditure — it relies primarily on enforcing SOPs and CRM discipline.
+          </div>
+        </div>
+      </Page>
+
+      {/* Page 14: Industry Benchmark */}
+      <Page pageNumber={14}>
+        <div className="space-y-4">
+          <div className="border border-slate-200 rounded-xl overflow-hidden shadow-xs">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-[#0A1128] text-white font-bold">
+                <tr>
+                  <th className="p-3 uppercase">Performance Metric</th>
+                  <th className="p-3 uppercase text-amber-400">Your Business</th>
+                  <th className="p-3 uppercase">Industry Avg</th>
+                  <th className="p-3 uppercase text-emerald-400">Top 10% Leaders</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 bg-white font-medium">
+                <tr>
+                  <td className="p-3 font-bold text-slate-800">Revenue Growth Rate</td>
+                  <td className="p-3 font-bold text-[#0A1128]">18%</td>
+                  <td className="p-3 text-slate-500">11%</td>
+                  <td className="p-3 font-bold text-emerald-600">27%</td>
+                </tr>
+                <tr>
+                  <td className="p-3 font-bold text-slate-800">Gross Margin %</td>
+                  <td className="p-3 font-bold text-[#0A1128]">24%</td>
+                  <td className="p-3 text-slate-500">21%</td>
+                  <td className="p-3 font-bold text-emerald-600">31%</td>
+                </tr>
+                <tr>
+                  <td className="p-3 font-bold text-slate-800">Customer Retention Rate</td>
+                  <td className="p-3 font-bold text-emerald-600">82%</td>
+                  <td className="p-3 text-slate-500">76%</td>
+                  <td className="p-3 font-bold text-emerald-600">91%</td>
+                </tr>
+                <tr>
+                  <td className="p-3 font-bold text-slate-800">Sales Productivity Index</td>
+                  <td className="p-3 font-bold text-amber-600">Medium</td>
+                  <td className="p-3 text-slate-500">Medium</td>
+                  <td className="p-3 font-bold text-emerald-600">High</td>
+                </tr>
+                <tr>
+                  <td className="p-3 font-bold text-slate-800">Digital Tool Adoption</td>
+                  <td className="p-3 font-bold text-rose-600">Low</td>
+                  <td className="p-3 text-slate-500">Medium</td>
+                  <td className="p-3 font-bold text-emerald-600">High</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3.5">
+            <div className="bg-emerald-50/70 border border-emerald-200 rounded-xl p-3.5">
+              <h4 className="text-xs font-bold text-emerald-900 uppercase tracking-wider mb-2">Where You Lead</h4>
+              <ul className="text-xs text-slate-700 space-y-1 font-medium">
+                <li>&bull; Revenue Growth above industry average</li>
+                <li>&bull; Strong Product Quality & Customer Trust</li>
+                <li>&bull; Customer Retention Rate (82%)</li>
+              </ul>
+            </div>
+
+            <div className="bg-rose-50/70 border border-rose-200 rounded-xl p-3.5">
+              <h4 className="text-xs font-bold text-rose-900 uppercase tracking-wider mb-2">Where You Lag</h4>
+              <ul className="text-xs text-slate-700 space-y-1 font-medium">
+                <li>&bull; Digital Tool Adoption & Automation</li>
+                <li>&bull; Sales Conversion Consistency</li>
+                <li>&bull; Operational Process Standardization</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </Page>
+
+      {/* Page 15: Business Risk Assessment */}
+      <Page pageNumber={15}>
+        <div className="space-y-4">
+          <div className="border border-slate-200 rounded-xl overflow-hidden shadow-xs">
+            <div className="bg-[#0A1128] text-white p-3 flex justify-between items-center">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-[#D4AF37]">Enterprise Risk Evaluation Grid</h3>
+              <span className="text-[9px] font-mono text-slate-300">Severity Assessment</span>
+            </div>
+            <div className="p-3 bg-slate-50 space-y-2">
+              {[
+                { category: "Financial Risk", severity: "Medium", desc: "Cash flow fluctuation during delayed client payment cycles." },
+                { category: "People Risk", severity: "Medium", desc: "Dependence on key technical staff without backup documentation." },
+                { category: "Operational Risk", severity: "High", desc: "Manual workflow errors during volume peaks." },
+                { category: "Sales Risk", severity: "High", desc: "Inconsistent lead follow-up & untracked pipeline status." },
+                { category: "Technology Risk", severity: "Medium", desc: "Disconnected software tools requiring double data entry." },
+                { category: "Customer Risk", severity: "Low", desc: "High client satisfaction and minimal account attrition." },
+                { category: "Founder Dependency", severity: "High", desc: "Operational bottleneck due to centralized approval authority." },
+              ].map((item, idx) => (
+                <div key={idx} className="flex justify-between items-center bg-white p-2.5 rounded-lg border border-slate-200 text-xs">
+                  <div>
+                    <span className="font-bold text-[#0A1128] block">{item.category}</span>
+                    <span className="text-[10px] text-slate-500">{item.desc}</span>
+                  </div>
+                  <span className={`px-2.5 py-1 rounded text-[10px] font-black uppercase ${
+                    item.severity === 'High' ? 'bg-rose-100 text-rose-800 border border-rose-200' :
+                    item.severity === 'Medium' ? 'bg-amber-100 text-amber-800 border border-amber-200' :
+                    'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                  }`}>
+                    {item.severity}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </Page>
+
+      {/* Page 16: 90-Day Growth Roadmap */}
+      <Page pageNumber={16}>
+        <div className="space-y-4">
+          <div className="space-y-3">
+            <div className="bg-white border-2 border-amber-400 rounded-xl p-4 shadow-xs relative">
+              <div className="flex justify-between items-center mb-2">
+                <span className="bg-amber-500 text-white text-[10px] font-black uppercase px-2.5 py-0.5 rounded">
+                  Phase 1: Days 1–30
+                </span>
+                <span className="text-xs font-bold text-amber-800 uppercase">Stabilize & Build Momentum</span>
               </div>
-              <p className="text-xs font-mono text-slate-400 mt-4">krgone.vercel.app</p>
-           </div>
+              <div className="grid grid-cols-2 gap-2 text-xs text-slate-700 font-medium mt-2">
+                <div>&bull; Fix Sales Process & Lead Tracking</div>
+                <div>&bull; Quick Wins & Cash Flow Focus</div>
+                <div>&bull; Define Core Department KPIs</div>
+                <div>&bull; Establish Daily Standup Reviews</div>
+              </div>
+            </div>
+
+            <div className="bg-white border-2 border-[#0A1128] rounded-xl p-4 shadow-xs relative">
+              <div className="flex justify-between items-center mb-2">
+                <span className="bg-[#0A1128] text-white text-[10px] font-black uppercase px-2.5 py-0.5 rounded">
+                  Phase 2: Days 31–60
+                </span>
+                <span className="text-xs font-bold text-[#0A1128] uppercase">Build Systems & Improve Efficiency</span>
+              </div>
+              <div className="grid grid-cols-2 gap-2 text-xs text-slate-700 font-medium mt-2">
+                <div>&bull; Document Top 10 Core SOPs</div>
+                <div>&bull; Implement CRM Platform</div>
+                <div>&bull; Launch Inbound Marketing Engine</div>
+                <div>&bull; Team Role Alignment Sprints</div>
+              </div>
+            </div>
+
+            <div className="bg-white border-2 border-emerald-500 rounded-xl p-4 shadow-xs relative">
+              <div className="flex justify-between items-center mb-2">
+                <span className="bg-emerald-600 text-white text-[10px] font-black uppercase px-2.5 py-0.5 rounded">
+                  Phase 3: Days 61–90
+                </span>
+                <span className="text-xs font-bold text-emerald-800 uppercase">Scale & Increase Profitability</span>
+              </div>
+              <div className="grid grid-cols-2 gap-2 text-xs text-slate-700 font-medium mt-2">
+                <div>&bull; Scale Targeted Digital Campaigns</div>
+                <div>&bull; Automate Key Workflow Integrations</div>
+                <div>&bull; Performance Management Reviews</div>
+                <div>&bull; Annual Capital Expansion Plan</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Page>
+
+      {/* Page 17: Priority Action Matrix */}
+      <Page pageNumber={17}>
+        <div className="space-y-4">
+          <div className="border border-slate-200 rounded-xl overflow-hidden shadow-xs">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-[#0A1128] text-white font-bold uppercase text-[10px]">
+                <tr>
+                  <th className="p-3 w-10">Rank</th>
+                  <th className="p-3">Strategic Action</th>
+                  <th className="p-3">Impact</th>
+                  <th className="p-3">Effort</th>
+                  <th className="p-3">Owner</th>
+                  <th className="p-3">Timeline</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 bg-white font-medium">
+                {[
+                  { rank: 1, action: "Improve Sales Conversion Process", impact: "High", effort: "Medium", owner: "Sales Head", timeline: "0–30 Days" },
+                  { rank: 2, action: "Implement Lightweight CRM System", impact: "High", effort: "Low", owner: "Sales Head", timeline: "0–30 Days" },
+                  { rank: 3, action: "Document Core Operational SOPs", impact: "High", effort: "Medium", owner: "Ops Head", timeline: "30–60 Days" },
+                  { rank: 4, action: "Setup Inbound Marketing Engine", impact: "Medium", effort: "Medium", owner: "Mktg Head", timeline: "30–60 Days" },
+                  { rank: 5, action: "Deploy Rolling Cash Flow Model", impact: "Medium", effort: "Low", owner: "Finance Head", timeline: "0–30 Days" },
+                ].map((item, idx) => (
+                  <tr key={idx}>
+                    <td className="p-3 font-black text-[#0A1128] text-center">{item.rank}</td>
+                    <td className="p-3 font-bold text-slate-800">{item.action}</td>
+                    <td className="p-3"><span className="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[10px] font-bold">{item.impact}</span></td>
+                    <td className="p-3"><span className="bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-[10px] font-bold">{item.effort}</span></td>
+                    <td className="p-3 text-slate-600">{item.owner}</td>
+                    <td className="p-3 font-bold text-[#0A1128]">{item.timeline}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </Page>
+
+      {/* Page 18: AI Strategic Advisory */}
+      <Page pageNumber={18}>
+        <div className="space-y-4 my-auto">
+          <div className="bg-[#0A1128] text-white p-7 rounded-2xl border-2 border-[#D4AF37] relative shadow-xl">
+            <div className="text-4xl text-[#D4AF37] font-serif mb-3 font-bold">“</div>
+            <p className="text-xs text-slate-200 leading-relaxed font-serif italic space-y-2">
+              Your business has strong fundamentals and is in a good position to grow. The biggest opportunities lie in building a consistent sales system, improving operational efficiency, and leveraging digital marketing to generate quality leads. Focus on systems, automation, and team performance to unlock the next level of growth.
+            </p>
+            <p className="text-xs text-slate-200 leading-relaxed font-serif italic mt-3">
+              With the right execution, your business can achieve significant revenue and profit growth over the next 12–18 months.
+            </p>
+            <div className="mt-5 pt-3 border-t border-white/20 text-right">
+              <span className="text-xs font-bold text-[#D4AF37] tracking-wider uppercase block">
+                &mdash; KRG ONE AI Strategic Advisor
+              </span>
+            </div>
+          </div>
+        </div>
+      </Page>
+
+      {/* Page 19: KPI Dashboard */}
+      <Page pageNumber={19}>
+        <div className="space-y-3.5">
+          <h3 className="text-xs font-bold text-[#0A1128] uppercase tracking-wider">Recommended KPI Scorecard Matrix</h3>
+          <div className="grid grid-cols-2 gap-3.5">
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-1.5">
+              <h4 className="text-xs font-bold text-[#0A1128] uppercase border-b border-slate-200 pb-1">Sales Department</h4>
+              <ul className="text-xs text-slate-700 space-y-1 font-medium">
+                <li>&bull; Lead Conversion % (Target: &gt;25%)</li>
+                <li>&bull; Revenue Growth % MoM (Target: &gt;15%)</li>
+                <li>&bull; Average Deal Size (Target: +10%)</li>
+              </ul>
+            </div>
+
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-1.5">
+              <h4 className="text-xs font-bold text-[#0A1128] uppercase border-b border-slate-200 pb-1">Finance Department</h4>
+              <ul className="text-xs text-slate-700 space-y-1 font-medium">
+                <li>&bull; Gross Margin % (Target: &gt;30%)</li>
+                <li>&bull; Net Profit % (Target: &gt;15%)</li>
+                <li>&bull; Cash Conversion Cycle (Target: &lt;30 Days)</li>
+              </ul>
+            </div>
+
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-1.5">
+              <h4 className="text-xs font-bold text-[#0A1128] uppercase border-b border-slate-200 pb-1">Marketing Department</h4>
+              <ul className="text-xs text-slate-700 space-y-1 font-medium">
+                <li>&bull; Monthly Lead Volume (Target: &gt;100 Qualified)</li>
+                <li>&bull; Cost Per Lead (CPL) Optimization</li>
+                <li>&bull; Marketing ROI (Target: 4x Return)</li>
+              </ul>
+            </div>
+
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-1.5">
+              <h4 className="text-xs font-bold text-[#0A1128] uppercase border-b border-slate-200 pb-1">People Department</h4>
+              <ul className="text-xs text-slate-700 space-y-1 font-medium">
+                <li>&bull; Employee Productivity Index</li>
+                <li>&bull; Attrition Rate % (Target: &lt;10%)</li>
+                <li>&bull; Training Hours Per Staff / Month</li>
+              </ul>
+            </div>
+
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-1.5">
+              <h4 className="text-xs font-bold text-[#0A1128] uppercase border-b border-slate-200 pb-1">Operations Department</h4>
+              <ul className="text-xs text-slate-700 space-y-1 font-medium">
+                <li>&bull; On-Time Delivery % (Target: &gt;98%)</li>
+                <li>&bull; Production Efficiency %</li>
+                <li>&bull; Defect / Rejection Rate % (Target: &lt;1%)</li>
+              </ul>
+            </div>
+
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-1.5">
+              <h4 className="text-xs font-bold text-[#0A1128] uppercase border-b border-slate-200 pb-1">Customer Success</h4>
+              <ul className="text-xs text-slate-700 space-y-1 font-medium">
+                <li>&bull; Customer Retention Rate % (Target: &gt;85%)</li>
+                <li>&bull; Net Promoter Score (NPS)</li>
+                <li>&bull; Repeat Purchase Rate %</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </Page>
+
+      {/* Page 20: Final Recommendation */}
+      <Page pageNumber={20}>
+        <div className="space-y-4 my-auto">
+          <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 grid grid-cols-2 gap-4 text-center">
+            <div className="border-r border-slate-200 pr-2">
+              <span className="text-[10px] uppercase font-bold text-slate-400 block">Overall Business Rating</span>
+              <span className="text-xl font-black text-[#0A1128] mt-1 block">Above Average</span>
+            </div>
+            <div>
+              <span className="text-[10px] uppercase font-bold text-slate-400 block">Business Classification</span>
+              <span className="text-xl font-black text-emerald-600 mt-1 block">Growth Ready</span>
+            </div>
+          </div>
+
+          <div className="bg-[#0A1128] text-white p-6 rounded-2xl border-2 border-[#D4AF37] text-center space-y-3.5 shadow-xl">
+            <span className="text-[10px] text-[#D4AF37] font-extrabold uppercase tracking-widest bg-[#D4AF37]/10 px-3 py-1 rounded border border-[#D4AF37]/30 inline-block">
+              Recommended Next Step
+            </span>
+            <h3 className="text-2xl font-black text-white">Full Revenue Diagnostic™ (Engagement)</h3>
+            <p className="text-xs text-slate-300 leading-relaxed max-w-md mx-auto">
+              A hands-on, 60-minute strategy session with senior KRG ONE systems advisors to implement these 20-page diagnostic findings and build your custom execution roadmap.
+            </p>
+
+            <div className="pt-2 border-t border-white/10 flex justify-center gap-6 text-xs text-[#D4AF37] font-bold">
+              <span>&bull; Phone: +91 7300300330</span>
+              <span>&bull; Email: enquiry.krgone@gmail.com</span>
+            </div>
+          </div>
+
+          <div className="text-center py-3.5 bg-amber-50 border border-amber-200 rounded-xl">
+            <h4 className="text-sm font-black text-[#0A1128] uppercase tracking-wider">Together, let's build a stronger, more profitable business.</h4>
+            <p className="text-xs font-serif font-bold text-[#D4AF37] mt-0.5">KRG ONE Business Growth Operating System™</p>
+          </div>
         </div>
       </Page>
     </div>
