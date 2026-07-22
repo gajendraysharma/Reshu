@@ -1476,7 +1476,7 @@ export default function App() {
                   <div className="text-[24px] font-black text-[#0f2142] mb-2">&#8377;1,499</div>
                   <div className="text-[10px] font-bold tracking-wider text-slate-500 mb-2 uppercase">One-Time</div>
                   <div className="flex items-center justify-center gap-1.5 text-[9px] font-bold tracking-wider text-slate-500 mb-6 uppercase">
-                    <Clock className="w-3 h-3 shrink-0" /> 90 Minutes &bull; Same Week
+                    <Clock className="w-3 h-3 shrink-0" /> 60 Minutes &bull; Same Week
                   </div>
 
                   <div className="space-y-3 text-left w-full mb-8">
@@ -2036,7 +2036,7 @@ export default function App() {
               <div className="border-t border-slate-100 pt-6 flex-1 mb-6">
                 <ul className="space-y-3">
                   {[
-                    "90-Minute Session",
+                    "60-Minute Session",
                     "Review Assessment",
                     "Business Growth Opportunities",
                     "Next-Step Action Plan"

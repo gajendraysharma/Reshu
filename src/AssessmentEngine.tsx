@@ -151,13 +151,13 @@ export default function AssessmentEngine() {
     return Math.round((total / 12) * 100) || 0;
   };
 
-
   const getMaturityLevel = (score: number) => {
     if (score >= 85) return "Growth Ready";
     if (score >= 70) return "Growing Business";
     if (score >= 55) return "Developing Business";
     return "Immediate Growth Required";
   };
+
   const getGlobalScore = (): number => {
     const weights = [0.18, 0.17, 0.14, 0.16, 0.15, 0.10, 0.10];
     let sum = 0;
@@ -168,6 +168,37 @@ export default function AssessmentEngine() {
   const activePillarIdx = Math.floor(currentQuestionIdx / 3);
   const [splashingOption, setSplashingOption] = useState<number | null>(null);
   const [analysisStep, setAnalysisStep] = useState(0);
+  const [hoveredRadarPillar, setHoveredRadarPillar] = useState<number | null>(null);
+
+  // 7-Pillar Live Radar Calculations
+  const livePillarData = pillars.map((pillarName, pIdx) => {
+    const start = pIdx * 3;
+    const pAns = [scores[start], scores[start + 1], scores[start + 2]].filter(s => s > 0);
+    const score = pAns.length > 0 
+      ? Math.round((pAns.reduce((a, b) => a + b, 0) / (pAns.length * 4)) * 100)
+      : 25; // default baseline when unanswered
+    const isAnswered = pAns.length > 0;
+    return { name: pillarName, score, isAnswered };
+  });
+
+  const getRadarPoint = (index: number, scoreValue: number, maxRadius = 38, minRadius = 8) => {
+    const angleDeg = (index * 360) / 7;
+    const angleRad = ((angleDeg - 90) * Math.PI) / 180;
+    const r = minRadius + (scoreValue / 100) * (maxRadius - minRadius);
+    const x = 50 + r * Math.cos(angleRad);
+    const y = 50 + r * Math.sin(angleRad);
+    return { x, y, r, angleRad };
+  };
+
+  const userPolygonPoints = livePillarData.map((p, i) => {
+    const pt = getRadarPoint(i, p.score);
+    return `${pt.x.toFixed(1)},${pt.y.toFixed(1)}`;
+  }).join(' ');
+
+  const benchmarkPolygonPoints = pillars.map((_, i) => {
+    const pt = getRadarPoint(i, 65); // 65% industry benchmark
+    return `${pt.x.toFixed(1)},${pt.y.toFixed(1)}`;
+  }).join(' ');
 
   useEffect(() => {
     if (view === 'RESULTS') {
@@ -635,6 +666,7 @@ export default function AssessmentEngine() {
                         if (i < (currentQuestionIdx % 3)) state = 'completed';
                         else if (i === (currentQuestionIdx % 3)) state = 'current';
                       }
+
                       return (
                         <div key={i} className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${state === 'completed' ? 'bg-[#d4af37] shadow-[0_0_4px_#d4af37]' : state === 'current' ? 'bg-[#d4af37] animate-ping opacity-75 ring-2 ring-[#d4af37]/50' : 'bg-slate-700/50'}`} />
                       );
@@ -741,41 +773,121 @@ export default function AssessmentEngine() {
               </div>
             </div>
             
-            <div className="my-8 flex justify-center relative z-10">
-              <svg className="w-40 h-40 transform -rotate-90" viewBox="0 0 100 100">
-                {/* Inactive grey Radar Grid */}
-                <circle cx="50" cy="50" r="40" fill="none" stroke="#1e293b" strokeWidth="0.5" strokeDasharray="2,2" />
-                <circle cx="50" cy="50" r="28" fill="none" stroke="#1e293b" strokeWidth="0.5" strokeDasharray="1,3" />
-                <circle cx="50" cy="50" r="16" fill="none" stroke="#1e293b" strokeWidth="0.5" strokeDasharray="1,3" />
-                {/* Crosshairs */}
-                <line x1="50" y1="5" x2="50" y2="95" stroke="#1e293b" strokeWidth="0.5" />
-                <line x1="5" y1="50" x2="95" y2="50" stroke="#1e293b" strokeWidth="0.5" />
-                
-                {/* Inactive grey/placeholder polygon */}
-                <polygon 
-                  points={[0, 1, 2, 3, 4, 5, 6].map(i => {
-                    const angle = (i * 360) / 7;
-                    const r = 18; // Inactive baseline placeholder radius
-                    const x = 50 + r * Math.cos((angle * Math.PI) / 180);
-                    const y = 50 + r * Math.sin((angle * Math.PI) / 180);
-                    return `${x},${y}`;
-                  }).join(' ')}
-                  fill="rgba(71, 85, 105, 0.2)" 
-                  stroke="#475569" 
-                  strokeWidth="1.2"
-                  strokeDasharray="2,2"
-                  className="transition-all duration-1000 ease-in-out"
-                />
-                
-                {/* Inactive points */}
-                {[0, 1, 2, 3, 4, 5, 6].map(i => {
-                    const angle = (i * 360) / 7;
-                    const r = 18;
-                    const x = 50 + r * Math.cos((angle * Math.PI) / 180);
-                    const y = 50 + r * Math.sin((angle * Math.PI) / 180);
-                    return <circle key={i} cx={x} cy={y} r="1" fill="#475569" className="transition-all duration-1000 ease-in-out" />;
+            {/* Dynamic Interactive SVG Live Radar Chart */}
+            <div className="my-6 flex flex-col items-center relative z-10">
+              <div className="relative w-44 h-44 sm:w-48 sm:h-48 flex items-center justify-center">
+                <svg className="w-full h-full overflow-visible" viewBox="0 0 100 100">
+                  {/* Concentric Web Circles & Polygons */}
+                  {[0.25, 0.5, 0.75, 1.0].map((scale, levelIdx) => {
+                    const levelPoints = pillars.map((_, i) => {
+                      const pt = getRadarPoint(i, scale * 100);
+                      return `${pt.x.toFixed(1)},${pt.y.toFixed(1)}`;
+                    }).join(' ');
+                    return (
+                      <polygon 
+                        key={levelIdx}
+                        points={levelPoints} 
+                        fill={levelIdx === 3 ? "rgba(15, 23, 42, 0.5)" : "none"} 
+                        stroke={levelIdx === 3 ? "#334155" : "#1e293b"} 
+                        strokeWidth={levelIdx === 3 ? "0.8" : "0.5"} 
+                        strokeDasharray={levelIdx < 3 ? "1,2" : undefined}
+                      />
+                    );
                   })}
-              </svg>
+
+                  {/* 7 Radar Axis Lines from Center */}
+                  {pillars.map((_, i) => {
+                    const ptOuter = getRadarPoint(i, 100);
+                    const isActive = activePillarIdx === i;
+                    return (
+                      <line 
+                        key={i} 
+                        x1="50" 
+                        y1="50" 
+                        x2={ptOuter.x.toFixed(1)} 
+                        y2={ptOuter.y.toFixed(1)} 
+                        stroke={isActive ? "#fbbf24" : "#1e293b"} 
+                        strokeWidth={isActive ? "1.2" : "0.5"} 
+                      />
+                    );
+                  })}
+
+                  {/* Industry Benchmark Polygon (Dashed Slate) */}
+                  <polygon 
+                    points={benchmarkPolygonPoints} 
+                    fill="none" 
+                    stroke="#475569" 
+                    strokeWidth="1" 
+                    strokeDasharray="2,2" 
+                  />
+
+                  {/* Dynamic User Live Polygon (Glowing Amber Gold) */}
+                  <polygon 
+                    points={userPolygonPoints} 
+                    fill="rgba(212, 175, 55, 0.25)" 
+                    stroke="#d4af37" 
+                    strokeWidth="2" 
+                    className="transition-all duration-700 ease-out" 
+                  />
+
+                  {/* Interactive Vertex Dots */}
+                  {livePillarData.map((p, i) => {
+                    const pt = getRadarPoint(i, p.score);
+                    const isActive = activePillarIdx === i;
+                    const isHovered = hoveredRadarPillar === i;
+
+                    return (
+                      <g 
+                        key={i} 
+                        className="cursor-pointer group/dot" 
+                        onClick={() => setCurrentQuestionIdx(i * 3)}
+                        onMouseEnter={() => setHoveredRadarPillar(i)}
+                        onMouseLeave={() => setHoveredRadarPillar(null)}
+                      >
+                        {/* Active Pillar Pulse Halo */}
+                        {isActive && (
+                          <circle 
+                            cx={pt.x.toFixed(1)} 
+                            cy={pt.y.toFixed(1)} 
+                            r="5" 
+                            fill="none" 
+                            stroke="#fbbf24" 
+                            strokeWidth="1" 
+                            className="animate-ping opacity-80" 
+                          />
+                        )}
+
+                        {/* Vertex Point Circle */}
+                        <circle 
+                          cx={pt.x.toFixed(1)} 
+                          cy={pt.y.toFixed(1)} 
+                          r={isActive || isHovered ? "3.5" : "2"} 
+                          fill={isActive ? "#fbbf24" : isHovered ? "#ffffff" : p.isAnswered ? "#d4af37" : "#64748b"} 
+                          stroke="#0a1128" 
+                          strokeWidth="1" 
+                          className="transition-all duration-300" 
+                        />
+                      </g>
+                    );
+                  })}
+                </svg>
+
+                {/* Live Tooltip when hovering over a vertex */}
+                {hoveredRadarPillar !== null && (
+                  <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-slate-900 border border-amber-500/50 text-white text-[10px] font-bold px-2.5 py-1 rounded-md shadow-xl z-30 whitespace-nowrap pointer-events-none">
+                    <span className="text-amber-400">{pillars[hoveredRadarPillar]}</span>: {livePillarData[hoveredRadarPillar].score}%
+                  </div>
+                )}
+              </div>
+
+              {/* Live Pillar Score Badge Indicator under Radar */}
+              <div className="mt-3 w-full bg-slate-900/80 border border-slate-800 rounded-lg p-2 flex items-center justify-between text-[10px] font-mono">
+                <div className="flex items-center gap-1.5 overflow-hidden">
+                  <div className="w-2 h-2 rounded-full bg-[#d4af37] animate-pulse"></div>
+                  <span className="text-slate-300 truncate font-sans font-bold">{pillars[activePillarIdx]}</span>
+                </div>
+                <span className="text-amber-400 font-bold ml-2 shrink-0">{livePillarData[activePillarIdx].score}%</span>
+              </div>
             </div>
 
             <div className="space-y-3 relative z-10 flex-grow">

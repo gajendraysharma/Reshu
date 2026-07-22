@@ -351,7 +351,7 @@ export default function PrintDossier({ formData, scores, globalScore, pillars, g
                        Strategic Action Required
                     </span>
                     <h3 className="text-2xl font-bold text-white">1-on-1 Business Growth Diagnostic™</h3>
-                    <p className="text-slate-400 text-sm mt-1">60-90 Minute Custom Strategy Session</p>
+                    <p className="text-slate-400 text-sm mt-1">60-Minute Custom Strategy Session</p>
                  </div>
                  <div className="text-right">
                     <p className="text-xs text-slate-400 uppercase tracking-widest font-bold line-through">Standard Retainer: ₹9,999</p>

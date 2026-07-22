@@ -1,6 +1,6 @@
 {
-  "name": "KRG ONE Navbar",
-  "description": "A clean, modern top navigation bar for KRG ONE.",
+  "name": "KRG ONE Growth Diagnostic Dashboard",
+  "description": "An elite, McKinsey-grade operational health and strategic growth assessment dashboard.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
