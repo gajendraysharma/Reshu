@@ -51,7 +51,6 @@ export default async function handler(req: any, res: any) {
     // Generate PDF attachment buffer via Puppeteer (might fail on Vercel)
     let pdfBuffer = null;
     try {
-      const puppeteer = (await import('puppeteer')).default;
       const fullHtml = dossierHtml && dossierHtml.trim().length > 100 ? `
         <!DOCTYPE html>
         <html>
@@ -143,9 +142,23 @@ export default async function handler(req: any, res: any) {
         </html>
       `;
 
-      const browser = await puppeteer.launch({
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
-      });
+      let browser;
+      if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
+        const puppeteerCore = (await import('puppeteer-core')).default;
+        const chromium = (await import('@sparticuz/chromium')).default;
+        browser = await puppeteerCore.launch({
+          args: chromium.args,
+          defaultViewport: { width: 1200, height: 1600 },
+          executablePath: await chromium.executablePath(),
+          headless: true,
+        });
+      } else {
+        const puppeteer = (await import('puppeteer')).default;
+        browser = await puppeteer.launch({
+          args: ['--no-sandbox', '--disable-setuid-sandbox']
+        });
+      }
+
       const page = await browser.newPage();
       await page.setViewport({ width: 1200, height: 1600 });
       await page.setContent(fullHtml, { waitUntil: 'load' });
