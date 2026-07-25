@@ -27,6 +27,74 @@ export function DashboardReport({ formData = {}, scores = [], onResetAssessment,
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [pdfStatusMessage, setPdfStatusMessage] = useState('');
 
+  // Automated Email Notification & Lead Alert Dispatching State
+  const [emailStatus, setEmailStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [emailMessage, setEmailMessage] = useState<string>('');
+  const hasDispatchedRef = useRef(false);
+
+  useEffect(() => {
+    const custEmail = formData?.email || 'customer';
+    const emailKey = `krgone_email_sent_${custEmail}_${report?.overallScore || 0}`;
+    
+    if (typeof sessionStorage !== 'undefined' && sessionStorage.getItem(emailKey)) {
+      setEmailStatus('sent');
+      setEmailMessage(`Assessment report sent to ${custEmail} & lead alert dispatched to enquiry.krgone@gmail.com`);
+      return;
+    }
+
+    if (hasDispatchedRef.current) {
+      return;
+    }
+
+    hasDispatchedRef.current = true;
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.setItem(emailKey, 'in_progress');
+    }
+
+    const dispatchEmail = async () => {
+      try {
+        setEmailStatus('sending');
+        setEmailMessage('Generating PDF dossier & dispatching report emails to customer and KRG ONE lead engine...');
+
+        // Wait a brief tick for PrintDossier component to mount in DOM
+        await new Promise(r => setTimeout(r, 400));
+        const dossierEl = document.getElementById('krg-print-dossier-root');
+        const dossierHtml = dossierEl ? dossierEl.innerHTML : '';
+
+        const response = await fetch('/api/send-assessment-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            formData,
+            scores,
+            overallScore: report?.overallScore ?? 72,
+            pillarScores: report?.pillarScores ?? [],
+            recommendations: report?.recommendations ?? [],
+            dossierHtml
+          })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          setEmailStatus('sent');
+          setEmailMessage(`Assessment report & PDF dossier sent to ${custEmail} & lead alert dispatched to enquiry.krgone@gmail.com`);
+          if (typeof sessionStorage !== 'undefined') {
+            sessionStorage.setItem(emailKey, 'true');
+          }
+        } else {
+          setEmailStatus('error');
+          setEmailMessage(data.error || 'Failed to dispatch email report');
+        }
+      } catch (err: any) {
+        console.error('Email dispatch error:', err);
+        setEmailStatus('error');
+        setEmailMessage('Error dispatching automated assessment emails.');
+      }
+    };
+
+    dispatchEmail();
+  }, [formData, scores, report]);
+
   const [currentDateTime, setCurrentDateTime] = useState<Date>(new Date());
 
   useEffect(() => {
@@ -651,6 +719,35 @@ export function DashboardReport({ formData = {}, scores = [], onResetAssessment,
             </button>
           </div>
         </div>
+
+        {/* EMAIL DISPATCH NOTIFICATION BANNER */}
+        {emailStatus !== 'idle' && (
+          <div className={`mb-6 p-3.5 rounded-xl border flex items-center justify-between gap-3 text-xs font-medium no-print transition-all ${
+            emailStatus === 'sending' 
+              ? 'bg-amber-500/10 border-amber-500/30 text-amber-900' 
+              : emailStatus === 'sent' 
+                ? 'bg-emerald-50 border-emerald-200 text-emerald-900 shadow-sm' 
+                : 'bg-rose-50 border-rose-200 text-rose-900'
+          }`}>
+            <div className="flex items-center gap-2.5">
+              {emailStatus === 'sending' && (
+                <div className="w-4 h-4 border-2 border-amber-600 border-t-transparent rounded-full animate-spin shrink-0"></div>
+              )}
+              {emailStatus === 'sent' && (
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              )}
+              {emailStatus === 'error' && (
+                <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+              )}
+              <span>
+                <strong>Automated Dispatch:</strong> {emailMessage}
+              </span>
+            </div>
+            <span className="text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-md bg-white border border-slate-200 text-slate-700 shrink-0 shadow-2xs">
+              Gmail SMTP Active
+            </span>
+          </div>
+        )}
 
         {/* TOP COMPACT PROFILE METRIC BAR */}
         <div className="bg-gradient-to-r from-[#0F172A] via-[#1E293B] to-[#0F172A] rounded-2xl shadow-lg border border-slate-800 p-5 mb-6 grid grid-cols-2 md:grid-cols-5 gap-5 md:gap-4 items-center relative overflow-hidden">

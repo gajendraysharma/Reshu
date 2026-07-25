@@ -89,9 +89,39 @@ export const DiagnosticBookingTab: React.FC<DiagnosticBookingTabProps> = ({
     }
   };
 
-  const handleReserve = (e: React.FormEvent) => {
+  const handleReserve = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitted(true);
+
+    try {
+      const dossierEl = document.getElementById('krg-print-dossier-root');
+      const dossierHtml = dossierEl ? dossierEl.innerHTML : '';
+
+      await fetch('/api/send-assessment-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          formData: {
+            fullName: profile.contactPerson,
+            email: profile.email,
+            mobileNumber: profile.mobile,
+            companyName: profile.companyName,
+            industry: profile.industry,
+            revenue: profile.revenue,
+            businessSize: profile.employees,
+            challenges: [`Partner Call Booking: ${selectedDate || 'Upcoming'} at ${finalTimeDisplay}`],
+            goals: [notes ? `Booking Notes: ${notes}` : 'Partner Diagnostic Strategy Session'],
+            customerType: 'Partner Call Reservation'
+          },
+          scores: new Array(21).fill(4),
+          overallScore: 85,
+          pillarScores: [85, 85, 85, 85, 85, 85, 85],
+          dossierHtml
+        })
+      });
+    } catch (err) {
+      console.error('Failed to send booking notification email:', err);
+    }
   };
 
   const finalTimeDisplay = isCustomTimeMode
