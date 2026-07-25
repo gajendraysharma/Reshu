@@ -2,33 +2,78 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import DashboardReport from './components/DashboardReport';
 import { User, Building2, Target, Info, CheckSquare, BarChart3, PieChart, FileText, LayoutGrid, Lightbulb, Lock, Layers, Cpu, CheckCircle2, ShieldCheck, PartyPopper, RotateCcw } from 'lucide-react';
+import { ASSESSMENT_QUESTIONS } from './business-engine/assessment-engine/questions';
 
 type ViewState = 'PROFILE' | 'ASSESSMENT' | 'RESULTS' | 'GROWTH_PLAN';
 
-export function AssessmentEngine() {
+const INDIAN_STATES_CITIES: Record<string, string[]> = {
+  "Andhra Pradesh": ["Visakhapatnam", "Vijayawada", "Guntur", "Nellore", "Kurnool", "Rajahmundry", "Tirupati", "Kakinada", "Kadapa", "Anantapur", "Eluru", "Ongole", "Other City"],
+  "Arunachal Pradesh": ["Itanagar", "Naharlagun", "Pasighat", "Tawang", "Ziro", "Bomdila", "Other City"],
+  "Assam": ["Guwahati", "Silchar", "Dibrugarh", "Jorhat", "Nagaon", "Tinsukia", "Tezpur", "Bongaigaon", "Other City"],
+  "Bihar": ["Patna", "Gaya", "Bhagalpur", "Muzaffarpur", "Purnia", "Darbhanga", "Bihar Sharif", "Arrah", "Begusarai", "Other City"],
+  "Chhattisgarh": ["Raipur", "Bhilai", "Bilaspur", "Korba", "Rajnandgaon", "Durg", "Jagdalpur", "Ambikapur", "Other City"],
+  "Goa": ["Panaji", "Margao", "Vasco da Gama", "Mapusa", "Ponda", "Other City"],
+  "Gujarat": ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Bhavnagar", "Jamnagar", "Gandhinagar", "Junagadh", "Anand", "Navsari", "Morbi", "Other City"],
+  "Haryana": ["Gurugram (Gurgaon)", "Faridabad", "Panipat", "Ambala", "Yamunanagar", "Rohtak", "Hisar", "Karnal", "Panchkula", "Sonipat", "Other City"],
+  "Himachal Pradesh": ["Shimla", "Dharamshala", "Mandi", "Solan", "Kullu", "Manali", "Baddi", "Una", "Other City"],
+  "Jharkhand": ["Ranchi", "Jamshedpur", "Dhanbad", "Bokaro", "Hazaribagh", "Deoghar", "Giridih", "Other City"],
+  "Karnataka": ["Bengaluru (Bangalore)", "Mysuru (Mysore)", "Hubballi-Dharwad", "Mangaluru (Mangalore)", "Belagavi", "Davangere", "Ballari", "Tumakuru", "Shivamogga", "Kalaburagi", "Other City"],
+  "Kerala": ["Thiruvananthapuram", "Kochi", "Kozhikode", "Thrissur", "Kollam", "Palakkad", "Kannur", "Alappuzha", "Kottayam", "Other City"],
+  "Madhya Pradesh": ["Indore", "Bhopal", "Jabalpur", "Gwalior", "Ujjain", "Sagar", "Dewas", "Satna", "Ratlam", "Rewa", "Other City"],
+  "Maharashtra": ["Mumbai", "Pune", "Nagpur", "Thane", "Nashik", "Chhatrapati Sambhajinagar (Aurangabad)", "Solapur", "Amravati", "Navi Mumbai", "Kolhapur", "Pimpri-Chinchwad", "Kalyan-Dombivli", "Vasai-Virar", "Other City"],
+  "Manipur": ["Imphal", "Churachandpur", "Thoubal", "Other City"],
+  "Meghalaya": ["Shillong", "Tura", "Jowai", "Other City"],
+  "Mizoram": ["Aizawl", "Lunglei", "Champhai", "Other City"],
+  "Nagaland": ["Kohima", "Dimapur", "Mokokchung", "Other City"],
+  "Odisha": ["Bhubaneswar", "Cuttack", "Rourkela", "Berhampur", "Sambalpur", "Puri", "Balasore", "Other City"],
+  "Punjab": ["Ludhiana", "Amritsar", "Jalandhar", "Patiala", "Bathinda", "Mohali", "Pathankot", "Hoshiarpur", "Other City"],
+  "Rajasthan": ["Jaipur", "Jodhpur", "Udaipur", "Kota", "Bikaner", "Ajmer", "Bhilwara", "Alwar", "Sikar", "Other City"],
+  "Sikkim": ["Gangtok", "Namchi", "Gyalshing", "Other City"],
+  "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai", "Tiruchirappalli", "Salem", "Tiruppur", "Erode", "Vellore", "Tirunelveli", "Thanjavur", "Other City"],
+  "Telangana": ["Hyderabad", "Warangal", "Nizamabad", "Karimnagar", "Khammam", "Ramagundam", "Mahbubnagar", "Other City"],
+  "Tripura": ["Agartala", "Udaipur", "Dharmanagar", "Other City"],
+  "Uttar Pradesh": ["Lucknow", "Kanpur", "Ghaziabad", "Agra", "Varanasi", "Noida / Greater Noida", "Meerut", "Prayagraj (Allahabad)", "Bareilly", "Aligarh", "Moradabad", "Gorakhpur", "Mathura", "Other City"],
+  "Uttarakhand": ["Dehradun", "Haridwar", "Roorkee", "Haldwani", "Rishikesh", "Nainital", "Other City"],
+  "West Bengal": ["Kolkata", "Howrah", "Siliguri", "Durgapur", "Asansol", "Kharagpur", "Bardhaman", "Malda", "Other City"],
+  "Delhi (NCT)": ["New Delhi", "North Delhi", "South Delhi", "East Delhi", "West Delhi", "Central Delhi", "Noida / NCR", "Gurugram / NCR", "Other Area"],
+  "Chandigarh": ["Chandigarh", "Other Area"],
+  "Puducherry": ["Puducherry", "Karaikal", "Mahe", "Yanam", "Other Area"],
+  "Jammu & Kashmir": ["Srinagar", "Jammu", "Anantnag", "Baramulla", "Udhampur", "Other City"],
+  "Ladakh": ["Leh", "Kargil", "Other Area"],
+  "Andaman & Nicobar Islands": ["Port Blair", "Other Area"],
+  "Dadra & Nagar Haveli and Daman & Diu": ["Daman", "Diu", "Silvassa", "Other Area"],
+  "Lakshadweep": ["Kavaratti", "Agatti", "Other Area"],
+  "Outside India / International": ["International Location"]
+};
+
+export function AssessmentEngine({ onReturnHome }: { onReturnHome?: () => void }) {
   // 1. Core State Handlers
   const [view, setView] = useState<ViewState>('PROFILE');
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState<number>(0);
   const [activePlanTab, setActivePlanTab] = useState<'EXECUTIVE_SUMMARY' | 'PRIORITY_MATRIX' | 'ROADMAP' | 'PILLARS'>('EXECUTIVE_SUMMARY');
   
   const [formData, setFormData] = useState({
-    fullName: 'John Doe',
-    email: 'john@example.com',
-    mobileNumber: '1234567890',
+    fullName: 'Rajesh Sharma',
+    email: 'rajesh.sharma@example.com',
+    mobileNumber: '+91 9829012345',
     role: 'Founder/CEO',
     roleOther: '',
-    companyName: 'Test Company LLC',
-    industry: 'Technology',
+    companyName: 'Apex Industrial Solutions',
+    industry: 'Manufacturing',
     industryOther: '',
-    businessSize: '11-50 employees',
-    revenue: '$1M - $5M',
-    challenges: ['Inconsistent Sales & Revenue Growth', 'Operational Inefficiency & Lack of Systems'],
+    businessSize: '26–50 Employees',
+    revenue: '₹5 Crores – ₹25 Crores',
+    state: 'Rajasthan',
+    city: 'Jaipur',
+    cityOther: '',
+    customerType: 'B2B',
+    challenges: ['Operational Inefficiency & Lack of Systems', 'Inconsistent Sales & Revenue Growth'] as string[],
     challengesOther: '',
-    goals: ['Scale & Expand the Business', 'Improve Operational Efficiency'],
+    goals: ['Increase Revenue & Sales', 'Improve Operational Efficiency'] as string[],
     goalsOther: '',
-    howHeard: 'LinkedIn',
+    howHeard: 'Referral',
     howHeardOther: '',
-    focusArea: 'Operations',
+    focusArea: 'Operational Automation & Process Systems',
     declarationAccurate: true,
     declarationPrivacy: true
   });
@@ -45,36 +90,7 @@ export function AssessmentEngine() {
     "Technology & Business Innovation"
   ];
 
-  const allQuestions = [
-    // Pillar 1 - Leadership & Vision
-    "Does your business have a clear vision and growth strategy for the next 3–5 years?",
-    "Do you regularly review business performance before making important decisions?",
-    "Can your business operate effectively without the owner's daily involvement?",
-    // Pillar 2 - Sales & Revenue
-    "Does your business generate a consistent flow of new customer enquiries?",
-    "Does your business follow a structured sales process from enquiry to conversion?",
-    "Do you have a systematic process to retain existing customers and generate repeat business?",
-    // Pillar 3 - Marketing & Customer Growth
-    "Do you know which marketing activities generate the best business results?",
-    "Do you actively collect customer feedback, reviews, and referrals?",
-    "Does your business follow a consistent marketing strategy throughout the year?",
-    // Pillar 4 - Operations & Process
-    "Are your key business processes documented and consistently followed?",
-    "Can daily business operations continue smoothly with minimal owner intervention?",
-    "Do you have reliable systems to manage operations, inventory, customer orders, or service delivery?",
-    // Pillar 5 - Finance & Business Performance
-    "Do you receive accurate financial reports regularly to support business decisions?",
-    "Does your business maintain healthy cash flow and financial reserves?",
-    "Do you regularly monitor profitability, expenses, and outstanding customer payments?",
-    // Pillar 6 - People & Organisation
-    "Are employee roles and responsibilities clearly defined?",
-    "Do employees work with measurable performance goals?",
-    "Do you have a structured employee onboarding and training process?",
-    // Pillar 7 - Technology & Innovation
-    "Does your business effectively use digital systems for daily operations?",
-    "Is your business and customer data organized and securely managed?",
-    "Do you use technology, automation, or AI to improve productivity?"
-  ];
+  const allQuestions = ASSESSMENT_QUESTIONS.map(q => q.title);
   const [scores, setScores] = useState<number[]>(() => {
     if (typeof window !== 'undefined') {
       try {
@@ -119,8 +135,8 @@ export function AssessmentEngine() {
   const handleStartAssessment = (e: React.MouseEvent) => {
     e.preventDefault();
     setProfileError('');
-    if (!formData.fullName.trim() || !formData.email.trim() || !formData.mobileNumber.trim() || !formData.role.trim() || !formData.companyName.trim() || !formData.industry.trim() || !formData.businessSize.trim() || !formData.revenue.trim() || formData.goals.length === 0 || !formData.declarationAccurate || !formData.declarationPrivacy) {
-      setProfileError('Please fill in all required fields and accept the declarations to proceed.');
+    if (!formData.fullName.trim() || !formData.email.trim() || !formData.mobileNumber.trim() || !formData.role.trim() || !formData.companyName.trim() || !formData.industry.trim() || !formData.businessSize.trim() || !formData.revenue.trim() || !formData.state.trim() || !formData.city.trim() || formData.goals.length === 0 || !formData.declarationAccurate || !formData.declarationPrivacy) {
+      setProfileError('Please fill in all required fields (including State and City) and accept the declarations to proceed.');
       return;
     }
     if (!formData.email.includes('@')) {
@@ -179,9 +195,21 @@ export function AssessmentEngine() {
 
   const getPillarScore = (pillarIdx: number): number => {
     const start = pillarIdx * 3;
-    const pAns = [scores[start], scores[start + 1], scores[start + 2]].filter(s => s > 0);
-    if (pAns.length === 0) return 0;
-    return Math.round((pAns.reduce((a, b) => a + b, 0) / (pAns.length * 4)) * 100);
+    const pAns = [scores[start], scores[start + 1], scores[start + 2]];
+    const pQuestions = ASSESSMENT_QUESTIONS.slice(start, start + 3);
+
+    let scoreSum = 0;
+    let weightSum = 0;
+    pAns.forEach((s, i) => {
+      if (s > 0) {
+        const qScore = s <= 5 ? s * 20 : s;
+        const w = pQuestions[i]?.weight || 0.333;
+        scoreSum += qScore * w;
+        weightSum += w;
+      }
+    });
+    if (weightSum === 0) return 20;
+    return Math.round(scoreSum / weightSum);
   };
 
   const getMaturityLevel = (score: number) => {
@@ -214,12 +242,9 @@ export function AssessmentEngine() {
 
   // 7-Pillar Live Radar Calculations
   const livePillarData = pillars.map((pillarName, pIdx) => {
+    const score = getPillarScore(pIdx);
     const start = pIdx * 3;
-    const pAns = [scores[start], scores[start + 1], scores[start + 2]].filter(s => s > 0);
-    const score = pAns.length > 0 
-      ? Math.round((pAns.reduce((a, b) => a + b, 0) / (pAns.length * 4)) * 100)
-      : 25; // default baseline when unanswered
-    const isAnswered = pAns.length > 0;
+    const isAnswered = [scores[start], scores[start + 1], scores[start + 2]].some(s => s > 0);
     return { name: pillarName, score, isAnswered };
   });
 
@@ -264,16 +289,31 @@ export function AssessmentEngine() {
     setScores(updated);
     setSplashingOption(value);
 
+    const isAllAnswered = updated.every(s => s > 0);
+
     // Auto advance logic
     if (currentQuestionIdx < 20) {
       setTimeout(() => {
-        setCurrentQuestionIdx(prev => prev + 1);
+        if (isAllAnswered) {
+          if (typeof window !== 'undefined') {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+          setView('RESULTS');
+        } else {
+          setCurrentQuestionIdx(prev => prev + 1);
+        }
         setSplashingOption(null);
-      }, 200);
+      }, 300);
     } else {
       setTimeout(() => {
         setSplashingOption(null);
-      }, 200);
+        if (isAllAnswered || updated.filter(s => s > 0).length >= 21) {
+          if (typeof window !== 'undefined') {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+          setView('RESULTS');
+        }
+      }, 300);
     }
   };
 
@@ -288,7 +328,7 @@ export function AssessmentEngine() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-950 font-sans p-4 md:p-8">
       {view === 'PROFILE' && (
-        <div className="flex flex-col w-full absolute top-0 left-0 bg-[#f4f6f8] min-h-screen z-10 pb-12">
+        <div className="flex flex-col w-full bg-[#f4f6f8] min-h-screen z-10 pb-12 rounded-xl overflow-hidden shadow-sm border border-slate-200/60">
           <div className="w-full bg-[#0a1128] border-b border-slate-800 px-6 py-4 flex items-center justify-between">
             <div className="flex items-center gap-4">
               <span className="text-[#d4af37] font-black text-2xl tracking-tighter">KRG<span className="text-white ml-1">ONE</span></span>
@@ -371,7 +411,7 @@ export function AssessmentEngine() {
                     <h3 className="text-[22px] font-bold text-slate-900 tracking-tight">2. Company Profile</h3>
                     <div className="flex-1 h-px bg-slate-200 ml-4"></div>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div>
                       <label className="text-[13px] font-bold text-slate-900 block mb-1.5">Company Name <span className="text-red-500">*</span></label>
                       <input type="text" value={formData.companyName} onChange={e => setFormData({...formData, companyName: e.target.value})} placeholder="Enter company name" className="w-full border border-slate-300 rounded-lg px-3.5 py-2.5 text-[14px] outline-none focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37] transition-all bg-white placeholder-slate-400" />
@@ -397,22 +437,63 @@ export function AssessmentEngine() {
                       )}
                     </div>
                     <div>
-                      <label className="text-[13px] font-bold text-slate-900 block mb-1.5">Business Size <span className="text-red-500">*</span></label>
+                      <label className="text-[13px] font-bold text-slate-900 block mb-1.5">Workforce Size <span className="text-red-500">*</span></label>
                       <select value={formData.businessSize} onChange={e => setFormData({...formData, businessSize: e.target.value})} className="w-full border border-slate-300 rounded-lg px-3.5 py-2.5 text-[14px] outline-none focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37] transition-all bg-white placeholder-slate-400 bg-white">
-                        <option value="">Select business size</option>
-                        <option value="1-10">1-10 employees</option>
-                        <option value="11-50">11-50 employees</option>
-                        <option value="51-200">51-200 employees</option>
+                        <option value="">Select workforce size</option>
+                        <option value="Sole Proprietor (1)">Sole Proprietor (1)</option>
+                        <option value="2–10 Employees">2–10 Employees</option>
+                        <option value="11–25 Employees">11–25 Employees</option>
+                        <option value="26–50 Employees">26–50 Employees</option>
+                        <option value="51–100 Employees">51–100 Employees</option>
+                        <option value="101–250 Employees">101–250 Employees</option>
+                        <option value="251–500 Employees">251–500 Employees</option>
+                        <option value="500+ Employees">500+ Employees</option>
                       </select>
                     </div>
                     <div>
                       <label className="text-[13px] font-bold text-slate-900 block mb-1.5">Annual Revenue <span className="text-red-500">*</span></label>
                       <select value={formData.revenue} onChange={e => setFormData({...formData, revenue: e.target.value})} className="w-full border border-slate-300 rounded-lg px-3.5 py-2.5 text-[14px] outline-none focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37] transition-all bg-white placeholder-slate-400 bg-white">
                         <option value="">Select annual revenue</option>
-                        <option value="Under ₹5 Cr">Under ₹5 Cr</option>
-                        <option value="₹5–20 Cr">₹5–20 Cr</option>
-                        <option value="₹20–50 Cr">₹20–50 Cr</option>
-                        <option value="₹50 Cr+">₹50 Cr+</option>
+                        <option value="Under ₹50 Lakhs">Under ₹50 Lakhs</option>
+                        <option value="₹50 Lakhs – ₹1 Crore">₹50 Lakhs – ₹1 Crore</option>
+                        <option value="₹1 Crore – ₹5 Crores">₹1 Crore – ₹5 Crores</option>
+                        <option value="₹5 Crores – ₹25 Crores">₹5 Crores – ₹25 Crores</option>
+                        <option value="₹25 Crores – ₹100 Crores">₹25 Crores – ₹100 Crores</option>
+                        <option value="Above ₹100 Crores">Above ₹100 Crores</option>
+                      </select>
+                    </div>
+
+                    {/* Business Location: State & City */}
+                    <div>
+                      <label className="text-[13px] font-bold text-slate-900 block mb-1.5">State <span className="text-red-500">*</span></label>
+                      <select value={formData.state} onChange={e => setFormData({...formData, state: e.target.value, city: '', cityOther: ''})} className="w-full border border-slate-300 rounded-lg px-3.5 py-2.5 text-[14px] outline-none focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37] transition-all bg-white placeholder-slate-400 bg-white">
+                        <option value="">Select State</option>
+                        {Object.keys(INDIAN_STATES_CITIES).map(st => (
+                          <option key={st} value={st}>{st}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-[13px] font-bold text-slate-900 block mb-1.5">City <span className="text-red-500">*</span></label>
+                      <select value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})} disabled={!formData.state} className="w-full border border-slate-300 rounded-lg px-3.5 py-2.5 text-[14px] outline-none focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37] transition-all bg-white placeholder-slate-400 bg-white disabled:bg-slate-100 disabled:text-slate-400">
+                        <option value="">{formData.state ? "Select City" : "Select State first"}</option>
+                        {formData.state && INDIAN_STATES_CITIES[formData.state]?.map(ct => (
+                          <option key={ct} value={ct}>{ct}</option>
+                        ))}
+                      </select>
+                      {(formData.city === 'Other City' || formData.city === 'Other Area') && (
+                        <input type="text" value={formData.cityOther} onChange={e => setFormData({...formData, cityOther: e.target.value})} placeholder="Please specify your city" className="w-full mt-3 border border-slate-300 rounded-lg px-3.5 py-2.5 text-[14px] outline-none focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37] transition-all bg-white placeholder-slate-400" />
+                      )}
+                    </div>
+
+                    {/* Primary Customer Type (Optional) */}
+                    <div>
+                      <label className="text-[13px] font-bold text-slate-900 block mb-1.5">Primary Customer Type <span className="font-normal text-slate-500">(Optional)</span></label>
+                      <select value={formData.customerType} onChange={e => setFormData({...formData, customerType: e.target.value})} className="w-full border border-slate-300 rounded-lg px-3.5 py-2.5 text-[14px] outline-none focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37] transition-all bg-white placeholder-slate-400 bg-white">
+                        <option value="">Select customer type</option>
+                        <option value="B2B">B2B</option>
+                        <option value="B2C">B2C</option>
+                        <option value="Both">Both</option>
                       </select>
                     </div>
                   </div>
@@ -757,18 +838,23 @@ export function AssessmentEngine() {
 
               <div className="my-8 bg-white/40 border-t-2 border-l-2 border-b-4 border-r-4 border-t-white border-l-white border-b-slate-200 border-r-slate-200 p-6 md:p-8 rounded-2xl backdrop-blur-md shadow-[inset_0_4px_10px_rgba(255,255,255,0.8),4px_4px_15px_rgba(0,0,0,0.05)] relative overflow-hidden group transition-all duration-500 transform hover:translate-y-[-2px]">
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 transform -translate-y-full group-hover:translate-y-full ease-in-out"></div>
+                <p className="text-xs font-mono font-bold text-amber-800/80 uppercase tracking-wider mb-2 text-center flex items-center justify-center gap-2">
+                  <span className="px-2 py-0.5 bg-amber-100/80 border border-amber-300/60 rounded text-[10px] font-black">{ASSESSMENT_QUESTIONS[currentQuestionIdx]?.id}</span>
+                  <span>{ASSESSMENT_QUESTIONS[currentQuestionIdx]?.subtitle}</span>
+                </p>
                 <p className="text-sm md:text-base font-bold text-slate-800 leading-relaxed text-center relative z-10 drop-shadow-[0_1px_1px_rgba(255,255,255,1)]">{allQuestions[currentQuestionIdx]}</p>
               </div>
 
               <div className="space-y-3 mt-8">
-                <span className="text-[10px] font-black tracking-wider text-slate-400 font-mono uppercase text-center block mb-3 drop-shadow-[0_1px_1px_rgba(255,255,255,1)]">Select Matrix Evaluation Score</span>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
+                <span className="text-[10px] font-black tracking-wider text-slate-400 font-mono uppercase text-center block mb-3 drop-shadow-[0_1px_1px_rgba(255,255,255,1)]">Select 5-Level Evaluation Score</span>
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-3">
                   {[
-                    { val: 1, label: 'Poor / No System' },
-                    { val: 2, label: 'Average / Basic Setup' },
-                    { val: 3, label: 'Good / Systemized' },
-                    { val: 4, label: 'Excellent / Automated' }
-                  ].map(({ val, label }) => (
+                    { val: 1, label: '1 - Very Poor', desc: 'Severe Risk / Missing' },
+                    { val: 2, label: '2 - Poor', desc: 'Informal / Basic' },
+                    { val: 3, label: '3 - Average', desc: 'Standard / Partial' },
+                    { val: 4, label: '4 - Good', desc: 'Defined / Scalable' },
+                    { val: 5, label: '5 - Excellent', desc: 'Best-in-Class / Automated' }
+                  ].map(({ val, label, desc }) => (
                     <button 
                       key={val} 
                       type="button" 
@@ -783,6 +869,7 @@ export function AssessmentEngine() {
                     >
                       <span className="font-mono font-black text-sm md:text-base">{val}</span>
                       <span className={`text-[8px] sm:text-[10px] font-bold mt-1 text-center leading-tight ${scores[currentQuestionIdx] === val || splashingOption === val ? 'text-amber-50' : ''}`}>{label}</span>
+                      <span className={`text-[7px] sm:text-[8px] mt-0.5 text-center leading-tight opacity-75 hidden sm:block ${scores[currentQuestionIdx] === val || splashingOption === val ? 'text-amber-100' : 'text-slate-400'}`}>{desc}</span>
                     </button>
                   ))}
                 </div>
@@ -980,7 +1067,7 @@ export function AssessmentEngine() {
       )}
       {/* FINAL DASHBOARD */}
       {view === 'RESULTS' && (
-        <DashboardReport formData={formData} scores={scores} onResetAssessment={handleResetAssessment} />
+        <DashboardReport formData={formData} scores={scores} onResetAssessment={handleResetAssessment} onReturnHome={onReturnHome} />
       )}
     </div>
   );

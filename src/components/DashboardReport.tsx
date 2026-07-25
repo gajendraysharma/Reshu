@@ -1,146 +1,23 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
+import { generateUnifiedReport } from '../reportGenerator';
+// { useState, useRef, useEffect } from 'react';
 import PrintDossier from './PrintDossier';
 import {
   ShieldCheck, LayoutDashboard, BarChart3, TrendingUp, Cpu, Building2, Calendar, Download, PhoneCall,
   User, Factory, Users, Coins, CheckCircle2, AlertTriangle, ArrowUpRight, Activity, Target, AlertCircle, Clock, Award,
-  ChevronRight, Check, Sparkles, Send, Share2, Printer, Briefcase, GitBranch, Star, Shield, Rocket, Info, RotateCcw
+  ChevronRight, Check, Sparkles, Send, Share2, Printer, Briefcase, GitBranch, Star, Shield, Rocket, Info, RotateCcw, Database, ArrowLeft, FileText
 } from 'lucide-react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 import { ExecutiveAdvisoryTab } from './ExecutiveAdvisoryTab';
 import { PlanRoadmapTab } from './PlanRoadmapTab';
 import { PillarsAnalysisTab } from './PillarsAnalysisTab';
 import { DiagnosticBookingTab } from './DiagnosticBookingTab';
+import { KnowledgeBaseExplorer } from './KnowledgeBaseExplorer';
 
-const QUESTION_DIAGNOSTICS: Record<number, { focusArea: string; questionText: string; impact: string; fix: string }> = {
-  0: {
-    focusArea: "Leadership & Vision",
-    questionText: "Does your business have a clear vision and growth strategy for the next 3–5 years?",
-    impact: "Without a long-term strategic anchor, the business operates in a highly reactive state. Capital and team efforts are diluted across short-term fires rather than compounding toward a defined exit valuation.",
-    fix: "Establish a 3-year strategic growth blueprint. Define annual Objectives and Key Results (OKRs) and hold formal quarterly strategic alignment sessions."
-  },
-  1: {
-    focusArea: "Leadership & Vision",
-    questionText: "Do you regularly review business performance before making important decisions?",
-    impact: "Decisions guided by intuition rather than granular telemetry lead to strategic misalignment, costly trial-and-error campaigns, and delayed reactions to market trends.",
-    fix: "Deploy a centralized Executive KPI Dashboard. Review top-line and bottom-line health on the 1st of every month before deploying growth capital."
-  },
-  2: {
-    focusArea: "Leadership & Vision",
-    questionText: "Can your business operate effectively without the owner's daily involvement?",
-    impact: "The owner acts as a critical bottleneck for strategic growth. Business value is capped because the enterprise cannot scale, self-sustain, or be sold without constant personal intervention.",
-    fix: "Map out an Accountability Chart. Assign specific departmental performance metrics and transition the founder to high-leverage vision-focused tasks."
-  },
-  3: {
-    focusArea: "Sales & Revenue",
-    questionText: "Does your business generate a consistent flow of new customer enquiries?",
-    impact: "High reliance on unpredictable word-of-mouth creates severe revenue volatility, hindering cash flow planning, payroll stability, and long-term marketing investments.",
-    fix: "Implement a programmatic lead generation system combining outbound outreach and paid search, targeting high-intent industrial clients."
-  },
-  4: {
-    focusArea: "Sales & Revenue",
-    questionText: "Does your business follow a structured sales process from enquiry to conversion?",
-    impact: "Deals leak from the pipeline at a critical rate because conversion relies on individual salesperson talent rather than a repeatable corporate sales playbook.",
-    fix: "Establish a formal Sales Pipeline Blueprint with standardized stage-gates, predefined touchpoints, and custom scripts inside the CRM."
-  },
-  5: {
-    focusArea: "Sales & Revenue",
-    questionText: "Do you have a systematic process to retain existing customers and generate repeat business?",
-    impact: "High customer churn forces you to constantly run on a customer acquisition treadmill, heavily driving up marketing expenses and eroding net profit margins.",
-    fix: "Implement an automated Post-Delivery Care program and set up programmatic customer retention campaigns to secure predictable repeat orders."
-  },
-  6: {
-    focusArea: "Marketing & Customer Growth",
-    questionText: "Do you know which marketing activities generate the best business results?",
-    impact: "Marketing spend is treated as an unpredictable cost center rather than a high-yield investment engine, resulting in wasted capital on low-conversion activities.",
-    fix: "Deploy UTM tracking, configure CRM lead-attribution fields, and audit Customer Acquisition Cost (CAC) vs Customer Lifetime Value (LTV) monthly."
-  },
-  7: {
-    focusArea: "Marketing & Customer Growth",
-    questionText: "Do you actively collect customer feedback, reviews, and referrals?",
-    impact: "You miss out on a zero-cost referral network and risk undetected product or service issues that damage brand equity over time.",
-    fix: "Configure a post-project Net Promoter Score (NPS) feedback automation that automatically asks highly satisfied customers for referrals and online reviews."
-  },
-  8: {
-    focusArea: "Marketing & Customer Growth",
-    questionText: "Does your business follow a consistent marketing strategy throughout the year?",
-    impact: "Reactive, sporadic marketing campaigns result in an erratic lead pipeline, causing extreme 'feast or famine' revenue spikes and dips.",
-    fix: "Draft an annual, budget-locked marketing calendar across organic search, professional network positioning, and industrial trade networks."
-  },
-  9: {
-    focusArea: "Operations & Process",
-    questionText: "Are your key business processes documented and consistently followed?",
-    impact: "Operations suffer from extreme variability. Tribal employee memory leads to recurring production errors, quality complaints, and lengthy onboarding cycles.",
-    fix: "Build a centralized Digital SOP Wiki. Document the top 10 highest-leverage operational procedures with clear, visual swimlane diagrams."
-  },
-  10: {
-    focusArea: "Operations & Process",
-    questionText: "Can daily business operations continue smoothly with minimal owner intervention?",
-    impact: "The founder is trapped in daily administrative fire fighting, leaving zero bandwidth for strategic market expansion or valuable joint ventures.",
-    fix: "Transition daily approvals to senior middle-management. Set up an automated End-of-Day (EOD) operational reporting dashboard."
-  },
-  11: {
-    focusArea: "Operations & Process",
-    questionText: "Do you have reliable systems to manage operations, inventory, customer orders, or service delivery?",
-    impact: "Manual data entry and lack of operational tracking lead to critical delivery delays, excessive inventory costs, and severe customer friction.",
-    fix: "Integrate a unified ERP/operations software to manage real-time inventory, track active orders, and monitor delivery timelines programmatically."
-  },
-  12: {
-    focusArea: "Finance & Business Performance",
-    questionText: "Do you receive accurate financial reports regularly to support business decisions?",
-    impact: "Navigating without real-time financial reporting results in accidental cash flow crunches and prevents accurate pricing adjustments for inflation.",
-    fix: "Set up a rigid monthly P&L, Balance Sheet, and Cash Flow statement cycle, with reports finalized and reviewed by the 10th of every month."
-  },
-  13: {
-    focusArea: "Finance & Business Performance",
-    questionText: "Does your business maintain healthy cash flow and financial reserves?",
-    impact: "Zero financial buffer makes the organization highly vulnerable to delayed client payments, supplier price spikes, or macro-market downturns.",
-    fix: "Establish a strict treasury reserve rule to accumulate 3 to 6 months of absolute operating expenses in a secure, liquid corporate reserve account."
-  },
-  14: {
-    focusArea: "Finance & Business Performance",
-    questionText: "Do you regularly monitor profitability, expenses, and outstanding customer payments?",
-    impact: "Unchecked overhead creep and delayed accounts receivable collections trap working capital, leading to artificial funding bottlenecks.",
-    fix: "Deploy a weekly Accounts Receivable aging dashboard. Appoint a dedicated staff member to execute structured follow-ups on outstanding invoices."
-  },
-  15: {
-    focusArea: "People & Organisation",
-    questionText: "Are employee roles and responsibilities clearly defined?",
-    impact: "Overlapping duties, finger-pointing, and general employee confusion lead to extreme operational friction and missed deadlines.",
-    fix: "Write comprehensive job scorecards for every team member. Define exactly 3 to 5 key results and clear boundaries of authority for each role."
-  },
-  16: {
-    focusArea: "People & Organisation",
-    questionText: "Do employees work with measurable performance goals?",
-    impact: "Subjective employee evaluations drive resentment, reward loud behaviors instead of actual results, and lead to poor individual performance.",
-    fix: "Deploy a structured KPI alignment dashboard. Tie employee performance directly to clear, objective output metrics reviewed monthly."
-  },
-  17: {
-    focusArea: "People & Organisation",
-    questionText: "Do you have a structured employee onboarding and training process?",
-    impact: "New hires take several months to reach full productivity, heavily draining senior team bandwidth and driving up payroll overhead.",
-    fix: "Design a standardized 30-60-90 day onboarding roadmap. Build self-serve training resources to accelerate candidate speed-to-performance."
-  },
-  18: {
-    focusArea: "Technology & Innovation",
-    questionText: "Does your business effectively use digital systems for daily operations?",
-    impact: "Manual workarounds and double-entry of records drastically reduce team productivity, resulting in high labor overhead and data transcription errors.",
-    fix: "Map out your software stack. Eliminate redundant tools and integrate core databases using secure APIs to ensure a single source of truth."
-  },
-  19: {
-    focusArea: "Technology & Innovation",
-    questionText: "Is your business and customer data organized and securely managed?",
-    impact: "Loss of critical intellectual property or compliance failures can lead to severe operational disruption, reputational damage, and legal liabilities.",
-    fix: "Implement a secure cloud database structure with multi-factor authentication, daily automated backups, and restricted role-based file access."
-  },
-  20: {
-    focusArea: "Technology & Innovation",
-    questionText: "Do you use technology, automation, or AI to improve productivity?",
-    impact: "Continuing manual operational methods leaves you highly vulnerable to tech-forward competitors who can deliver services at half your cost.",
-    fix: "Conduct a digital transformation audit. Set up AI-assisted customer intake portals and automate routine data transfer workflows."
-  }
-};
 
-export function DashboardReport({ formData = {}, scores = [], onResetAssessment }: any) {
+export function DashboardReport({ formData = {}, scores = [], onResetAssessment, onReturnHome }: any) {
+  const report = useMemo(() => generateUnifiedReport(formData, scores), [formData, scores]);
+
   const [activeTab, setActiveTab] = useState('overview');
   const [bookingConfirmed, setBookingConfirmed] = useState(false);
   const [selectedDate, setSelectedDate] = useState('July 24, 2026');
@@ -222,13 +99,14 @@ export function DashboardReport({ formData = {}, scores = [], onResetAssessment 
   }, [activeTab, completedTasks, selectedDate, selectedTime, bookingConfirmed]);
 
   // Fallback defaults to match the image exactly
-  const compName = formData?.companyName || 'ABC Manufacturing Pvt. Ltd.';
-  const ownerName = formData?.fullName || 'Gajendra Kumar Sharma';
-  const industryType = formData?.industry || 'Manufacturing';
-  const revenueTier = formData?.revenue || '₹ 5 – 20 Cr';
-  const employeeCount = formData?.employees || '50 – 100';
-  const businessGoal = formData?.goals?.join(', ') || 'Increase Sales & Market Share';
-  const topChallenge = formData?.challenges?.[0] || 'High Operational Costs';
+  const compName = formData?.companyName || 'Your Enterprise';
+  const ownerName = formData?.fullName || 'Business Owner';
+  const industryType = formData?.industry || 'Commercial Vertical';
+  const revenueTier = formData?.revenue || 'Confidential';
+  const rawEmployees = formData?.businessSize || formData?.employees || '';
+  const employeeCount = rawEmployees ? `${rawEmployees}` : 'Not Disclosed';
+  const businessGoal = formData?.goals?.join(', ') || 'Scale & Optimize';
+  const topChallenge = formData?.challenges?.[0] || 'Core Operational Leakage';
 
   const PILLARS = [
     "Leadership & Vision",
@@ -246,11 +124,30 @@ export function DashboardReport({ formData = {}, scores = [], onResetAssessment 
     if (!hasScores) {
       return [72, 68, 65, 58, 80, 70, 75]; // Matches default profile
     }
+    const pillarWeights = [
+      [0.45, 0.35, 0.20], // Pillar 1 (LDR)
+      [0.45, 0.30, 0.25], // Pillar 2 (STR)
+      [0.40, 0.35, 0.25], // Pillar 3 (SLS)
+      [0.40, 0.35, 0.25], // Pillar 4 (OPS)
+      [0.40, 0.35, 0.25], // Pillar 5 (FIN)
+      [0.40, 0.35, 0.25], // Pillar 6 (HR)
+      [0.40, 0.35, 0.25], // Pillar 7 (TEC)
+    ];
     return PILLARS.map((_, i) => {
       const start = i * 3;
-      const pAns = [scores[start], scores[start + 1], scores[start + 2]].filter((s: number) => s > 0);
-      if (pAns.length === 0) return 0;
-      return Math.round((pAns.reduce((a: number, b: number) => a + b, 0) / (pAns.length * 4)) * 100);
+      const pAns = [scores[start], scores[start + 1], scores[start + 2]];
+      const weights = pillarWeights[i] || [0.333, 0.333, 0.334];
+      let sum = 0;
+      let wSum = 0;
+      pAns.forEach((s: number, idx: number) => {
+        if (typeof s === 'number' && s > 0) {
+          const valIn100 = s <= 5 ? s * 20 : s;
+          sum += valIn100 * weights[idx];
+          wSum += weights[idx];
+        }
+      });
+      if (wSum === 0) return 0;
+      return Math.round(sum / wSum);
     });
   };
 
@@ -330,31 +227,6 @@ export function DashboardReport({ formData = {}, scores = [], onResetAssessment 
 
   const diagnosticBriefText = `An analytical assessment of ${compName} operating within the ${industryType} vertical indicates that your organization has hit a structural scaling ceiling. While your market position allows you to cross revenue targets in the ${revenueTier} bracket, your operational foundation relies almost exclusively on manual execution. The lack of standard automation frameworks means that scaling up will directly increase operational friction, leading to severe profit margin leakage and high staff burnout. Additionally, high owner dependency within ${lowestPillar.name} (currently operating at a critical ${lowestPillar.score}% performance score) creates a severe structural headwind for your organization. Because daily verification, strategic planning, and process execution are heavily anchored to your personal leadership, strategic throughput is directly restricted to the limits of your personal bandwidth rather than a repeatable, self-sustaining system. Decoupling this pillar from your manual daily oversight through standardized frameworks is the single highest-leverage intervention required to plug active margin leaks and capture the ${dynamicHiddenRev} in trapped scaling value.`;
 
-  const weakestVectors = (() => {
-    const list = Array.from({ length: 21 }, (_, idx) => {
-      const scoreVal = scores[idx] || 0;
-      const displayScore = scoreVal > 0 ? scoreVal : [3, 2, 2, 2, 1, 3, 2, 3, 2, 1, 2, 2, 3, 2, 3, 2, 2, 3, 2, 3, 2][idx];
-      
-      const qDiag = QUESTION_DIAGNOSTICS[idx] || {
-        focusArea: "General Operations",
-        questionText: "General business system execution and efficiency.",
-        impact: "Lack of standard digital platforms forces teams to rely on slow manual tracking, resulting in human execution errors and lost strategic data.",
-        fix: "Deploy standardized cloud software systems to automate routing and reporting tasks."
-      };
-
-      return {
-        idx,
-        qNum: `Q${idx + 1}`,
-        score: displayScore,
-        focusArea: qDiag.focusArea,
-        questionText: qDiag.questionText,
-        impact: qDiag.impact,
-        fix: qDiag.fix
-      };
-    });
-
-    return list.sort((a, b) => a.score - b.score).slice(0, 3);
-  })();
 
   const getScoreStateLabel = (score: number) => {
     switch (score) {
@@ -378,8 +250,7 @@ export function DashboardReport({ formData = {}, scores = [], onResetAssessment 
   const TABS = [
     { id: 'overview', name: 'Executive Overview', icon: ShieldCheck },
     { id: 'health', name: 'Business Health Dashboard™', icon: LayoutDashboard },
-    { id: 'pillars', name: '7 Pillar Analysis', icon: BarChart3 },
-    { id: 'benchmark', name: 'Industry Benchmark', icon: TrendingUp },
+    { id: 'pillars', name: '7 Pillars Analysis', icon: Target },
     { id: 'advisory', name: 'AI Growth Advisory', icon: Cpu },
     { id: 'plan', name: 'Opportunities & 90-Day Plan', icon: Calendar },
     { id: 'booking', name: 'Diagnostic Booking', icon: PhoneCall }
@@ -503,7 +374,22 @@ export function DashboardReport({ formData = {}, scores = [], onResetAssessment 
         triggers: ['Team Productivity', 'Scaling Challenges', 'Employee Churn']
       }
     ];
-    return pool;
+
+    const pillarIndexMap: Record<string, number> = {
+      delegation: 0,
+      leads: 2,
+      sops: 3,
+      finance: 4,
+      talent: 5
+    };
+
+    const sortedPool = [...pool].sort((a, b) => {
+      const scoreA = pillarScores[pillarIndexMap[a.id] ?? 0] ?? 100;
+      const scoreB = pillarScores[pillarIndexMap[b.id] ?? 0] ?? 100;
+      return scoreA - scoreB;
+    });
+
+    return sortedPool;
   };
 
   const topRecommendations = getTopRecommendations();
@@ -557,118 +443,127 @@ export function DashboardReport({ formData = {}, scores = [], onResetAssessment 
   const handlePrintPDF = async () => {
     if (isGeneratingPDF) return;
     setIsGeneratingPDF(true);
-    setPdfStatusMessage('Preparing PDF...');
+    setPdfStatusMessage('Opening Print Window...');
 
     try {
-      const element = document.getElementById('krg-print-dossier-root');
-      if (element) {
-        // Save current style values
-        const prevStyleDisplay = element.style.display;
-        const prevStylePos = element.style.position;
-        const prevStyleLeft = element.style.left;
-        const prevStyleTop = element.style.top;
-        const prevStyleWidth = element.style.width;
-        const prevStyleZIndex = element.style.zIndex;
-        const prevStyleBg = element.style.background;
-
-        // Temporarily render element visibly for html2canvas capture
-        element.style.display = 'block';
-        element.style.position = 'fixed';
-        element.style.left = '0';
-        element.style.top = '0';
-        element.style.width = '210mm';
-        element.style.zIndex = '999999';
-        element.style.background = '#ffffff';
-
-        // Dynamically import html2pdf.js
-        // @ts-ignore
-        const html2pdfModule = await import('html2pdf.js');
-        const html2pdfFn: any = (html2pdfModule as any).default || html2pdfModule;
-
-        const cleanCompName = (formData?.companyName || 'Company').replace(/[^a-zA-Z0-9]/g, '_');
-        const opt = {
-          margin: 0,
-          filename: `KRG_ONE_Diagnostic_Report_${cleanCompName}.pdf`,
-          image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true, logging: false },
-          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-
-        setPdfStatusMessage('Downloading PDF...');
-        await html2pdfFn().set(opt).from(element).save();
-
-        // Restore original style state
-        element.style.display = prevStyleDisplay;
-        element.style.position = prevStylePos;
-        element.style.left = prevStyleLeft;
-        element.style.top = prevStyleTop;
-        element.style.width = prevStyleWidth;
-        element.style.zIndex = prevStyleZIndex;
-        element.style.background = prevStyleBg;
-
-        setIsGeneratingPDF(false);
-        setPdfStatusMessage('');
-        return;
+      const printElement = document.getElementById('krg-print-dossier-root');
+      if (printElement) {
+        const printWin = window.open('', '_blank');
+        if (printWin) {
+          printWin.document.write(`
+            <!DOCTYPE html>
+            <html>
+              <head>
+                <title>KRGONE Business Growth Diagnostic Report</title>
+                <script src="https://cdn.tailwindcss.com"></script>
+                <style>
+                  @media print {
+                    @page { size: A4 portrait; margin: 0; }
+                    body { margin: 0 !important; padding: 0 !important; background: white !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; height: auto !important; min-height: auto !important; overflow: visible !important; }
+                    .print-page { 
+                      width: 210mm !important; 
+                      height: 297mm !important; 
+                      min-height: 297mm !important; 
+                      max-height: 297mm !important; 
+                      box-sizing: border-box !important; 
+                      page-break-after: always !important; 
+                      break-after: page !important; 
+                      page-break-inside: avoid !important; 
+                      break-inside: avoid !important; 
+                      margin: 0 auto !important; 
+                      padding: 10mm 12mm 12mm 12mm !important; 
+                      position: relative !important; 
+                      display: flex !important; 
+                      flex-direction: column !important;
+                      justify-content: space-between !important;
+                      background-color: #ffffff; 
+                      overflow: hidden !important; 
+                      -webkit-print-color-adjust: exact !important;
+                      print-color-adjust: exact !important;
+                    }
+                    .print-page.dark-cover,
+                    .print-page.bg-\[\#030712\],
+                    .print-page.bg-\[\#030816\] {
+                      background-color: #030712 !important;
+                      color: #ffffff !important;
+                    }
+                    .print-page:last-of-type {
+                      page-break-after: auto !important;
+                      break-after: auto !important;
+                    }
+                    .print-page > div, 
+                    .print-page table,
+                    .print-page .flex,
+                    .print-page .grid,
+                    .print-page .bg-slate-50,
+                    .print-page .bg-white,
+                    .avoid-break {
+                      page-break-inside: avoid !important;
+                      break-inside: avoid !important;
+                    }
+                    .no-print { display: none !important; }
+                  }
+                  body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; padding: 20px; }
+                  .print-page { 
+                      background: white; 
+                      width: 210mm !important; 
+                      height: 297mm !important; 
+                      min-height: 297mm !important; 
+                      max-height: 297mm !important; 
+                      padding: 10mm 12mm 12mm 12mm !important; 
+                      margin: 0 auto 20px auto !important; 
+                      box-shadow: 0 10px 25px rgba(0,0,0,0.4); 
+                      box-sizing: border-box; 
+                      position: relative; 
+                      overflow: hidden !important;
+                      display: flex !important;
+                      flex-direction: column !important;
+                      justify-content: space-between !important;
+                  }
+                  .print-page.dark-cover,
+                  .print-page.bg-\[\#030712\],
+                  .print-page.bg-\[\#030816\] {
+                      background: #030712 !important;
+                      color: #ffffff !important;
+                  }
+                  .print-title { font-size: 20pt !important; font-weight: 800 !important; line-height: 1.2 !important; color: #0A1128 !important; }
+                  .print-section-heading { font-size: 16pt !important; font-weight: 800 !important; line-height: 1.3 !important; color: #0A1128 !important; text-transform: uppercase !important; border-bottom: 2px solid #D4AF37 !important; padding-bottom: 4px !important; margin-top: 0 !important; margin-bottom: 12px !important; display: flex !important; align-items: center !important; gap: 8px !important; }
+                  .print-sub-heading { font-size: 13pt !important; font-weight: 700 !important; line-height: 1.4 !important; color: #0A1128 !important; }
+                  .print-body { font-size: 10.5pt !important; line-height: 1.5 !important; color: #334155 !important; }
+                  .print-caption { font-size: 9pt !important; line-height: 1.4 !important; color: #64748b !important; }
+                  .print-footer-container { position: absolute !important; bottom: 8mm !important; left: 15mm !important; right: 15mm !important; border-top: 1px solid #e2e8f0 !important; padding-top: 6px !important; display: flex !important; justify-content: space-between !important; align-items: flex-start !important; background-color: #ffffff !important; }
+                </style>
+              </head>
+              <body>
+                <div style="position: fixed; top: 15px; right: 20px; z-index: 10000; display: flex; gap: 10px;" class="no-print">
+                  <button onclick="window.print()" style="background: #0A1128; color: #D4AF37; border: 1px solid #D4AF37; padding: 10px 20px; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+                    🖨️ Save as PDF / Print Report
+                  </button>
+                  <button onclick="window.close()" style="background: #e2e8f0; color: #1e293b; border: none; padding: 10px 16px; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 14px;">
+                    Close
+                  </button>
+                </div>
+                ${printElement.innerHTML}
+                <script>
+                  setTimeout(() => {
+                    window.print();
+                  }, 800);
+                </script>
+              </body>
+            </html>
+          `);
+          printWin.document.close();
+        } else {
+          alert("Could not generate PDF. Please ensure pop-ups are allowed or try using Chrome.");
+        }
       }
-    } catch (err) {
-      console.warn('html2pdf direct export failed, opening print window fallback:', err);
-    }
-
-    // Fallback if html2pdf fails or in restricted environment
-    setPdfStatusMessage('Opening Print Window...');
-    setTimeout(() => {
+    } catch (printErr) {
+      console.error("Print fallback failed:", printErr);
+      alert("Could not generate PDF. Please ensure pop-ups are allowed or try using Chrome.");
+    } finally {
       setIsGeneratingPDF(false);
       setPdfStatusMessage('');
-
-      try {
-        const printElement = document.getElementById('krg-print-dossier-root');
-        if (printElement) {
-          const printWin = window.open('', '_blank');
-          if (printWin) {
-            printWin.document.write(`
-              <!DOCTYPE html>
-              <html>
-                <head>
-                  <title>KRGONE Business Growth Diagnostic Report</title>
-                  <script src="https://cdn.tailwindcss.com"></script>
-                  <style>
-                    @media print {
-                      @page { size: A4 portrait; margin: 0; }
-                      body { margin: 0 !important; padding: 0 !important; background: white !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-                      .print-page { page-break-after: always !important; break-after: page !important; page-break-inside: avoid !important; break-inside: avoid !important; margin: 0 !important; box-shadow: none !important; width: 210mm !important; height: 297mm !important; min-height: 297mm !important; max-height: 297mm !important; }
-                      .no-print { display: none !important; }
-                    }
-                    body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-                    .print-page { background: white; width: 210mm; min-height: 297mm; height: 297mm; max-height: 297mm; padding: 8mm 10mm; margin-bottom: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); box-sizing: border-box; overflow: hidden; position: relative; }
-                  </style>
-                </head>
-                <body>
-                  <div style="position: fixed; top: 15px; right: 20px; z-index: 10000; display: flex; gap: 10px;" class="no-print">
-                    <button onclick="window.print()" style="background: #0A1128; color: #D4AF37; border: 1px solid #D4AF37; padding: 10px 20px; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
-                      🖨️ Save as PDF / Print Report
-                    </button>
-                    <button onclick="window.close()" style="background: #e2e8f0; color: #1e293b; border: none; padding: 10px 16px; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 14px;">
-                      Close
-                    </button>
-                  </div>
-                  ${printElement.innerHTML}
-                  <script>
-                    setTimeout(() => {
-                      window.print();
-                    }, 800);
-                  </script>
-                </body>
-              </html>
-            `);
-            printWin.document.close();
-            return;
-          }
-        }
-        window.print();
-      } catch (e) {
-        console.error('Print trigger error:', e);
-      }
-    }, 200);
+    }
   };
 
   return (
@@ -690,7 +585,7 @@ export function DashboardReport({ formData = {}, scores = [], onResetAssessment 
             page-break-inside: avoid !important;
             break-inside: avoid !important;
           }
-          @page { size: A4 portrait; margin: 0; }
+          @page { size: A4 portrait; margin: 0.5in; }
         }
         /* Hide scrollbar for Chrome, Safari and Opera */
         .scrollbar-none::-webkit-scrollbar {
@@ -818,6 +713,9 @@ export function DashboardReport({ formData = {}, scores = [], onResetAssessment 
             {/* Single Merged Premium Sidebar Container */}
             <div className="flex flex-col p-6 space-y-6 overflow-y-auto scrollbar-none">
               
+
+
+              
               {/* 2. Navigation */}
               <nav className="space-y-1.5 no-print">
                 {TABS.map(tab => {
@@ -841,6 +739,25 @@ export function DashboardReport({ formData = {}, scores = [], onResetAssessment 
                   );
                 })}
               </nav>
+
+              {/* Download PDF Report Sidebar CTA */}
+              <div className="no-print bg-[#0f172a] text-white rounded-xl p-3.5 space-y-2 border border-slate-800 shadow-sm relative overflow-hidden">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-black text-amber-400 uppercase tracking-wider">PDF Report</span>
+                  <FileText className="w-3.5 h-3.5 text-amber-400" />
+                </div>
+                <p className="text-[10px] text-slate-300 font-medium leading-snug">
+                  Get your full enterprise diagnostic dossier with detailed swimlane playbooks.
+                </p>
+                <button
+                  onClick={handlePrintPDF}
+                  disabled={isGeneratingPDF}
+                  className="w-full bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-black text-[11px] uppercase tracking-wider py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition-all shadow-sm cursor-pointer disabled:opacity-60"
+                >
+                  <Download className="w-3.5 h-3.5 text-slate-950" />
+                  <span>{isGeneratingPDF ? (pdfStatusMessage || 'Preparing...') : 'Download Report'}</span>
+                </button>
+              </div>
 
               {/* 3. Why Upgrade? */}
               <div className="bg-sky-50/70 border border-sky-100 rounded-xl p-4 space-y-2.5">
@@ -1825,12 +1742,13 @@ export function DashboardReport({ formData = {}, scores = [], onResetAssessment 
         {/* VIEW 3: 7-PILLAR ANALYSIS                            */}
         {/* ---------------------------------------------------- */}
         {activeTab === 'pillars' && (
-          <PillarsAnalysisTab
+          <PillarsAnalysisTab 
+            report={report} 
             formData={formData}
-            globalScore={globalScore}
-            pillarScores={pillarScores}
-            lowestPillar={lowestPillar}
+            handlePrintPDF={handlePrintPDF}
             setActiveTab={setActiveTab}
+            isGeneratingPDF={isGeneratingPDF}
+            pdfStatusMessage={pdfStatusMessage}
           />
         )}
 
@@ -1958,16 +1876,7 @@ export function DashboardReport({ formData = {}, scores = [], onResetAssessment 
         {/* VIEW 5: AI GROWTH ADVISORY                           */}
         {/* ---------------------------------------------------- */}
         {activeTab === 'advisory' && (
-          <ExecutiveAdvisoryTab
-            formData={formData}
-            globalScore={globalScore}
-            pillarScores={pillarScores}
-            lowestPillar={lowestPillar}
-            handlePrintPDF={handlePrintPDF}
-            setActiveTab={setActiveTab}
-            isGeneratingPDF={isGeneratingPDF}
-            pdfStatusMessage={pdfStatusMessage}
-          />
+          <ExecutiveAdvisoryTab report={report} formData={formData} handlePrintPDF={handlePrintPDF} setActiveTab={setActiveTab} isGeneratingPDF={isGeneratingPDF} pdfStatusMessage={pdfStatusMessage} />
         )}
         {/* Legacy advisory code suppressed */}
         {false && (() => {
@@ -2492,7 +2401,7 @@ export function DashboardReport({ formData = {}, scores = [], onResetAssessment 
                       <div className="space-y-4 text-[11px] font-semibold leading-relaxed">
                         <div>
                           <span className="text-[8.5px] font-mono text-slate-400 uppercase block mb-1">Business Objective</span>
-                          <p className="text-slate-800 font-extrabold">Document Core SOPs & Launch Nurture Automations</p>
+                          <p className="text-slate-800 font-extrabold">Design & Implement Core Standard Operating Procedures & Launch Nurture Automations</p>
                         </div>
                         <div>
                           <span className="text-[8.5px] font-mono text-slate-400 uppercase block mb-1">Expected Outcome</span>
@@ -2837,10 +2746,24 @@ export function DashboardReport({ formData = {}, scores = [], onResetAssessment 
         )}
 
         {/* ---------------------------------------------------- */}
+        {/* VIEW: BUSINESS RULE DATABASE KNOWLEDGE BASE          */}
+        {/* ---------------------------------------------------- */}
+        {activeTab === 'rules' && (
+          <KnowledgeBaseExplorer />
+        )}
+
+        {/* ---------------------------------------------------- */}
         {/* VIEW 7: 90-DAY GROWTH PLAN ROADMAP                     */}
         {/* ---------------------------------------------------- */}
         {activeTab === 'plan' && (
-          <PlanRoadmapTab formData={formData} globalScore={globalScore} />
+          <PlanRoadmapTab 
+            report={report} 
+            formData={formData}
+            handlePrintPDF={handlePrintPDF}
+            setActiveTab={setActiveTab}
+            isGeneratingPDF={isGeneratingPDF}
+            pdfStatusMessage={pdfStatusMessage}
+          />
         )}
 
         {/* ---------------------------------------------------- */}
@@ -3261,12 +3184,7 @@ export function DashboardReport({ formData = {}, scores = [], onResetAssessment 
       </main>
 
       {/* 20-PAGE EXECUTIVE PDF REPORT */}
-      <PrintDossier
-        formData={formData}
-        scores={scores}
-        globalScore={globalScore}
-        pillarScores={pillarScores}
-      />
+      <PrintDossier report={report} formData={formData} assessmentDate={formattedDate} globalScore={globalScore} pillarScores={pillarScores} />
     </div>
   );
 }

@@ -113,10 +113,17 @@ export function App() {
         }`}
       >
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-[76px] lg:h-[80px]">
+          <div className="flex justify-between items-center h-[90px] lg:h-[108px]">
             {/* Brand / Logo */}
-            <div className="flex flex-col flex-shrink-0 cursor-pointer group py-2 justify-center" onClick={(e) => { e.preventDefault(); setActiveAppView('LANDING'); window.scrollTo(0, 0); }}>
-              <img src="/logo1.png" alt="KRG ONE" className="h-24 sm:h-28 w-auto object-contain" />
+            <div 
+              className="flex flex-col flex-shrink-0 cursor-pointer group py-2 justify-center" 
+              onClick={(e) => { 
+                e.preventDefault(); 
+                setActiveAppView('LANDING'); 
+                window.scrollTo(0, 0); 
+              }}
+            >
+              <img src="/logo1.png" alt="KRG ONE" className="h-[76px] sm:h-[90px] lg:h-[102px] w-auto object-contain max-h-[93px] lg:max-h-[102px]" />
             </div>
 
             {/* Right Side: Desktop Navigation & CTA */}
@@ -205,11 +212,16 @@ export function App() {
               ) : (
                 <div className="flex items-center">
                   <button 
-                    onClick={() => { setActiveAppView('LANDING'); window.scrollTo(0, 0); }} 
-                    className="flex items-center gap-2 bg-white/5 hover:bg-white/10 text-white px-5 py-2 rounded-full text-[12px] font-bold tracking-wide border border-white/10 hover:border-[#c29d2f]/50 transition-all group"
+                    type="button"
+                    onClick={(e) => { 
+                      e.preventDefault(); 
+                      setActiveAppView('LANDING'); 
+                      window.scrollTo(0, 0); 
+                    }} 
+                    className="flex items-center gap-2 bg-[#c29d2f]/10 hover:bg-[#c29d2f]/20 text-white px-5 py-2.5 rounded-full text-[12px] font-bold tracking-wide border border-[#c29d2f]/40 hover:border-[#c29d2f] transition-all cursor-pointer group shadow-sm"
                   >
-                    <svg className="w-4 h-4 text-[#c29d2f] group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                    RETURN TO HOME PAGE
+                    <ArrowLeft className="w-4 h-4 text-[#c29d2f] group-hover:-translate-x-1 transition-transform" />
+                    <span>RETURN TO HOME PAGE</span>
                   </button>
                 </div>
               )}
@@ -2160,7 +2172,7 @@ export function App() {
       </footer>
         </>
       ) : (
-        <AssessmentEngine />
+        <AssessmentEngine onReturnHome={() => { setActiveAppView('LANDING'); window.scrollTo(0, 0); }} />
       )}
 
       

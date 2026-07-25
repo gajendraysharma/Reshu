@@ -35,13 +35,13 @@ export const DiagnosticBookingTab: React.FC<DiagnosticBookingTabProps> = ({
 }) => {
   // Local editable profile state
   const [profile, setProfile] = useState({
-    companyName: formData?.companyName || 'ABC Pvt. Ltd.',
-    industry: formData?.industry || 'Manufacturing',
-    revenue: formData?.revenue || '₹5 Cr - ₹10 Cr',
-    employees: formData?.employees || '25 - 50',
-    contactPerson: formData?.ownerName || formData?.name || formData?.fullName || 'John Doe',
-    email: formData?.email || 'john.doe@abc.com',
-    mobile: formData?.phone || formData?.mobile || formData?.mobileNumber || '+91 98765 43210'
+    companyName: formData?.companyName || 'Not Provided',
+    industry: formData?.industry || 'Not Provided',
+    revenue: formData?.revenue || 'Not Provided',
+    employees: formData?.employees || 'Not Provided',
+    contactPerson: formData?.ownerName || formData?.name || formData?.fullName || 'Not Provided',
+    email: formData?.email || 'Not Provided',
+    mobile: formData?.phone || formData?.mobile || formData?.mobileNumber || 'Not Provided'
   });
 
   const [isEditingProfile, setIsEditingProfile] = useState<boolean>(false);
