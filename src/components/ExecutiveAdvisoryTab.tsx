@@ -1,9 +1,8 @@
 import React from 'react';
 import { 
-  Sparkles, Download, ArrowRight, ShieldCheck, Target, 
-  TrendingUp, CheckCircle2, Zap, Building2, ChevronRight, 
-  Coins, AlertTriangle, UserCheck, PhoneCall, Lightbulb, Briefcase, FileText,
-  XCircle, Check, Clock, Compass, Activity, ShieldAlert, BarChart2
+  Sparkles, Download, ShieldCheck, Target, 
+  TrendingUp, Zap, PhoneCall, Lightbulb, Briefcase,
+  XCircle, Check, AlertTriangle, Compass, UserCheck, Layers, Cpu, Building2, BarChart2, ShieldAlert
 } from 'lucide-react';
 
 interface ExecutiveAdvisoryTabProps {
@@ -27,6 +26,92 @@ export const ExecutiveAdvisoryTab: React.FC<ExecutiveAdvisoryTabProps> = ({
   const industry = report?.profile?.business?.industry || formData?.industry || 'Commercial Vertical';
   const revenue = report?.profile?.size?.annualRevenueRange || formData?.revenue || 'Not Specified';
   const globalScore = report?.overallScore ?? 72;
+  const isLowScore = globalScore < 70;
+
+  // Strategic 5 Technical Recommendations for Low and High score brackets
+  const recommendations = isLowScore ? [
+    {
+      num: 1,
+      title: "Develop Core Standard Operating Procedures (SOPs)",
+      badge: "Process Standardization",
+      friction: "Your business functions rely on tribal employee memory rather than clear documented systems, leading to high processing errors, unpredictable client delivery quality, and extended onboarding timelines for new hires.",
+      intervention: "Document a unified digital blueprint for your absolute highest-leverage processes across sales, operations, and finance. Map out visual step-by-step swimlane diagrams and set explicit processing speed rules for every department.",
+      deployment: "We deploy senior systems consultants directly into your firm to audit your workflows, write your custom operational playbooks, and build an interactive digital wiki database. This secures execution quality and helps insulate your profit margins."
+    },
+    {
+      num: 2,
+      title: "Automate Sales & CRM Stage-Gate Pipelines",
+      badge: "Revenue Velocity",
+      friction: "High volumes of valuable pipeline prospects are leaking daily due to manual follow-up dependencies and lack of automated stage-gate lead qualification.",
+      intervention: "Architect an automated, multi-channel customer relationship management (CRM) infrastructure. Trigger behavior-based email and SMS sequences, and establish programmatic lead scoring to maximize conversions.",
+      deployment: "Our revenue operations division completely restructures your CRM platform, designs custom conversion sequences, and implements a predictive pipeline monitoring cockpit to capture lost revenue."
+    },
+    {
+      num: 3,
+      title: "Institute 13-Week Cash Flow & Unit Margin Audits",
+      badge: "Financial Control",
+      friction: "Decisions are frequently guided by gross revenue numbers rather than net unit profitability. This lack of granular visibility obscures high-volume cost leaks, leaving your monthly cash flow vulnerable.",
+      intervention: "Deploy a real-time financial reporting cockpit to monitor unit economics including Gross Margin, Customer Acquisition Cost (CAC), and Lifetime Value (LTV) through a strict weekly executive audit cycle.",
+      deployment: "We embed professional CFO capabilities to restructure your accounting frameworks, design live Business Intelligence dashboard grids, and optimize your working capital allocations."
+    },
+    {
+      num: 4,
+      title: "Decentralize Executive Decision-Making & Governance",
+      badge: "Founder Decoupling",
+      friction: "The executive founder layer acts as a structural bottleneck for both high-level strategies and daily administrative approvals, paralyzing middle-management speed and capping company capacity.",
+      intervention: "Formulate an outcome-oriented Accountability Chart. Define explicit, measurable Key Performance Indicators (KPIs) for each department lead and grant them structured budget autonomy.",
+      deployment: "We run structured delegation workshops, rewrite managerial role definitions, and establish a high-performance leadership cadence to free up the founder for high-leverage strategic expansion."
+    },
+    {
+      num: 5,
+      title: "Deploy Cloud Software & Automation Webhook Stacks",
+      badge: "Tech Integration",
+      friction: "Siloed, non-integrated software tools force team members into redundant manual data entry, increasing human error and slowing operational execution speed across departments.",
+      intervention: "Architect a unified cloud stack connecting sales, customer onboarding, project execution, and billing through automated API webhooks.",
+      deployment: "Our technology integration team designs, tests, and deploys custom cloud workflows, eliminating manual data entry and reclaiming up to 40% of staff operational capacity."
+    }
+  ] : [
+    {
+      num: 1,
+      title: "Institutionalize Enterprise Workflow Architecture",
+      badge: "Process Optimization",
+      friction: "While basic procedures are documented, cross-departmental handoffs experience minor latency and lack real-time telemetry tracing, preventing maximum operational velocity.",
+      intervention: "Upgrade existing SOP playbooks into a continuous workflow database with embedded performance metrics and real-time SLA event tracking across all business units.",
+      deployment: "KRG ONE partners embed automated workflow tracing tools and set up live executive dashboard grids to maintain maximum operational delivery speed."
+    },
+    {
+      num: 2,
+      title: "Deploy Predictive Sales Analytics & Account Expansion",
+      badge: "Growth Dominance",
+      friction: "Conversion sequences are stable but rely on standard lead cadences rather than predictive behavior models, missing opportunities for expansion within key accounts.",
+      intervention: "Implement predictive account scoring and dynamic customer retention workflows to maximize client lifetime value and automated referral generation.",
+      deployment: "We integrate enterprise revenue intelligence platforms and configure specialized account growth programs to aggressively expand high-yield revenue streams."
+    },
+    {
+      num: 3,
+      title: "Deploy Forward-Looking Capital Allocation Models",
+      badge: "Capital Efficiency",
+      friction: "Capital allocation models remain protective rather than aggressive, missing high-yield investment opportunities and regional market expansion pathways.",
+      intervention: "Design forward-looking cash flow forecast tools to model multi-scenario expansion pathways, pricing adjustments, and strategic acquisition models.",
+      deployment: "Our financial advisory team structures capital deployment blueprints, tax-efficient investment frameworks, and external funding strategies for rapid market expansion."
+    },
+    {
+      num: 4,
+      title: "Align Autonomous Leadership & Executive Incentive Schemes",
+      badge: "Enterprise Valuation",
+      friction: "Middle-management operates autonomously but lacks equity-aligned strategic incentives to drive aggressive enterprise valuation growth.",
+      intervention: "Align leadership compensation directly with long-term company valuation targets and execute quarterly strategic expansion sprints.",
+      deployment: "We structure performance-based partner bonus plans, long-term incentive frameworks, and facilitate quarterly strategic planning cycles."
+    },
+    {
+      num: 5,
+      title: "Architect Next-Gen AI Automation & API Infrastructure",
+      badge: "AI Infrastructure",
+      friction: "Core operations use standard software models rather than customized AI agent automations, leaving potential efficiency gains untapped.",
+      intervention: "Deploy custom AI workflows and automated decision models across sales outreach, customer onboarding, and operational reporting.",
+      deployment: "Our technology team architects custom AI agent pipelines and integrates proprietary LLM automation nodes directly into your operations stack."
+    }
+  ];
 
   return (
     <div className="space-y-6 font-sans pb-8">
@@ -81,6 +166,142 @@ export const ExecutiveAdvisoryTab: React.FC<ExecutiveAdvisoryTabProps> = ({
       </div>
 
       {/* ---------------------------------------------------- */}
+      {/* SECTION A: EXECUTIVE OBSERVATION & MACRO DIAGNOSIS  */}
+      {/* ---------------------------------------------------- */}
+      <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+        <div className="flex items-center justify-between pb-3 border-b border-slate-100 flex-wrap gap-2">
+          <div className="flex items-center gap-2">
+            <Building2 className="w-5 h-5 text-amber-600" />
+            <h3 className="text-xs sm:text-sm font-black text-slate-900 uppercase tracking-wider">
+              Section A: Executive Observation & Macro Diagnosis
+            </h3>
+          </div>
+          <span className={`text-[10px] font-black uppercase px-2.5 py-1 rounded-full border ${
+            isLowScore ? 'bg-rose-50 text-rose-700 border-rose-200' : 'bg-emerald-50 text-emerald-700 border-emerald-200'
+          }`}>
+            {isLowScore ? 'Immediate Turnaround Required' : 'Elite Scaling Architecture'}
+          </span>
+        </div>
+
+        {isLowScore ? (
+          <div className="space-y-4 text-xs sm:text-sm text-slate-700 font-medium leading-relaxed">
+            <div className="p-4 bg-slate-50/80 rounded-xl border border-slate-200/80 space-y-2">
+              <h4 className="font-bold text-slate-900 flex items-center gap-2 text-xs uppercase tracking-wide">
+                <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
+                Structural Systemic Volatility
+              </h4>
+              <p>
+                An analytical review of <strong>{compName}</strong> operating within the <strong>{industry}</strong> vertical indicates that your organization has hit a structural scaling ceiling. While your market position allows you to cross revenue targets in the <strong>{revenue}</strong> bracket, your operational foundation relies almost exclusively on manual execution. The lack of standard automation frameworks means that scaling up will directly increase operational friction, leading to severe profit margin leakage and high staff burnout.
+              </p>
+            </div>
+
+            <div className="p-4 bg-slate-50/80 rounded-xl border border-slate-200/80 space-y-2">
+              <h4 className="font-bold text-slate-900 flex items-center gap-2 text-xs uppercase tracking-wide">
+                <ShieldAlert className="w-4 h-4 text-amber-600 shrink-0" />
+                The Owner-Dependency Barrier
+              </h4>
+              <p>
+                Your assessment answers reveal a critical operational dependency on the founder layer. Because daily validation, strategic planning, and performance management require your constant personal oversight, your team is restricted to running routine tasks. This lack of decentralization caps your ultimate enterprise valuation, as a company dependent on its owner cannot be easily scaled, sold, or institutionalized.
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-4 text-xs sm:text-sm text-slate-700 font-medium leading-relaxed">
+            <div className="p-4 bg-slate-50/80 rounded-xl border border-slate-200/80 space-y-2">
+              <h4 className="font-bold text-slate-900 flex items-center gap-2 text-xs uppercase tracking-wide">
+                <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+                Enterprise Maturity Evaluation
+              </h4>
+              <p>
+                <strong>{compName}</strong> displays an elite operational framework, placing it in the top tier of maturity models for the <strong>{industry}</strong> sector. By decoupling core day-to-day functions from manual founder oversight, you have cleared the initial growth bottlenecks that stall most MSMEs. Your business systems show solid baseline efficiency and consistent delivery parameters.
+              </p>
+            </div>
+
+            <div className="p-4 bg-slate-50/80 rounded-xl border border-slate-200/80 space-y-2">
+              <h4 className="font-bold text-slate-900 flex items-center gap-2 text-xs uppercase tracking-wide">
+                <TrendingUp className="w-4 h-4 text-indigo-600 shrink-0" />
+                Strategic Capital Allocation Matrix
+              </h4>
+              <p>
+                The objective for your enterprise must shift from protective management to aggressive market dominance. With an established core framework, you are prime to utilize your internal stability to deploy high-yield automation models, acquire market share from lower-tier competitors, and execute structured expansions into new regional verticals.
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ---------------------------------------------------- */}
+      {/* SECTION B: TOP 5 STRATEGIC TECHNICAL RECOMMENDATIONS  */}
+      {/* ---------------------------------------------------- */}
+      <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-5">
+        <div className="flex items-center justify-between pb-3 border-b border-slate-100 flex-wrap gap-2">
+          <div className="flex items-center gap-2">
+            <Cpu className="w-5 h-5 text-amber-600" />
+            <h3 className="text-xs sm:text-sm font-black text-slate-900 uppercase tracking-wider">
+              Section B: Top 5 Strategic Technical Recommendations
+            </h3>
+          </div>
+          <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Three-Layer Consulting Grid</span>
+        </div>
+
+        <div className="space-y-4">
+          {recommendations.map((rec) => (
+            <div 
+              key={rec.num}
+              className="bg-slate-50/80 border border-slate-200/90 rounded-2xl p-5 space-y-3.5 hover:border-amber-400/60 transition-all shadow-2xs"
+            >
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200/60 pb-2.5">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-6 h-6 rounded-full bg-slate-900 text-amber-400 text-xs font-black flex items-center justify-center shrink-0">
+                    {rec.num}
+                  </span>
+                  <h4 className="text-xs sm:text-sm font-black text-slate-900 uppercase tracking-wide">
+                    {rec.title}
+                  </h4>
+                </div>
+                <span className="text-[10px] font-bold text-amber-800 bg-amber-100/80 border border-amber-200 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                  {rec.badge}
+                </span>
+              </div>
+
+              {/* Three-Layer Narrative Container */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-3.5 text-xs">
+                {/* 1. The Friction Point */}
+                <div className="p-3.5 bg-rose-50/60 border border-rose-200/80 rounded-xl space-y-1.5">
+                  <span className="text-[10px] font-black text-rose-800 uppercase tracking-wider block">
+                    1. The Friction Point
+                  </span>
+                  <p className="text-slate-700 font-medium leading-relaxed">
+                    {rec.friction}
+                  </p>
+                </div>
+
+                {/* 2. The Strategic Intervention */}
+                <div className="p-3.5 bg-amber-50/60 border border-amber-200/80 rounded-xl space-y-1.5">
+                  <span className="text-[10px] font-black text-amber-800 uppercase tracking-wider block">
+                    2. The Strategic Intervention
+                  </span>
+                  <p className="text-slate-700 font-medium leading-relaxed">
+                    {rec.intervention}
+                  </p>
+                </div>
+
+                {/* 3. KRG ONE Partner Deployment */}
+                <div className="p-3.5 bg-emerald-50/60 border border-emerald-200/80 rounded-xl space-y-1.5">
+                  <span className="text-[10px] font-black text-emerald-800 uppercase tracking-wider block">
+                    3. KRG ONE Partner Deployment
+                  </span>
+                  <p className="text-slate-700 font-medium leading-relaxed">
+                    {rec.deployment}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ---------------------------------------------------- */}
       {/* 2. WHAT MAKES A BUSINESS GROW? (4 CORE DRIVERS)      */}
       {/* ---------------------------------------------------- */}
       <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
@@ -129,7 +350,7 @@ export const ExecutiveAdvisoryTab: React.FC<ExecutiveAdvisoryTabProps> = ({
           <div className="bg-slate-50/70 rounded-xl p-4 border border-slate-200/80 space-y-2 flex flex-col justify-between">
             <div className="space-y-1.5">
               <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-200/60">
-                <Coins className="w-4 h-4" />
+                <Building2 className="w-4 h-4" />
               </div>
               <h4 className="text-xs font-black text-slate-900 uppercase tracking-tight">Financial Unit Economics</h4>
               <p className="text-[11px] text-slate-600 font-medium leading-relaxed">
@@ -285,7 +506,7 @@ export const ExecutiveAdvisoryTab: React.FC<ExecutiveAdvisoryTabProps> = ({
           <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/60 space-y-2 flex flex-col justify-between">
             <div className="space-y-1.5">
               <div className="flex items-center gap-2 text-slate-900 font-black text-xs uppercase">
-                <Coins className="w-4 h-4 text-amber-500" />
+                <Building2 className="w-4 h-4 text-amber-500" />
                 <span>Fractional CFO</span>
               </div>
               <p className="text-[11px] text-slate-600 font-medium leading-relaxed">

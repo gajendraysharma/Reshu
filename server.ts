@@ -316,214 +316,475 @@ async function startServer() {
       // -----------------------------------------------------------------
       // EMAIL 1: CUSTOMER ACKNOWLEDGMENT & EXECUTIVE BRIEFING REPORT
       // -----------------------------------------------------------------
+      const isBooking = customerType === 'Partner Call Reservation';
+
+      const bookingCustomerHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Diagnostic Call Request Received - KRG ONE</title>
+        </head>
+        <body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: 'Segoe UI', Arial, sans-serif; color: #334155;">
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f8fafc; padding: 24px 12px;">
+            <tr>
+              <td align="center">
+                <table role="presentation" width="100%" style="max-width: 650px; background-color: #ffffff; border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
+                  
+                  <!-- BRANDING HEADER -->
+                  <tr>
+                    <td style="background-color: #0f172a; padding: 32px 28px; text-align: center; border-bottom: 3px solid #d4af37;">
+                      <div style="font-size: 24px; font-weight: 900; letter-spacing: 2px; color: #ffffff; margin-bottom: 4px;">
+                        KRG <span style="color: #d4af37;">ONE</span>
+                      </div>
+                      <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: #94a3b8;">
+                        Management Consulting & Enterprise Advisory
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- HERO CONFIRMATION BANNER FOR DIAGNOSTIC CALL -->
+                  <tr>
+                    <td style="padding: 28px 28px 20px 28px; background-color: #f0f9ff; border-bottom: 1px solid #bae6fd;">
+                      <div style="display: inline-block; background-color: #e0f2fe; border: 1px solid #7dd3fc; padding: 4px 14px; border-radius: 20px; color: #0369a1; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 12px;">
+                        📅 Diagnostic Call Request Acknowledgment
+                      </div>
+                      <h1 style="margin: 0 0 10px 0; font-size: 22px; font-weight: 900; color: #0f172a; line-height: 1.3;">
+                        We Have Received Your Diagnostic Call Request
+                      </h1>
+                      <p style="margin: 0; font-size: 14px; color: #334155; line-height: 1.6;">
+                        Dear <strong>${custName}</strong>, thank you for submitting your request for a 1-on-1 Diagnostic Strategy Call with KRG ONE Advisory for <strong>${compName}</strong>. Your request has been logged and assigned to our partner consulting queue.
+                      </p>
+                    </td>
+                  </tr>
+
+                  <!-- PROMISE & RESPONSE TIME BANNER -->
+                  <tr>
+                    <td style="padding: 18px 28px 0 28px;">
+                      <div style="background-color: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 12px; padding: 18px 20px;">
+                        <div style="font-size: 14px; color: #065f46; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
+                          ⚡ OUR TEAM WILL GET BACK TO YOU SOON
+                        </div>
+                        <div style="font-size: 13px; color: #047857; line-height: 1.6;">
+                          A Senior Management Consultant from KRG ONE will review your business profile and contact you shortly via phone (<strong>+91 7300300330</strong>) or email to confirm your exact session time, calendar invitation, and Google Meet access link.
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- DIAGNOSTIC CALL DETAILS TABLE -->
+                  <tr>
+                    <td style="padding: 20px 28px;">
+                      <h3 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px;">
+                        📋 Your Diagnostic Strategy Call Reservation Details
+                      </h3>
+                      <table width="100%" cellspacing="0" cellpadding="0" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; font-size: 13px; border-collapse: separate; border-spacing: 0;">
+                        <tr>
+                          <td style="padding: 8px 12px; font-weight: 700; color: #64748b; width: 150px; border-bottom: 1px solid #f1f5f9;">Executive Name:</td>
+                          <td style="padding: 8px 12px; font-weight: 800; color: #0f172a; border-bottom: 1px solid #f1f5f9;">${custName} (${role})</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 8px 12px; font-weight: 700; color: #64748b; border-bottom: 1px solid #f1f5f9;">Enterprise:</td>
+                          <td style="padding: 8px 12px; font-weight: 800; color: #0f172a; border-bottom: 1px solid #f1f5f9;">${compName} (${industry})</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 8px 12px; font-weight: 700; color: #64748b; border-bottom: 1px solid #f1f5f9;">Email Address:</td>
+                          <td style="padding: 8px 12px; font-weight: 800; color: #0284c7; border-bottom: 1px solid #f1f5f9;">
+                            <a href="mailto:${custEmail}" style="color: #0284c7; text-decoration: underline;">${custEmail}</a>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 8px 12px; font-weight: 700; color: #64748b; border-bottom: 1px solid #f1f5f9;">Mobile Number:</td>
+                          <td style="padding: 8px 12px; font-weight: 800; color: #0f172a; border-bottom: 1px solid #f1f5f9;">${mobileNumber}</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 8px 12px; font-weight: 700; color: #64748b; border-bottom: 1px solid #f1f5f9;">Requested Slot:</td>
+                          <td style="padding: 8px 12px; font-weight: 800; color: #b45309; border-bottom: 1px solid #f1f5f9;">${challengesList}</td>
+                        </tr>
+                        ${goalsList ? `
+                        <tr>
+                          <td style="padding: 8px 12px; font-weight: 700; color: #64748b; border-bottom: 1px solid #f1f5f9;">Agenda / Notes:</td>
+                          <td style="padding: 8px 12px; font-weight: 600; color: #334155; border-bottom: 1px solid #f1f5f9;">${goalsList}</td>
+                        </tr>
+                        ` : ''}
+                        <tr>
+                          <td style="padding: 8px 12px; font-weight: 700; color: #64748b;">Diagnostic Score:</td>
+                          <td style="padding: 8px 12px; font-weight: 800; color: #d4af37;">${finalScore}% Overall Growth Index</td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+
+                  <!-- PDF DOSSIER ATTACHMENT NOTICE -->
+                  <tr>
+                    <td style="padding: 0 28px 20px 28px;">
+                      <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 14px 18px;">
+                        <div style="font-size: 13px; color: #166534; font-weight: 700;">
+                          📎 <strong>Executive PDF Dossier Attached:</strong>
+                          <span style="font-weight: 500; display: block; color: #15803d; font-size: 12px; margin-top: 2px;">
+                            We have attached your complete Business Growth Diagnostic Report (PDF) to this email for your preliminary review before our session.
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- KRG ONE ADVISORY CONTACT DETAILS CARD -->
+                  <tr>
+                    <td style="padding: 0 28px 24px 28px;">
+                      <table width="100%" cellspacing="0" cellpadding="0" style="background-color: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 12px; padding: 18px;">
+                        <tr>
+                          <td>
+                            <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: #b45309; margin-bottom: 4px;">
+                              KRG ONE Enterprise Advisory Desk
+                            </div>
+                            <h4 style="margin: 0 0 10px 0; font-size: 15px; font-weight: 900; color: #0f172a;">
+                              Official Advisory Contact Details
+                            </h4>
+                            <table width="100%" cellspacing="0" cellpadding="0" style="font-size: 13px; color: #334155;">
+                              <tr>
+                                <td style="padding: 4px 0; font-weight: 700; width: 130px; color: #64748b;">Official Email:</td>
+                                <td style="padding: 4px 0; font-weight: 800; color: #0284c7;">
+                                  <a href="mailto:enquiry.krgone@gmail.com" style="color: #0284c7; text-decoration: underline;">enquiry.krgone@gmail.com</a>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="padding: 4px 0; font-weight: 700; color: #64748b;">Direct Hotline:</td>
+                                <td style="padding: 4px 0; font-weight: 800; color: #0f172a;">
+                                  <a href="tel:+917300300330" style="color: #0f172a; text-decoration: none;">+91 7300300330</a>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="padding: 4px 0; font-weight: 700; color: #64748b;">Corporate HQ:</td>
+                                <td style="padding: 4px 0; font-weight: 600; color: #334155;">Jaipur, Rajasthan, India</td>
+                              </tr>
+                              <tr>
+                                <td style="padding: 4px 0; font-weight: 700; color: #64748b;">Advisory Portal:</td>
+                                <td style="padding: 4px 0; font-weight: 600; color: #0284c7;">
+                                  <a href="https://www.krgone.vercel.app" style="color: #0284c7; text-decoration: underline;">www.krgone.vercel.app</a>
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+
+                  <!-- FOOTER -->
+                  <tr>
+                    <td style="padding: 20px 28px; background-color: #f8fafc; border-top: 1px solid #e2e8f0; text-align: center; font-size: 11px; color: #94a3b8; line-height: 1.5;">
+                      <p style="margin: 0 0 4px 0; font-weight: 700; color: #64748b;">
+                        KRG ONE Business Management Advisory
+                      </p>
+                      <p style="margin: 0 0 4px 0;">
+                        Official Email: <a href="mailto:enquiry.krgone@gmail.com" style="color: #0284c7; text-decoration: none;">enquiry.krgone@gmail.com</a> • Phone: <a href="tel:+917300300330" style="color: #0284c7; text-decoration: none;">+91 7300300330</a>
+                      </p>
+                      <p style="margin: 0;">
+                        Submitted on ${formattedDate} IST • Confidential Enterprise Advisory
+                      </p>
+                    </td>
+                  </tr>
+
+                </table>
+              </td>
+            </tr>
+          </table>
+        </body>
+        </html>
+      `;
+
+      const assessmentCustomerHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Assessment Report - KRG ONE</title>
+        </head>
+        <body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: 'Segoe UI', Arial, sans-serif; color: #334155;">
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f8fafc; padding: 24px 12px;">
+            <tr>
+              <td align="center">
+                <table role="presentation" width="100%" style="max-width: 650px; background-color: #ffffff; border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
+                  
+                  <!-- BRANDING HEADER -->
+                  <tr>
+                    <td style="background-color: #0f172a; padding: 32px 28px; text-align: center; border-bottom: 3px solid #d4af37;">
+                      <div style="font-size: 24px; font-weight: 900; letter-spacing: 2px; color: #ffffff; margin-bottom: 4px;">
+                        KRG <span style="color: #d4af37;">ONE</span>
+                      </div>
+                      <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: #94a3b8;">
+                        Management Consulting & Enterprise Advisory
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- HERO CONFIRMATION BANNER -->
+                  <tr>
+                    <td style="padding: 28px 28px 16px 28px; background-color: #f1f5f9; border-bottom: 1px solid #e2e8f0;">
+                      <div style="display: inline-block; background-color: rgba(212, 175, 55, 0.15); border: 1px solid rgba(212, 175, 55, 0.4); padding: 4px 12px; border-radius: 20px; color: #854d0e; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 12px;">
+                        Official Assessment Acknowledgment
+                      </div>
+                      <h1 style="margin: 0 0 8px 0; font-size: 22px; font-weight: 900; color: #0f172a; line-height: 1.3;">
+                        Strategic Business Growth Assessment Completed
+                      </h1>
+                      <p style="margin: 0; font-size: 14px; color: #475569; line-height: 1.6;">
+                        Dear <strong>${custName}</strong>, thank you for completing the KRG ONE diagnostic audit for <strong>${compName}</strong>. Your executive parameters have been evaluated by our core business intelligence engine.
+                      </p>
+                    </td>
+                  </tr>
+
+                  <!-- PDF ATTACHMENT NOTICE -->
+                  <tr>
+                    <td style="padding: 16px 28px 0 28px;">
+                      <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between;">
+                        <div style="font-size: 13px; color: #166534; font-weight: 700;">
+                          📎 <strong>Full Diagnostic PDF Dossier Attached:</strong>
+                          <span style="font-weight: 500; display: block; color: #15803d; font-size: 12px; margin-top: 2px;">
+                            Your custom report PDF (KRG_ONE_Diagnostic_Report_${safeCompFileName}.pdf) is attached to this email for download and print.
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- EXECUTIVE SCORE HIGHLIGHT CARD -->
+                  <tr>
+                    <td style="padding: 20px 28px;">
+                      <table width="100%" cellspacing="0" cellpadding="0" style="background-color: #0f172a; border-radius: 12px; padding: 20px; color: #ffffff;">
+                        <tr>
+                          <td style="vertical-align: middle;">
+                            <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #d4af37; margin-bottom: 4px;">
+                              Overall Growth Readiness Index
+                            </div>
+                            <div style="font-size: 16px; font-weight: 800; color: #ffffff;">
+                              ${compName} (${industry})
+                            </div>
+                            <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">
+                              Revenue Band: ${revenue} | Size: ${businessSize}
+                            </div>
+                          </td>
+                          <td width="110" align="right" style="vertical-align: middle;">
+                            <div style="background-color: rgba(212, 175, 55, 0.2); border: 2px solid #d4af37; border-radius: 12px; width: 80px; height: 80px; text-align: center; display: table;">
+                              <div style="display: table-cell; vertical-align: middle;">
+                                <span style="font-size: 26px; font-weight: 900; color: #fef08a; display: block; line-height: 1;">${finalScore}%</span>
+                                <span style="font-size: 9px; font-weight: 700; color: #cbd5e1; uppercase;">SCORE</span>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+
+                  <!-- 7-PILLAR EVALUATION BREAKDOWN -->
+                  <tr>
+                    <td style="padding: 0 28px 20px 28px;">
+                      <h3 style="margin: 0 0 12px 0; font-size: 15px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px;">
+                        7-Pillar Enterprise Diagnostics Breakdown
+                      </h3>
+                      <table width="100%" cellspacing="0" cellpadding="0" style="border-collapse: collapse; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
+                        <thead>
+                          <tr style="background-color: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+                            <th align="left" style="padding: 10px 12px; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 800;">Business Pillar</th>
+                            <th align="center" style="padding: 10px 12px; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 800;">Score</th>
+                            <th align="right" style="padding: 10px 12px; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 800;">Operational Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          ${pillarRowsHtml}
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+
+                  <!-- KEY OBSERVATIONS & RECOMMENDATIONS -->
+                  <tr>
+                    <td style="padding: 0 28px 24px 28px;">
+                      <div style="background-color: #fffbeb; border: 1px solid #fef3c7; border-radius: 12px; padding: 18px;">
+                        <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 800; color: #92400e; text-transform: uppercase;">
+                          💡 Key Executive Focus Areas Identified
+                        </h4>
+                        <p style="margin: 0 0 10px 0; font-size: 13px; color: #78350f; line-height: 1.5;">
+                          Based on your primary challenge <strong>"${challengesList}"</strong>, your organization requires standard operating systemization (SOP playbooks) and stage-gate CRM pipeline automation to decouple growth from manual founder oversight.
+                        </p>
+                        <ul style="margin: 0; padding-left: 20px; font-size: 12px; color: #92400e; line-height: 1.6;">
+                          <li><strong>Systemize SOPs:</strong> Document high-leverage sales & delivery processes into digital playbooks.</li>
+                          <li><strong>CRM Stage-Gate Rules:</strong> Eliminate lost leads with automated SLA follow-ups.</li>
+                          <li><strong>13-Week Cash Rolling Forecast:</strong> Protect unit gross profit margins against unbilled scope creep.</li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- ACTION CTA BLOCK -->
+                  <tr>
+                    <td style="padding: 20px 28px 24px 28px; background-color: #0f172a; text-align: center; border-top: 1px solid #1e293b;">
+                      <h3 style="margin: 0 0 8px 0; font-size: 18px; font-weight: 900; color: #ffffff;">
+                        Ready to Unlock Scalable Enterprise Growth?
+                      </h3>
+                      <p style="margin: 0 0 20px 0; font-size: 13px; color: #94a3b8; max-width: 480px; margin-left: auto; margin-right: auto;">
+                        Book a 1-on-1 Strategic Review with a Senior Partner at KRG ONE to review your custom PDF Dossier and 90-day execution roadmap.
+                      </p>
+                      <a href="mailto:enquiry.krgone@gmail.com?subject=Schedule%20Partner%20Review%20-%20${encodeURIComponent(compName)}" style="display: inline-block; background-color: #d4af37; color: #0f172a; text-decoration: none; padding: 12px 28px; border-radius: 8px; font-weight: 900; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">
+                        Book 1-on-1 Partner Strategy Call
+                      </a>
+                    </td>
+                  </tr>
+
+                  <!-- KRG ONE DIRECT CONTACT DETAILS CARD -->
+                  <tr>
+                    <td style="padding: 0 28px 24px 28px;">
+                      <table width="100%" cellspacing="0" cellpadding="0" style="background-color: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 12px; padding: 18px;">
+                        <tr>
+                          <td>
+                            <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: #b45309; margin-bottom: 4px;">
+                              KRG ONE Enterprise Advisory Desk
+                            </div>
+                            <h4 style="margin: 0 0 10px 0; font-size: 15px; font-weight: 900; color: #0f172a;">
+                              Official Advisory Contact Details
+                            </h4>
+                            <table width="100%" cellspacing="0" cellpadding="0" style="font-size: 13px; color: #334155;">
+                              <tr>
+                                <td style="padding: 4px 0; font-weight: 700; width: 130px; color: #64748b;">Official Email:</td>
+                                <td style="padding: 4px 0; font-weight: 800; color: #0284c7;">
+                                  <a href="mailto:enquiry.krgone@gmail.com" style="color: #0284c7; text-decoration: underline;">enquiry.krgone@gmail.com</a>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="padding: 4px 0; font-weight: 700; color: #64748b;">Direct Hotline:</td>
+                                <td style="padding: 4px 0; font-weight: 800; color: #0f172a;">
+                                  <a href="tel:+917300300330" style="color: #0f172a; text-decoration: none;">+91 7300300330</a>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="padding: 4px 0; font-weight: 700; color: #64748b;">Corporate HQ:</td>
+                                <td style="padding: 4px 0; font-weight: 600; color: #334155;">Jaipur, Rajasthan, India</td>
+                              </tr>
+                              <tr>
+                                <td style="padding: 4px 0; font-weight: 700; color: #64748b;">Advisory Portal:</td>
+                                <td style="padding: 4px 0; font-weight: 600; color: #0284c7;">
+                                  <a href="https://www.krgone.vercel.app" style="color: #0284c7; text-decoration: underline;">www.krgone.vercel.app</a>
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+
+                  <!-- FOOTER -->
+                  <tr>
+                    <td style="padding: 20px 28px; background-color: #f8fafc; border-top: 1px solid #e2e8f0; text-align: center; font-size: 11px; color: #94a3b8; line-height: 1.5;">
+                      <p style="margin: 0 0 4px 0; font-weight: 700; color: #64748b;">
+                        KRG ONE Business Management Advisory
+                      </p>
+                      <p style="margin: 0 0 4px 0;">
+                        Official Email: <a href="mailto:enquiry.krgone@gmail.com" style="color: #0284c7; text-decoration: none;">enquiry.krgone@gmail.com</a> • Phone: <a href="tel:+917300300330" style="color: #0284c7; text-decoration: none;">+91 7300300330</a>
+                      </p>
+                      <p style="margin: 0;">
+                        Submitted on ${formattedDate} IST • Confidential Enterprise Diagnostic Report
+                      </p>
+                    </td>
+                  </tr>
+
+                </table>
+              </td>
+            </tr>
+          </table>
+        </body>
+        </html>
+      `;
+
+      const bookingCustomerText = `Dear ${custName},
+
+Thank you for requesting a Diagnostic Strategy Call with KRG ONE Advisory for ${compName}. We have received your request and logged your details.
+
+OUR TEAM WILL GET BACK TO YOU SOON
+A Senior Management Consultant from KRG ONE will review your business profile and contact you shortly via phone (${mobileNumber}) or email (${custEmail}) to confirm your exact session time, calendar invitation, and Google Meet access link.
+
+Your Diagnostic Strategy Call Reservation Details:
+- Executive Name: ${custName} (${role})
+- Enterprise: ${compName} (${industry})
+- Email: ${custEmail}
+- Mobile Number: ${mobileNumber}
+- Requested Slot: ${challengesList}
+${goalsList ? `- Agenda / Notes: ${goalsList}\n` : ''}- Overall Score: ${finalScore}% Growth Readiness Index
+
+Executive PDF Dossier Attached:
+We have attached your complete Business Growth Diagnostic Report (PDF) to this email for your preliminary review.
+
+Official Advisory Contact Details:
+- Official Email: enquiry.krgone@gmail.com
+- Direct Hotline: +91 7300300330
+- Corporate HQ: Jaipur, Rajasthan, India
+- Advisory Portal: https://www.krgone.vercel.app
+
+Submitted on ${formattedDate} IST
+KRG ONE Business Management Advisory`;
+
+      const assessmentCustomerText = `Dear ${custName},
+
+Thank you for completing the KRG ONE Strategic Business Growth Assessment for ${compName}.
+
+Your Overall Growth Readiness Index: ${finalScore}%
+
+Attached to this email, you will find your full Executive Business Diagnostic Report (PDF).
+
+Key Executive Focus Areas:
+- Systemize SOPs: Document high-leverage sales and delivery processes into digital playbooks.
+- CRM Stage-Gate Rules: Eliminate lost leads with automated SLA follow-ups.
+- 13-Week Cash Forecast: Protect unit gross profit margins against unbilled scope creep.
+
+To schedule a 1-on-1 Strategic Review with a Senior Partner at KRG ONE, please reply to this email or call +91 7300300330.
+
+Official Advisory Contact Details:
+- Official Email: enquiry.krgone@gmail.com
+- Direct Hotline: +91 7300300330
+- Corporate HQ: Jaipur, Rajasthan, India
+- Advisory Portal: https://www.krgone.vercel.app
+
+Submitted on ${formattedDate} IST
+KRG ONE Business Management Advisory`;
+
+      const leadNotificationText = `${isBooking ? 'DIAGNOSTIC STRATEGY CALL REQUEST BOOKED' : 'NEW BUSINESS GROWTH ASSESSMENT SUBMISSION'}
+
+Company Name: ${compName}
+Executive Name: ${custName} (${role})
+Email Address: ${custEmail}
+Mobile Number: ${mobileNumber}
+Industry Vertical: ${industry}
+Annual Revenue: ${revenue}
+Team Size: ${businessSize}
+Location: ${location}
+Growth Index Score: ${finalScore}%
+
+Key Challenges / Requested Slot: ${challengesList}
+Target Growth Goals / Notes: ${goalsList}
+
+PDF Report Attached: KRG_ONE_Diagnostic_Report_${safeCompFileName}.pdf
+Received Date: ${formattedDate} IST
+
+KRG ONE Internal Lead Engine`;
+
       const customerMailOptions = {
         from: `"KRG ONE Advisory" <${user}>`,
+        replyTo: `enquiry.krgone@gmail.com`,
         to: custEmail,
-        subject: `Assessment Report & Strategic Acknowledgment - ${compName} | KRG ONE`,
+        subject: isBooking
+          ? `Diagnostic Strategy Call Request Confirmation - ${compName} | KRG ONE Advisory`
+          : `Executive Business Growth Diagnostic Report - ${compName} | KRG ONE Advisory`,
+        text: isBooking ? bookingCustomerText : assessmentCustomerText,
+        html: isBooking ? bookingCustomerHtml : assessmentCustomerHtml,
         attachments,
-        html: `
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Assessment Report - KRG ONE</title>
-          </head>
-          <body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: 'Segoe UI', Arial, sans-serif; color: #334155;">
-            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f8fafc; padding: 24px 12px;">
-              <tr>
-                <td align="center">
-                  <table role="presentation" width="100%" style="max-width: 650px; background-color: #ffffff; border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
-                    
-                    <!-- BRANDING HEADER -->
-                    <tr>
-                      <td style="background-color: #0f172a; padding: 32px 28px; text-align: center; border-bottom: 3px solid #d4af37;">
-                        <div style="font-size: 24px; font-weight: 900; letter-spacing: 2px; color: #ffffff; margin-bottom: 4px;">
-                          KRG <span style="color: #d4af37;">ONE</span>
-                        </div>
-                        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: #94a3b8;">
-                          Management Consulting & Enterprise Advisory
-                        </div>
-                      </td>
-                    </tr>
-
-                    <!-- HERO CONFIRMATION BANNER -->
-                    <tr>
-                      <td style="padding: 28px 28px 16px 28px; background-color: #f1f5f9; border-bottom: 1px solid #e2e8f0;">
-                        <div style="display: inline-block; background-color: rgba(212, 175, 55, 0.15); border: 1px solid rgba(212, 175, 55, 0.4); padding: 4px 12px; border-radius: 20px; color: #854d0e; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 12px;">
-                          Official Assessment Acknowledgment
-                        </div>
-                        <h1 style="margin: 0 0 8px 0; font-size: 22px; font-weight: 900; color: #0f172a; line-height: 1.3;">
-                          Strategic Business Growth Assessment Completed
-                        </h1>
-                        <p style="margin: 0; font-size: 14px; color: #475569; line-height: 1.6;">
-                          Dear <strong>${custName}</strong>, thank you for completing the KRG ONE diagnostic audit for <strong>${compName}</strong>. Your executive parameters have been evaluated by our core business intelligence engine.
-                        </p>
-                      </td>
-                    </tr>
-
-                    <!-- PDF ATTACHMENT NOTICE -->
-                    <tr>
-                      <td style="padding: 16px 28px 0 28px;">
-                        <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between;">
-                          <div style="font-size: 13px; color: #166534; font-weight: 700;">
-                            📎 <strong>Full Diagnostic PDF Dossier Attached:</strong>
-                            <span style="font-weight: 500; display: block; color: #15803d; font-size: 12px; margin-top: 2px;">
-                              Your custom report PDF (KRG_ONE_Diagnostic_Report_${safeCompFileName}.pdf) is attached to this email for download and print.
-                            </span>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-
-                    <!-- EXECUTIVE SCORE HIGHLIGHT CARD -->
-                    <tr>
-                      <td style="padding: 20px 28px;">
-                        <table width="100%" cellspacing="0" cellpadding="0" style="background-color: #0f172a; border-radius: 12px; padding: 20px; color: #ffffff;">
-                          <tr>
-                            <td style="vertical-align: middle;">
-                              <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #d4af37; margin-bottom: 4px;">
-                                Overall Growth Readiness Index
-                              </div>
-                              <div style="font-size: 16px; font-weight: 800; color: #ffffff;">
-                                ${compName} (${industry})
-                              </div>
-                              <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">
-                                Revenue Band: ${revenue} | Size: ${businessSize}
-                              </div>
-                            </td>
-                            <td width="110" align="right" style="vertical-align: middle;">
-                              <div style="background-color: rgba(212, 175, 55, 0.2); border: 2px solid #d4af37; border-radius: 12px; width: 80px; height: 80px; text-align: center; display: table;">
-                                <div style="display: table-cell; vertical-align: middle;">
-                                  <span style="font-size: 26px; font-weight: 900; color: #fef08a; display: block; line-height: 1;">${finalScore}%</span>
-                                  <span style="font-size: 9px; font-weight: 700; color: #cbd5e1; uppercase;">SCORE</span>
-                                </div>
-                              </div>
-                            </td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
-
-                    <!-- 7-PILLAR EVALUATION BREAKDOWN -->
-                    <tr>
-                      <td style="padding: 0 28px 20px 28px;">
-                        <h3 style="margin: 0 0 12px 0; font-size: 15px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px;">
-                          7-Pillar Enterprise Diagnostics Breakdown
-                        </h3>
-                        <table width="100%" cellspacing="0" cellpadding="0" style="border-collapse: collapse; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
-                          <thead>
-                            <tr style="background-color: #f8fafc; border-bottom: 2px solid #e2e8f0;">
-                              <th align="left" style="padding: 10px 12px; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 800;">Business Pillar</th>
-                              <th align="center" style="padding: 10px 12px; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 800;">Score</th>
-                              <th align="right" style="padding: 10px 12px; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 800;">Operational Status</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            ${pillarRowsHtml}
-                          </tbody>
-                        </table>
-                      </td>
-                    </tr>
-
-                    <!-- KEY OBSERVATIONS & RECOMMENDATIONS -->
-                    <tr>
-                      <td style="padding: 0 28px 24px 28px;">
-                        <div style="background-color: #fffbeb; border: 1px solid #fef3c7; border-radius: 12px; padding: 18px;">
-                          <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 800; color: #92400e; text-transform: uppercase;">
-                            💡 Key Executive Focus Areas Identified
-                          </h4>
-                          <p style="margin: 0 0 10px 0; font-size: 13px; color: #78350f; line-height: 1.5;">
-                            Based on your primary challenge <strong>"${challengesList}"</strong>, your organization requires standard operating systemization (SOP playbooks) and stage-gate CRM pipeline automation to decouple growth from manual founder oversight.
-                          </p>
-                          <ul style="margin: 0; padding-left: 20px; font-size: 12px; color: #92400e; line-height: 1.6;">
-                            <li><strong>Systemize SOPs:</strong> Document high-leverage sales & delivery processes into digital playbooks.</li>
-                            <li><strong>CRM Stage-Gate Rules:</strong> Eliminate lost leads with automated SLA follow-ups.</li>
-                            <li><strong>13-Week Cash Rolling Forecast:</strong> Protect unit gross profit margins against unbilled scope creep.</li>
-                          </ul>
-                        </div>
-                      </td>
-                    </tr>
-
-                    <!-- ACTION CTA BLOCK -->
-                    <tr>
-                      <td style="padding: 20px 28px 24px 28px; background-color: #0f172a; text-align: center; border-top: 1px solid #1e293b;">
-                        <h3 style="margin: 0 0 8px 0; font-size: 18px; font-weight: 900; color: #ffffff;">
-                          Ready to Unlock Scalable Enterprise Growth?
-                        </h3>
-                        <p style="margin: 0 0 20px 0; font-size: 13px; color: #94a3b8; max-width: 480px; margin-left: auto; margin-right: auto;">
-                          Book a 1-on-1 Strategic Review with a Senior Partner at KRG ONE to review your custom PDF Dossier and 90-day execution roadmap.
-                        </p>
-                        <a href="mailto:enquiry.krgone@gmail.com?subject=Schedule%20Partner%20Review%20-%20${encodeURIComponent(compName)}" style="display: inline-block; background-color: #d4af37; color: #0f172a; text-decoration: none; padding: 12px 28px; border-radius: 8px; font-weight: 900; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">
-                          Book 1-on-1 Partner Strategy Call
-                        </a>
-                      </td>
-                    </tr>
-
-                    <!-- KRG ONE DIRECT CONTACT DETAILS CARD -->
-                    <tr>
-                      <td style="padding: 0 28px 24px 28px;">
-                        <table width="100%" cellspacing="0" cellpadding="0" style="background-color: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 12px; padding: 18px;">
-                          <tr>
-                            <td>
-                              <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: #b45309; margin-bottom: 4px;">
-                                KRG ONE Enterprise Advisory Desk
-                              </div>
-                              <h4 style="margin: 0 0 10px 0; font-size: 15px; font-weight: 900; color: #0f172a;">
-                                Official Advisory Contact Details
-                              </h4>
-                              <table width="100%" cellspacing="0" cellpadding="0" style="font-size: 13px; color: #334155;">
-                                <tr>
-                                  <td style="padding: 4px 0; font-weight: 700; width: 130px; color: #64748b;">Official Email:</td>
-                                  <td style="padding: 4px 0; font-weight: 800; color: #0284c7;">
-                                    <a href="mailto:enquiry.krgone@gmail.com" style="color: #0284c7; text-decoration: underline;">enquiry.krgone@gmail.com</a>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td style="padding: 4px 0; font-weight: 700; color: #64748b;">Direct Hotline:</td>
-                                  <td style="padding: 4px 0; font-weight: 800; color: #0f172a;">
-                                    <a href="tel:+917300300330" style="color: #0f172a; text-decoration: none;">+91 7300300330</a>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td style="padding: 4px 0; font-weight: 700; color: #64748b;">Corporate HQ:</td>
-                                  <td style="padding: 4px 0; font-weight: 600; color: #334155;">Jaipur, Rajasthan, India</td>
-                                </tr>
-                                <tr>
-                                  <td style="padding: 4px 0; font-weight: 700; color: #64748b;">Advisory Portal:</td>
-                                  <td style="padding: 4px 0; font-weight: 600; color: #0284c7;">
-                                    <a href="https://www.krgone.vercel.app" style="color: #0284c7; text-decoration: underline;">www.krgone.vercel.app</a>
-                                  </td>
-                                </tr>
-                              </table>
-                            </td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
-
-                    <!-- FOOTER -->
-                    <tr>
-                      <td style="padding: 20px 28px; background-color: #f8fafc; border-top: 1px solid #e2e8f0; text-align: center; font-size: 11px; color: #94a3b8; line-height: 1.5;">
-                        <p style="margin: 0 0 4px 0; font-weight: 700; color: #64748b;">
-                          KRG ONE Business Management Advisory
-                        </p>
-                        <p style="margin: 0 0 4px 0;">
-                          Official Email: <a href="mailto:enquiry.krgone@gmail.com" style="color: #0284c7; text-decoration: none;">enquiry.krgone@gmail.com</a> • Phone: <a href="tel:+917300300330" style="color: #0284c7; text-decoration: none;">+91 7300300330</a>
-                        </p>
-                        <p style="margin: 0;">
-                          Submitted on ${formattedDate} IST • Confidential Enterprise Diagnostic Report
-                        </p>
-                      </td>
-                    </tr>
-
-                  </table>
-                </td>
-              </tr>
-            </table>
-          </body>
-          </html>
-        `
+        headers: {
+          'X-Mailer': 'KRG ONE Enterprise Advisory Dispatcher',
+          'X-Priority': '3',
+          'Importance': 'normal'
+        }
       };
 
       // -----------------------------------------------------------------
@@ -531,16 +792,25 @@ async function startServer() {
       // -----------------------------------------------------------------
       const leadMailOptions = {
         from: `"KRG ONE Lead Engine" <${user}>`,
+        replyTo: custEmail,
         to: notificationEmail,
-        subject: `🚨 NEW LEAD: ${compName} (${custName}) - Growth Score: ${finalScore}%`,
+        subject: isBooking
+          ? `Diagnostic Strategy Call Request: ${compName} (${custName}) - ${mobileNumber}`
+          : `New Lead: ${compName} (${custName}) - Growth Score ${finalScore}%`,
+        text: leadNotificationText,
         attachments,
+        headers: {
+          'X-Mailer': 'KRG ONE Internal Lead Engine',
+          'X-Priority': '3',
+          'Importance': 'normal'
+        },
         html: `
           <!DOCTYPE html>
           <html>
           <head>
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>New Lead Notification</title>
+            <title>${isBooking ? 'Diagnostic Strategy Call Booked' : 'New Lead Notification'}</title>
           </head>
           <body style="margin: 0; padding: 0; background-color: #0f172a; font-family: 'Segoe UI', Arial, sans-serif; color: #e2e8f0;">
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #0f172a; padding: 24px 12px;">
@@ -550,12 +820,12 @@ async function startServer() {
                     
                     <!-- ALERT HEADER -->
                     <tr>
-                      <td style="background-color: #d4af37; padding: 20px 28px; color: #0f172a;">
+                      <td style="background-color: ${isBooking ? '#38bdf8' : '#d4af37'}; padding: 20px 28px; color: #0f172a;">
                         <div style="font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px;">
                           KRG ONE Internal Lead Alert System
                         </div>
                         <h2 style="margin: 4px 0 0 0; font-size: 20px; font-weight: 900;">
-                          New Business Assessment Submission Received
+                          ${isBooking ? '📅 New 1-on-1 Diagnostic Strategy Session Booked' : 'New Business Assessment Submission Received'}
                         </h2>
                       </td>
                     </tr>
@@ -743,6 +1013,390 @@ async function startServer() {
       res.status(500).json({
         success: false,
         error: error.message || "Failed to process email dispatch"
+      });
+    }
+  });
+
+  // ----------------------------------------------------
+  // API ENDPOINT: /api/contact (Contact Us Submissions)
+  // ----------------------------------------------------
+  app.post("/api/contact", async (req, res) => {
+    try {
+      const {
+        fullName,
+        email,
+        mobileNumber,
+        companyName,
+        role,
+        industry,
+        revenue,
+        engagementFocus,
+        message,
+        requestNda
+      } = req.body || {};
+
+      const custName = fullName || "Valued Leader";
+      const custEmail = email || "";
+      const phone = mobileNumber || "Not specified";
+      const compName = companyName || "Enterprise Client";
+      const userRole = role || "Executive";
+      const ind = industry || "General Business";
+      const revBand = revenue || "Not specified";
+      const focus = engagementFocus || "General Strategic Inquiry";
+      const msg = message || "No additional notes provided.";
+      const ndaRequested = requestNda ? "YES - Mutual NDA Requested Prior to Call" : "Standard Confidentiality Agreement";
+
+      const formattedDate = new Date().toLocaleString("en-IN", {
+        timeZone: "Asia/Kolkata",
+        dateStyle: "full",
+        timeStyle: "short"
+      });
+
+      const { user, notificationEmail } = getSmtpCredentials();
+      const transporter = createTransporter();
+
+      // Email to Client (Confirmation & SLA Guarantee)
+      const customerHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Advisory Inquiry Received - KRG ONE</title>
+        </head>
+        <body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: 'Segoe UI', Arial, sans-serif; color: #334155;">
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f8fafc; padding: 24px 12px;">
+            <tr>
+              <td align="center">
+                <table role="presentation" width="100%" style="max-width: 650px; background-color: #ffffff; border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
+                  
+                  <!-- HEADER -->
+                  <tr>
+                    <td style="background-color: #0f172a; padding: 32px 28px; text-align: center; border-bottom: 3px solid #d4af37;">
+                      <div style="font-size: 24px; font-weight: 900; letter-spacing: 2px; color: #ffffff; margin-bottom: 4px;">
+                        KRG <span style="color: #d4af37;">ONE</span>
+                      </div>
+                      <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: #94a3b8;">
+                        Management Consulting & Enterprise Advisory
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- HERO BANNER -->
+                  <tr>
+                    <td style="padding: 28px 28px 20px 28px; background-color: #f0f9ff; border-bottom: 1px solid #bae6fd;">
+                      <div style="display: inline-block; background-color: #e0f2fe; border: 1px solid #7dd3fc; padding: 4px 14px; border-radius: 20px; color: #0369a1; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 12px;">
+                        📩 Inquiry Request Acknowledgment
+                      </div>
+                      <h1 style="margin: 0 0 10px 0; font-size: 22px; font-weight: 900; color: #0f172a; line-height: 1.3;">
+                        We Have Received Your Advisory Inquiry
+                      </h1>
+                      <p style="margin: 0; font-size: 14px; color: #334155; line-height: 1.6;">
+                        Dear <strong>${custName}</strong>, thank you for reaching out to KRG ONE Advisory for <strong>${compName}</strong>. Your inquiry regarding <strong>"${focus}"</strong> has been assigned to our senior partner desk.
+                      </p>
+                    </td>
+                  </tr>
+
+                  <!-- SLA PROMISE BANNER -->
+                  <tr>
+                    <td style="padding: 18px 28px 0 28px;">
+                      <div style="background-color: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 12px; padding: 18px 20px;">
+                        <div style="font-size: 14px; color: #065f46; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
+                          ⚡ OUR TEAM WILL GET BACK TO YOU SOON
+                        </div>
+                        <div style="font-size: 13px; color: #047857; line-height: 1.6;">
+                          A Senior Management Consultant from KRG ONE will review your submission and contact you within <strong>4 to 12 business hours</strong> via phone (<strong>${phone}</strong>) or email to discuss your requirements and schedule an executive briefing.
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- DETAILS SUMMARY -->
+                  <tr>
+                    <td style="padding: 20px 28px;">
+                      <h3 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px;">
+                        📋 Summary of Submitted Details
+                      </h3>
+                      <table width="100%" cellspacing="0" cellpadding="0" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; font-size: 13px; border-collapse: separate; border-spacing: 0;">
+                        <tr>
+                          <td style="padding: 8px 12px; font-weight: 700; color: #64748b; width: 150px; border-bottom: 1px solid #f1f5f9;">Executive Name:</td>
+                          <td style="padding: 8px 12px; font-weight: 800; color: #0f172a; border-bottom: 1px solid #f1f5f9;">${custName} (${userRole})</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 8px 12px; font-weight: 700; color: #64748b; border-bottom: 1px solid #f1f5f9;">Enterprise:</td>
+                          <td style="padding: 8px 12px; font-weight: 800; color: #0f172a; border-bottom: 1px solid #f1f5f9;">${compName} (${ind})</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 8px 12px; font-weight: 700; color: #64748b; border-bottom: 1px solid #f1f5f9;">Revenue Scale:</td>
+                          <td style="padding: 8px 12px; font-weight: 700; color: #0f172a; border-bottom: 1px solid #f1f5f9;">${revBand}</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 8px 12px; font-weight: 700; color: #64748b; border-bottom: 1px solid #f1f5f9;">Contact Number:</td>
+                          <td style="padding: 8px 12px; font-weight: 800; color: #0f172a; border-bottom: 1px solid #f1f5f9;">${phone}</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 8px 12px; font-weight: 700; color: #64748b; border-bottom: 1px solid #f1f5f9;">Engagement Focus:</td>
+                          <td style="padding: 8px 12px; font-weight: 800; color: #b45309; border-bottom: 1px solid #f1f5f9;">${focus}</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 8px 12px; font-weight: 700; color: #64748b; border-bottom: 1px solid #f1f5f9;">Message / Challenge:</td>
+                          <td style="padding: 8px 12px; font-weight: 600; color: #334155; border-bottom: 1px solid #f1f5f9;">${msg}</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 8px 12px; font-weight: 700; color: #64748b;">NDA Status:</td>
+                          <td style="padding: 8px 12px; font-weight: 800; color: #059669;">${ndaRequested}</td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+
+                  <!-- CONTACT CARD -->
+                  <tr>
+                    <td style="padding: 0 28px 24px 28px;">
+                      <table width="100%" cellspacing="0" cellpadding="0" style="background-color: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 12px; padding: 18px;">
+                        <tr>
+                          <td>
+                            <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: #b45309; margin-bottom: 4px;">
+                              KRG ONE Enterprise Advisory Desk
+                            </div>
+                            <h4 style="margin: 0 0 10px 0; font-size: 15px; font-weight: 900; color: #0f172a;">
+                              Official Direct Contact Channels
+                            </h4>
+                            <table width="100%" cellspacing="0" cellpadding="0" style="font-size: 13px; color: #334155;">
+                              <tr>
+                                <td style="padding: 4px 0; font-weight: 700; width: 130px; color: #64748b;">Official Email:</td>
+                                <td style="padding: 4px 0; font-weight: 800; color: #0284c7;">
+                                  <a href="mailto:enquiry.krgone@gmail.com" style="color: #0284c7; text-decoration: underline;">enquiry.krgone@gmail.com</a>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="padding: 4px 0; font-weight: 700; color: #64748b;">Direct Hotline:</td>
+                                <td style="padding: 4px 0; font-weight: 800; color: #0f172a;">
+                                  <a href="tel:+917300300330" style="color: #0f172a; text-decoration: none;">+91 7300300330</a>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="padding: 4px 0; font-weight: 700; color: #64748b;">Corporate HQ:</td>
+                                <td style="padding: 4px 0; font-weight: 600; color: #334155;">Jaipur, Rajasthan, India</td>
+                              </tr>
+                              <tr>
+                                <td style="padding: 4px 0; font-weight: 700; color: #64748b;">Advisory Portal:</td>
+                                <td style="padding: 4px 0; font-weight: 600; color: #0284c7;">
+                                  <a href="https://www.krgone.vercel.app" style="color: #0284c7; text-decoration: underline;">www.krgone.vercel.app</a>
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+
+                  <!-- FOOTER -->
+                  <tr>
+                    <td style="padding: 20px 28px; background-color: #f8fafc; border-top: 1px solid #e2e8f0; text-align: center; font-size: 11px; color: #94a3b8; line-height: 1.5;">
+                      <p style="margin: 0 0 4px 0; font-weight: 700; color: #64748b;">
+                        KRG ONE Business Management Advisory
+                      </p>
+                      <p style="margin: 0 0 4px 0;">
+                        Official Email: <a href="mailto:enquiry.krgone@gmail.com" style="color: #0284c7; text-decoration: none;">enquiry.krgone@gmail.com</a> • Phone: <a href="tel:+917300300330" style="color: #0284c7; text-decoration: none;">+91 7300300330</a>
+                      </p>
+                      <p style="margin: 0;">
+                        Submitted on ${formattedDate} IST • Confidential Enterprise Advisory
+                      </p>
+                    </td>
+                  </tr>
+
+                </table>
+              </td>
+            </tr>
+          </table>
+        </body>
+        </html>
+      `;
+
+      const customerText = `Dear ${custName},
+
+Thank you for reaching out to KRG ONE Advisory for ${compName}.
+
+OUR TEAM WILL GET BACK TO YOU SOON
+A Senior Management Consultant from KRG ONE will review your submission and contact you within 4 to 12 business hours via phone (${phone}) or email (${custEmail}) to discuss your requirements.
+
+Submitted Details:
+- Executive: ${custName} (${userRole})
+- Enterprise: ${compName} (${ind})
+- Revenue Scale: ${revBand}
+- Phone: ${phone}
+- Engagement Focus: ${focus}
+- Message / Notes: ${msg}
+- NDA Requested: ${ndaRequested}
+
+Official Direct Contact Channels:
+- Email: enquiry.krgone@gmail.com
+- Phone: +91 7300300330
+- Corporate HQ: Jaipur, Rajasthan, India
+- Portal: https://www.krgone.vercel.app
+
+Submitted on ${formattedDate} IST
+KRG ONE Business Management Advisory`;
+
+      // Email to KRG ONE Admin Desk
+      const leadHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <title>New Contact Us Advisory Inquiry</title>
+        </head>
+        <body style="margin: 0; padding: 0; background-color: #0f172a; font-family: 'Segoe UI', Arial, sans-serif; color: #e2e8f0;">
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #0f172a; padding: 24px 12px;">
+            <tr>
+              <td align="center">
+                <table role="presentation" width="100%" style="max-width: 650px; background-color: #1e293b; border-radius: 16px; overflow: hidden; border: 1px solid #334155;">
+                  
+                  <tr>
+                    <td style="background-color: #d4af37; padding: 20px 28px; color: #0f172a;">
+                      <div style="font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px;">
+                        KRG ONE Contact Desk Alert
+                      </div>
+                      <h2 style="margin: 4px 0 0 0; font-size: 20px; font-weight: 900;">
+                        📬 New Executive Contact Inquiry: ${compName}
+                      </h2>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td style="padding: 24px 28px;">
+                      <table width="100%" cellspacing="0" cellpadding="0" style="margin-bottom: 20px; font-size: 13px;">
+                        <tr style="border-bottom: 1px solid #334155;">
+                          <td style="padding: 8px 0; font-weight: 700; color: #94a3b8; width: 140px;">Full Name:</td>
+                          <td style="padding: 8px 0; font-weight: 800; color: #ffffff;">${custName}</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #334155;">
+                          <td style="padding: 8px 0; font-weight: 700; color: #94a3b8;">Role / Title:</td>
+                          <td style="padding: 8px 0; font-weight: 800; color: #ffffff;">${userRole}</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #334155;">
+                          <td style="padding: 8px 0; font-weight: 700; color: #94a3b8;">Company Name:</td>
+                          <td style="padding: 8px 0; font-weight: 800; color: #fef08a;">${compName}</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #334155;">
+                          <td style="padding: 8px 0; font-weight: 700; color: #94a3b8;">Industry Vertical:</td>
+                          <td style="padding: 8px 0; font-weight: 700; color: #ffffff;">${ind}</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #334155;">
+                          <td style="padding: 8px 0; font-weight: 700; color: #94a3b8;">Annual Revenue:</td>
+                          <td style="padding: 8px 0; font-weight: 700; color: #ffffff;">${revBand}</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #334155;">
+                          <td style="padding: 8px 0; font-weight: 700; color: #94a3b8;">Email Address:</td>
+                          <td style="padding: 8px 0; font-weight: 800; color: #38bdf8;">
+                            <a href="mailto:${custEmail}" style="color: #38bdf8; text-decoration: underline;">${custEmail}</a>
+                          </td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #334155;">
+                          <td style="padding: 8px 0; font-weight: 700; color: #94a3b8;">Mobile / Phone:</td>
+                          <td style="padding: 8px 0; font-weight: 800; color: #fef08a;">
+                            <a href="tel:${phone}" style="color: #fef08a; text-decoration: none;">${phone}</a>
+                          </td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #334155;">
+                          <td style="padding: 8px 0; font-weight: 700; color: #94a3b8;">Engagement Focus:</td>
+                          <td style="padding: 8px 0; font-weight: 800; color: #d4af37;">${focus}</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #334155;">
+                          <td style="padding: 8px 0; font-weight: 700; color: #94a3b8;">NDA Requested:</td>
+                          <td style="padding: 8px 0; font-weight: 800; color: #4ade80;">${ndaRequested}</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 8px 0; font-weight: 700; color: #94a3b8;">Client Message:</td>
+                          <td style="padding: 8px 0; font-weight: 500; color: #e2e8f0; line-height: 1.5;">${msg}</td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td style="padding: 20px 28px; background-color: #0f172a; text-align: center;">
+                      <a href="mailto:${custEmail}" style="display: inline-block; background-color: #38bdf8; color: #0f172a; text-decoration: none; padding: 10px 20px; border-radius: 8px; font-weight: 900; font-size: 12px; text-transform: uppercase; margin-right: 8px;">
+                        Reply to ${custEmail}
+                      </a>
+                      <a href="tel:${phone}" style="display: inline-block; background-color: #4ade80; color: #0f172a; text-decoration: none; padding: 10px 20px; border-radius: 8px; font-weight: 900; font-size: 12px; text-transform: uppercase;">
+                        Call ${phone}
+                      </a>
+                    </td>
+                  </tr>
+
+                </table>
+              </td>
+            </tr>
+          </table>
+        </body>
+        </html>
+      `;
+
+      const leadText = `NEW CONTACT INQUIRY RECEIVED
+
+Company: ${compName}
+Name: ${custName} (${userRole})
+Email: ${custEmail}
+Phone: ${phone}
+Industry: ${ind}
+Revenue: ${revBand}
+Engagement Focus: ${focus}
+NDA Status: ${ndaRequested}
+Message: ${msg}
+
+Received at ${formattedDate} IST`;
+
+      const customerMailOptions = {
+        from: `"KRG ONE Advisory" <${user}>`,
+        replyTo: `enquiry.krgone@gmail.com`,
+        to: custEmail,
+        subject: `Contact Request Confirmation - ${compName} | KRG ONE Advisory`,
+        text: customerText,
+        html: customerHtml,
+        headers: {
+          'X-Mailer': 'KRG ONE Contact Dispatcher',
+          'X-Priority': '3',
+          'Importance': 'normal'
+        }
+      };
+
+      const leadMailOptions = {
+        from: `"KRG ONE Contact Desk" <${user}>`,
+        replyTo: custEmail,
+        to: notificationEmail,
+        subject: `New Contact Us Inquiry: ${compName} (${custName}) - ${phone}`,
+        text: leadText,
+        html: leadHtml,
+        headers: {
+          'X-Mailer': 'KRG ONE Internal Desk',
+          'X-Priority': '3',
+          'Importance': 'normal'
+        }
+      };
+
+      if (custEmail.toLowerCase() === notificationEmail.toLowerCase()) {
+        await transporter.sendMail(leadMailOptions);
+      } else {
+        await Promise.allSettled([
+          transporter.sendMail(customerMailOptions),
+          transporter.sendMail(leadMailOptions)
+        ]);
+      }
+
+      res.json({
+        success: true,
+        message: "Contact request submitted successfully",
+        timestamp: new Date().toISOString()
+      });
+
+    } catch (error: any) {
+      console.error("Error in /api/contact:", error);
+      res.status(500).json({
+        success: false,
+        error: error.message || "Failed to submit contact request"
       });
     }
   });

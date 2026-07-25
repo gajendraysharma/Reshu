@@ -21,7 +21,10 @@ import {
   FileText,
   Check,
   Save,
-  X
+  X,
+  Loader2,
+  Globe,
+  MapPin
 } from 'lucide-react';
 
 interface DiagnosticBookingTabProps {
@@ -53,7 +56,9 @@ export const DiagnosticBookingTab: React.FC<DiagnosticBookingTabProps> = ({
   const [customTime, setCustomTime] = useState<string>('');
   const [isCustomTimeMode, setIsCustomTimeMode] = useState<boolean>(false);
   const [notes, setNotes] = useState<string>('');
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const [bookingMessage, setBookingMessage] = useState<string>('');
 
   const timeOptions = [
     '09:00 AM - 10:00 AM',
@@ -91,13 +96,13 @@ export const DiagnosticBookingTab: React.FC<DiagnosticBookingTabProps> = ({
 
   const handleReserve = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitted(true);
+    setIsSubmitting(true);
 
     try {
       const dossierEl = document.getElementById('krg-print-dossier-root');
       const dossierHtml = dossierEl ? dossierEl.innerHTML : '';
 
-      await fetch('/api/send-assessment-email', {
+      const res = await fetch('/api/send-assessment-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -119,8 +124,19 @@ export const DiagnosticBookingTab: React.FC<DiagnosticBookingTabProps> = ({
           dossierHtml
         })
       });
+
+      const data = await res.json();
+      if (data.success) {
+        setBookingMessage(`Confirmation email dispatched to ${profile.email} & notification alert sent to KRG ONE Advisory Team.`);
+      } else {
+        setBookingMessage(`Booking received. Our team will verify your appointment at ${profile.email}.`);
+      }
     } catch (err) {
       console.error('Failed to send booking notification email:', err);
+      setBookingMessage(`Booking registered. Our growth team will contact you directly.`);
+    } finally {
+      setIsSubmitting(false);
+      setIsSubmitted(true);
     }
   };
 
@@ -162,6 +178,12 @@ export const DiagnosticBookingTab: React.FC<DiagnosticBookingTabProps> = ({
             </p>
           </div>
 
+          {/* EMAIL NOTIFICATION STATUS BADGE */}
+          <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold p-3.5 rounded-xl flex items-center justify-center gap-2 max-w-md mx-auto text-left">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+            <span>{bookingMessage || `Confirmation email sent to ${profile.email} & notification alert sent to KRG ONE Advisory Team.`}</span>
+          </div>
+
           <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 text-left text-xs space-y-2.5 max-w-md mx-auto font-medium">
             <div className="flex justify-between border-b border-slate-200/60 pb-2">
               <span className="text-slate-500">Duration:</span>
@@ -185,8 +207,33 @@ export const DiagnosticBookingTab: React.FC<DiagnosticBookingTabProps> = ({
             </div>
           </div>
 
+          {/* KRG ONE ADVISORY DIRECT CONTACT DETAILS */}
+          <div className="bg-slate-900 text-white border border-slate-800 rounded-xl p-4 text-left text-xs max-w-md mx-auto space-y-2">
+            <div className="text-[11px] font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+              <Building2 className="w-3.5 h-3.5 text-amber-400" /> KRG ONE Official Advisory Contact Details
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-slate-300">
+              <div>
+                <span className="text-slate-400 block text-[10px]">Official Email:</span>
+                <a href="mailto:enquiry.krgone@gmail.com" className="font-bold text-sky-400 hover:underline">enquiry.krgone@gmail.com</a>
+              </div>
+              <div>
+                <span className="text-slate-400 block text-[10px]">Advisory Hotline:</span>
+                <a href="tel:+917300300330" className="font-bold text-white">+91 7300300330</a>
+              </div>
+              <div>
+                <span className="text-slate-400 block text-[10px]">Corporate HQ:</span>
+                <span className="font-medium text-slate-200">Jaipur, Rajasthan, India</span>
+              </div>
+              <div>
+                <span className="text-slate-400 block text-[10px]">Advisory Portal:</span>
+                <a href="https://www.krgone.vercel.app" target="_blank" rel="noreferrer" className="font-medium text-sky-400 hover:underline">www.krgone.vercel.app</a>
+              </div>
+            </div>
+          </div>
+
           <p className="text-xs text-slate-500">
-            A calendar invitation and Google Meet link have been sent to <strong className="text-slate-800">{profile.email}</strong>. Our team will verify your booking within 24 hours.
+            A calendar invitation and Google Meet link have been dispatched to <strong className="text-slate-800">{profile.email}</strong>. Our team will verify your appointment within 24 hours.
           </p>
 
           <button
@@ -654,10 +701,20 @@ export const DiagnosticBookingTab: React.FC<DiagnosticBookingTabProps> = ({
               <div className="space-y-3 pt-2">
                 <button
                   type="submit"
-                  className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-sm py-3.5 px-6 rounded-xl transition-colors shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                  disabled={isSubmitting}
+                  className="w-full bg-amber-500 hover:bg-amber-400 disabled:bg-amber-300 disabled:cursor-not-allowed text-slate-950 font-extrabold text-sm py-3.5 px-6 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-98"
                 >
-                  <Calendar className="w-4 h-4" />
-                  <span>Reserve My Diagnostic</span>
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin text-slate-950" />
+                      <span>Reserving & Dispatching Confirmation...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Calendar className="w-4 h-4" />
+                      <span>Reserve My Diagnostic</span>
+                    </>
+                  )}
                 </button>
 
                 <div className="flex items-center justify-center gap-1.5 text-xs text-slate-500 text-center font-medium">

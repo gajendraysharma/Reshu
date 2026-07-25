@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
-  Target, CheckCircle2, ChevronRight, Activity, Zap, TrendingUp, Calendar, 
-  ShieldAlert, Award, Download, PhoneCall, Sparkles, FileText, ArrowRight 
+  Target, CheckCircle2, Calendar, 
+  ShieldAlert, Award, Download, PhoneCall, FileText 
 } from 'lucide-react';
 import { PillarRecommendationResult } from '../business-engine/recommendation-engine/interfaces';
 
@@ -117,7 +117,7 @@ export const PlanRoadmapTab: React.FC<PlanRoadmapTabProps> = ({
       </div>
 
       {/* ---------------------------------------------------- */}
-      {/* 3. 3-PHASE TIME-PHASED ROADMAP CARDS                 */}
+      {/* 3. 3-PHASE TIME-PHASED ROADMAP CARDS (DETAILED DIRECTIVES) */}
       {/* ---------------------------------------------------- */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         
@@ -126,31 +126,23 @@ export const PlanRoadmapTab: React.FC<PlanRoadmapTabProps> = ({
           <div className="space-y-3">
             <div className="flex items-center justify-between pb-2 border-b border-slate-100">
               <span className="bg-rose-50 border border-rose-200 text-rose-700 text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-md">
-                Phase 1 • Days 1–30
+                Days 1–30 • Emergency Risk Mitigation & Stabilization
               </span>
               <ShieldAlert className="w-4 h-4 text-rose-600" />
             </div>
 
             <h3 className="text-xs sm:text-sm font-black text-slate-900 uppercase tracking-tight">
-              Risk Mitigation & Stabilization
+              Emergency Risk Mitigation & Stabilization Sprints
             </h3>
 
-            <div className="space-y-2 text-xs text-slate-600 font-semibold leading-relaxed">
-              <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
-                <span className="text-[10px] font-black text-slate-500 uppercase block mb-1">Core Sprint Objective</span>
-                <p className="text-slate-800 text-[11px]">Plug active cash flow leakage and establish daily task tracking across core operations.</p>
-              </div>
-
-              <div className="p-2.5 bg-rose-50/50 rounded-xl border border-rose-100">
-                <span className="text-[10px] font-black text-rose-800 uppercase block mb-1">Priority Action</span>
-                <p className="text-slate-700 text-[11px]">Set absolute metrics for <strong className="text-slate-900">{selectedChallenge}</strong> to stop founder escalation.</p>
-              </div>
-            </div>
+            <p className="text-xs text-slate-600 font-medium leading-relaxed">
+              Isolate and plug immediate cash flow leakages and severe operational friction points. Deploy basic end-of-day daily tracking templates for all operational staff members. Set up absolute tracking metrics for the primary user challenge selected: <strong>{selectedChallenge}</strong>. Stop daily administrative tasks from reaching the executive founder layer by establishing a strict delegation rule.
+            </p>
           </div>
 
           <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500 font-bold">
             <span>Focus: Leakage Containment</span>
-            <span className="text-rose-700">Days 1–30</span>
+            <span className="text-rose-700 font-extrabold">Days 1–30</span>
           </div>
         </div>
 
@@ -159,31 +151,23 @@ export const PlanRoadmapTab: React.FC<PlanRoadmapTabProps> = ({
           <div className="space-y-3">
             <div className="flex items-center justify-between pb-2 border-b border-slate-100">
               <span className="bg-amber-50 border border-amber-200 text-amber-700 text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-md">
-                Phase 2 • Days 31–60
+                Days 31–60 • Process Standardization & Architecture
               </span>
               <Target className="w-4 h-4 text-amber-600" />
             </div>
 
             <h3 className="text-xs sm:text-sm font-black text-slate-900 uppercase tracking-tight">
-              Process Standardization & SOPs
+              Process Standardization & Workflow Architecture Sprints
             </h3>
 
-            <div className="space-y-2 text-xs text-slate-600 font-semibold leading-relaxed">
-              <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
-                <span className="text-[10px] font-black text-slate-500 uppercase block mb-1">Core Sprint Objective</span>
-                <p className="text-slate-800 text-[11px]">Draft step-by-step SOPs and visual swimlane maps for lowest-performing pillars.</p>
-              </div>
-
-              <div className="p-2.5 bg-amber-50/50 rounded-xl border border-amber-100">
-                <span className="text-[10px] font-black text-amber-800 uppercase block mb-1">Priority Action</span>
-                <p className="text-slate-700 text-[11px]">Build cloud tracking for lead acquisition and customer retention journeys.</p>
-              </div>
-            </div>
+            <p className="text-xs text-slate-600 font-medium leading-relaxed">
+              Begin the formal drafting and deployment of step-by-step Standard Operating Procedures (SOPs) across your lowest-performing operational pillars. Build clean cloud-based tracking systems to monitor team output, optimize customer acquisition channels, and map customer retention journeys to maximize your lifetime client value metrics.
+            </p>
           </div>
 
           <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500 font-bold">
             <span>Focus: Operational Codification</span>
-            <span className="text-amber-700">Days 31–60</span>
+            <span className="text-amber-700 font-extrabold">Days 31–60</span>
           </div>
         </div>
 
@@ -192,31 +176,23 @@ export const PlanRoadmapTab: React.FC<PlanRoadmapTabProps> = ({
           <div className="space-y-3">
             <div className="flex items-center justify-between pb-2 border-b border-slate-100">
               <span className="bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-md">
-                Phase 3 • Days 61–90
+                Days 61–90 • System Optimization & Capital Scaling
               </span>
               <Award className="w-4 h-4 text-emerald-600" />
             </div>
 
             <h3 className="text-xs sm:text-sm font-black text-slate-900 uppercase tracking-tight">
-              System Optimization & Capital Scaling
+              System Optimization & Capital Scaling Sprints
             </h3>
 
-            <div className="space-y-2 text-xs text-slate-600 font-semibold leading-relaxed">
-              <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
-                <span className="text-[10px] font-black text-slate-500 uppercase block mb-1">Core Sprint Objective</span>
-                <p className="text-slate-800 text-[11px]">Integrate API software automations and transition mgmt to weekly KPI scorecards.</p>
-              </div>
-
-              <div className="p-2.5 bg-emerald-50/50 rounded-xl border border-emerald-100">
-                <span className="text-[10px] font-black text-emerald-800 uppercase block mb-1">Priority Action</span>
-                <p className="text-slate-700 text-[11px]">Audit product unit margins to maximize profitability across all active accounts.</p>
-              </div>
-            </div>
+            <p className="text-xs text-slate-600 font-medium leading-relaxed">
+              Integrate scalable automation tools and modern business software models. Transition your management team to a formal weekly performance review cycle based on concrete KPIs rather than personal feelings. Review the unit profit margins across all core product lines to maximize revenue efficiency.
+            </p>
           </div>
 
           <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500 font-bold">
             <span>Focus: Automated Scaling</span>
-            <span className="text-emerald-700">Days 61–90</span>
+            <span className="text-emerald-700 font-extrabold">Days 61–90</span>
           </div>
         </div>
 
@@ -275,7 +251,7 @@ export const PlanRoadmapTab: React.FC<PlanRoadmapTabProps> = ({
               
               <div className="bg-white border-l-4 border-l-rose-500 rounded-xl p-3.5 shadow-2xs border border-slate-200 space-y-2">
                 <h5 className="font-black text-slate-900 uppercase tracking-wide text-[10px] flex items-center gap-1.5 text-rose-600">
-                  <Zap className="w-3.5 h-3.5" /> Immediate Sprint
+                  Immediate Sprint
                 </h5>
                 <ul className="space-y-1.5 text-[11px] text-slate-600 font-semibold">
                   {currentRec.entry.immediateActions.map((action, i) => (
@@ -289,7 +265,7 @@ export const PlanRoadmapTab: React.FC<PlanRoadmapTabProps> = ({
 
               <div className="bg-white border-l-4 border-l-amber-500 rounded-xl p-3.5 shadow-2xs border border-slate-200 space-y-2">
                 <h5 className="font-black text-slate-900 uppercase tracking-wide text-[10px] flex items-center gap-1.5 text-amber-600">
-                  <Target className="w-3.5 h-3.5" /> 30-Day Target
+                  30-Day Target
                 </h5>
                 <ul className="space-y-1.5 text-[11px] text-slate-600 font-semibold">
                   {currentRec.entry.plan30Days.map((action, i) => (
@@ -303,7 +279,7 @@ export const PlanRoadmapTab: React.FC<PlanRoadmapTabProps> = ({
 
               <div className="bg-white border-l-4 border-l-blue-500 rounded-xl p-3.5 shadow-2xs border border-slate-200 space-y-2">
                 <h5 className="font-black text-slate-900 uppercase tracking-wide text-[10px] flex items-center gap-1.5 text-blue-600">
-                  <Activity className="w-3.5 h-3.5" /> 60-Day Target
+                  60-Day Target
                 </h5>
                 <ul className="space-y-1.5 text-[11px] text-slate-600 font-semibold">
                   {currentRec.entry.plan60Days.map((action, i) => (
@@ -317,7 +293,7 @@ export const PlanRoadmapTab: React.FC<PlanRoadmapTabProps> = ({
 
               <div className="bg-white border-l-4 border-l-emerald-500 rounded-xl p-3.5 shadow-2xs border border-slate-200 space-y-2">
                 <h5 className="font-black text-slate-900 uppercase tracking-wide text-[10px] flex items-center gap-1.5 text-emerald-600">
-                  <TrendingUp className="w-3.5 h-3.5" /> 90-Day Target
+                  90-Day Target
                 </h5>
                 <ul className="space-y-1.5 text-[11px] text-slate-600 font-semibold">
                   {currentRec.entry.plan90Days.map((action, i) => (

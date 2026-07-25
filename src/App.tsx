@@ -12,9 +12,21 @@ import {
 , ArrowLeft} from "lucide-react";
 import React, { useState, useEffect, useRef } from 'react';
 import AssessmentEngine from "./AssessmentEngine";
+import { ContactUsPage } from "./components/ContactUsPage";
+import { AboutUsPage } from "./components/AboutUsPage";
+import { MeetTheFounderPage } from "./components/MeetTheFounderPage";
+import { OurMethodologyPage } from "./components/OurMethodologyPage";
+import { GrowthOSOverviewPage } from "./components/GrowthOSOverviewPage";
+import { SevenGrowthPillarsPage } from "./components/SevenGrowthPillarsPage";
+import { BusinessHealthDashboardPage } from "./components/BusinessHealthDashboardPage";
+import { ExecutiveBusinessInsightsPage } from "./components/ExecutiveBusinessInsightsPage";
+import { BusinessGrowthConsultationPage } from "./components/BusinessGrowthConsultationPage";
+import { FullBusinessDiagnosticPage } from "./components/FullBusinessDiagnosticPage";
+import { BusinessGrowthSprintPage } from "./components/BusinessGrowthSprintPage";
+import { FractionalSalesHeadPage } from "./components/FractionalSalesHeadPage";
 
 const navigationConfig = [
-  { title: "Home", href: "#", action: null, dropdown: null },
+  { title: "Home", href: "#", action: "LANDING", dropdown: null },
   { 
     title: "Solutions", 
     action: null,
@@ -30,10 +42,9 @@ const navigationConfig = [
     action: null,
     dropdown: [
       "Overview",
-      "7 Growth Pillars™",
-      "Business Growth Dashboard™",
-      "Business Growth Score™",
-      "Executive Growth Report™"
+      "The 7 Growth Pillars",
+      "Business Health Dashboard™",
+      "Executive Business Insights™"
     ]
   },
   {
@@ -65,19 +76,19 @@ const navigationConfig = [
   },
   {
     title: "About Us",
-    action: null,
+    action: "ABOUT_US",
     dropdown: [
       "About KRG ONE",
       "Meet the Founder",
       "Our Methodology"
     ]
   },
-  { title: "Contact Us", href: "#", action: null, dropdown: null }
+  { title: "Contact Us", href: "#", action: "CONTACT_US", dropdown: null }
 ];
 
 export function App() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [activeAppView, setActiveAppView] = useState<'LANDING' | 'ASSESSMENT_PORTAL'>('LANDING');
+  const [activeAppView, setActiveAppView] = useState<'LANDING' | 'ASSESSMENT_PORTAL' | 'CONTACT_US' | 'ABOUT_US' | 'MEET_FOUNDER' | 'OUR_METHODOLOGY' | 'GROWTH_OS_OVERVIEW' | 'SEVEN_PILLARS' | 'BUSINESS_HEALTH_DASHBOARD' | 'EXECUTIVE_INSIGHTS' | 'BUSINESS_GROWTH_CONSULTATION' | 'FULL_BUSINESS_DIAGNOSTIC' | 'BUSINESS_GROWTH_SPRINT' | 'FRACTIONAL_SALES_HEAD'>('LANDING');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -128,7 +139,7 @@ export function App() {
 
             {/* Right Side: Desktop Navigation & CTA */}
             <div className="flex items-center gap-6">
-              {activeAppView === 'LANDING' ? (
+              {activeAppView !== 'ASSESSMENT_PORTAL' ? (
                 <>
                   {/* Desktop Navigation */}
                   <div className="hidden xl:flex items-center space-x-7">
@@ -142,14 +153,23 @@ export function App() {
                       <a 
                         href={item.href}
                         onClick={(e) => {
+                          e.preventDefault();
                           if (item.action === "ASSESSMENT_PORTAL") {
-                            e.preventDefault();
                             setActiveAppView('ASSESSMENT_PORTAL');
+                            window.scrollTo(0, 0);
+                          } else if (item.action === "CONTACT_US") {
+                            setActiveAppView('CONTACT_US');
+                            window.scrollTo(0, 0);
+                          } else if (item.action === "ABOUT_US") {
+                            setActiveAppView('ABOUT_US');
+                            window.scrollTo(0, 0);
+                          } else if (item.action === "LANDING") {
+                            setActiveAppView('LANDING');
                             window.scrollTo(0, 0);
                           }
                         }}
-                        className={`flex items-center gap-1.5 text-[14px] font-medium tracking-wide transition-colors duration-250 py-2 relative ${
-                          activeDropdown === item.title ? 'text-[#c29d2f]' : 'text-slate-200 hover:text-[#c29d2f]'
+                        className={`flex items-center gap-1.5 text-[14px] font-medium tracking-wide transition-colors duration-250 py-2 relative cursor-pointer ${
+                          activeDropdown === item.title || (item.action === "CONTACT_US" && activeAppView === "CONTACT_US") || (item.action === "ABOUT_US" && activeAppView === "ABOUT_US") ? 'text-[#c29d2f]' : 'text-slate-200 hover:text-[#c29d2f]'
                         }`}
                       >
                         {item.title}
@@ -176,7 +196,45 @@ export function App() {
                               <a 
                                 key={dIdx} 
                                 href="#" 
-                                className="px-3 py-2.5 text-[13.5px] text-white hover:text-[#c29d2f] hover:bg-white/5 rounded-xl transition-colors duration-200 flex items-center gap-2 group/drop"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setActiveDropdown(null);
+                                  if (dropItem.includes("Founder")) {
+                                    setActiveAppView('MEET_FOUNDER');
+                                    window.scrollTo(0, 0);
+                                  } else if (dropItem.includes("Methodology")) {
+                                    setActiveAppView('OUR_METHODOLOGY');
+                                    window.scrollTo(0, 0);
+                                  } else if (dropItem.includes("Pillars")) {
+                                    setActiveAppView('SEVEN_PILLARS');
+                                    window.scrollTo(0, 0);
+                                  } else if (dropItem === "Business Growth Consultation™") {
+                                    setActiveAppView('BUSINESS_GROWTH_CONSULTATION');
+                                    window.scrollTo(0, 0);
+                                  } else if (dropItem === "Full Business Growth Diagnostic™") {
+                                    setActiveAppView('FULL_BUSINESS_DIAGNOSTIC');
+                                    window.scrollTo(0, 0);
+                                  } else if (dropItem === "90-Day Business Growth Sprint™") {
+                                    setActiveAppView('BUSINESS_GROWTH_SPRINT');
+                                    window.scrollTo(0, 0);
+                                  } else if (dropItem === "Fractional Sales Head™") {
+                                    setActiveAppView('FRACTIONAL_SALES_HEAD');
+                                    window.scrollTo(0, 0);
+                                  } else if (dropItem.includes("Health Dashboard")) {
+                                    setActiveAppView('BUSINESS_HEALTH_DASHBOARD');
+                                    window.scrollTo(0, 0);
+                                  } else if (dropItem.includes("Executive Business Insights")) {
+                                    setActiveAppView('EXECUTIVE_INSIGHTS');
+                                    window.scrollTo(0, 0);
+                                  } else if (dropItem === "Overview" || (item.title.includes("Growth OS") && dropItem.includes("Overview"))) {
+                                    setActiveAppView('GROWTH_OS_OVERVIEW');
+                                    window.scrollTo(0, 0);
+                                  } else if (item.title === "About Us" || dropItem.includes("About")) {
+                                    setActiveAppView('ABOUT_US');
+                                    window.scrollTo(0, 0);
+                                  }
+                                }}
+                                className="px-3 py-2.5 text-[13.5px] text-white hover:text-[#c29d2f] hover:bg-white/5 rounded-xl transition-colors duration-200 flex items-center gap-2 group/drop cursor-pointer"
                               >
                                 <span className="w-1.5 h-1.5 rounded-full bg-[#c29d2f]/0 group-hover/drop:bg-[#c29d2f] transition-colors"></span>
                                 {dropItem}
@@ -240,9 +298,17 @@ export function App() {
               <div key={idx} className="flex flex-col border-b border-white/5 last:border-0 pb-2 mb-2 last:pb-0 last:mb-0">
                 <button
                   onClick={(e) => {
+                    e.preventDefault();
                     if (item.action === "ASSESSMENT_PORTAL") {
-                      e.preventDefault();
                       setActiveAppView('ASSESSMENT_PORTAL');
+                      window.scrollTo(0, 0);
+                      setIsMobileMenuOpen(false);
+                    } else if (item.action === "CONTACT_US") {
+                      setActiveAppView('CONTACT_US');
+                      window.scrollTo(0, 0);
+                      setIsMobileMenuOpen(false);
+                    } else if (item.action === "LANDING") {
+                      setActiveAppView('LANDING');
                       window.scrollTo(0, 0);
                       setIsMobileMenuOpen(false);
                     } else if (item.dropdown) {
@@ -251,7 +317,7 @@ export function App() {
                       setIsMobileMenuOpen(false);
                     }
                   }}
-                  className="flex items-center justify-between w-full px-2 py-3 text-[15px] font-medium text-slate-200 hover:text-[#c29d2f] transition-colors"
+                  className="flex items-center justify-between w-full px-2 py-3 text-[15px] font-medium text-slate-200 hover:text-[#c29d2f] transition-colors cursor-pointer"
                 >
                   {item.title}
                   {item.dropdown && (
@@ -270,7 +336,45 @@ export function App() {
                       <a 
                         key={dIdx} 
                         href="#" 
-                        className="px-2 py-2 text-[14px] text-slate-400 hover:text-[#c29d2f] transition-colors"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setIsMobileMenuOpen(false);
+                          if (dropItem.includes("Founder")) {
+                            setActiveAppView('MEET_FOUNDER');
+                            window.scrollTo(0, 0);
+                          } else if (dropItem.includes("Methodology")) {
+                            setActiveAppView('OUR_METHODOLOGY');
+                            window.scrollTo(0, 0);
+                          } else if (dropItem.includes("Pillars")) {
+                            setActiveAppView('SEVEN_PILLARS');
+                            window.scrollTo(0, 0);
+                          } else if (dropItem === "Business Growth Consultation™") {
+                            setActiveAppView('BUSINESS_GROWTH_CONSULTATION');
+                            window.scrollTo(0, 0);
+                          } else if (dropItem === "Full Business Growth Diagnostic™") {
+                            setActiveAppView('FULL_BUSINESS_DIAGNOSTIC');
+                            window.scrollTo(0, 0);
+                          } else if (dropItem === "90-Day Business Growth Sprint™") {
+                            setActiveAppView('BUSINESS_GROWTH_SPRINT');
+                            window.scrollTo(0, 0);
+                          } else if (dropItem === "Fractional Sales Head™") {
+                            setActiveAppView('FRACTIONAL_SALES_HEAD');
+                            window.scrollTo(0, 0);
+                          } else if (dropItem.includes("Health Dashboard")) {
+                            setActiveAppView('BUSINESS_HEALTH_DASHBOARD');
+                            window.scrollTo(0, 0);
+                          } else if (dropItem.includes("Executive Business Insights")) {
+                            setActiveAppView('EXECUTIVE_INSIGHTS');
+                            window.scrollTo(0, 0);
+                          } else if (dropItem === "Overview" || (item.title.includes("Growth OS") && dropItem.includes("Overview"))) {
+                            setActiveAppView('GROWTH_OS_OVERVIEW');
+                            window.scrollTo(0, 0);
+                          } else if (item.title === "About Us" || dropItem.includes("About")) {
+                            setActiveAppView('ABOUT_US');
+                            window.scrollTo(0, 0);
+                          }
+                        }}
+                        className="px-2 py-2 text-[14px] text-slate-400 hover:text-[#c29d2f] transition-colors cursor-pointer"
                       >
                         {dropItem}
                       </a>
@@ -2129,9 +2233,9 @@ export function App() {
 
           {/* Main Navigation */}
           <div className="flex flex-wrap items-center justify-center gap-y-3 mb-10 text-[13px] sm:text-[14px] font-medium text-slate-300/80 tracking-wide">
-            <a href="#" className="hover:text-[#c29d2f] transition-colors duration-300">Home</a>
+            <button onClick={() => { setActiveAppView('LANDING'); window.scrollTo(0, 0); }} className="hover:text-[#c29d2f] transition-colors duration-300 cursor-pointer">Home</button>
             <span className="text-[#c29d2f]/30 mx-4 sm:mx-6 hidden sm:inline">|</span>
-            <a href="#" className="hover:text-[#c29d2f] transition-colors duration-300">Business Growth Assessment™</a>
+            <button onClick={() => { setActiveAppView('ASSESSMENT_PORTAL'); window.scrollTo(0, 0); }} className="hover:text-[#c29d2f] transition-colors duration-300 cursor-pointer">Business Growth Assessment™</button>
             <span className="text-[#c29d2f]/30 mx-4 sm:mx-6 hidden sm:inline">|</span>
             <a href="#" className="hover:text-[#c29d2f] transition-colors duration-300">Solutions</a>
             <span className="text-[#c29d2f]/30 mx-4 sm:mx-6 hidden sm:inline">|</span>
@@ -2141,9 +2245,9 @@ export function App() {
             <span className="text-[#c29d2f]/30 mx-4 sm:mx-6 hidden sm:inline">|</span>
             <a href="#" className="hover:text-[#c29d2f] transition-colors duration-300">Resources</a>
             <span className="text-[#c29d2f]/30 mx-4 sm:mx-6 hidden sm:inline">|</span>
-            <a href="#" className="hover:text-[#c29d2f] transition-colors duration-300">About Us</a>
+            <button onClick={() => { setActiveAppView('ABOUT_US'); window.scrollTo(0, 0); }} className="hover:text-[#c29d2f] transition-colors duration-300 cursor-pointer">About Us</button>
             <span className="text-[#c29d2f]/30 mx-4 sm:mx-6 hidden sm:inline">|</span>
-            <a href="#" className="hover:text-[#c29d2f] transition-colors duration-300">Contact Us</a>
+            <button onClick={() => { setActiveAppView('CONTACT_US'); window.scrollTo(0, 0); }} className="hover:text-[#c29d2f] transition-colors duration-300 cursor-pointer text-[#d4af37]">Contact Us</button>
           </div>
 
           {/* Legal Navigation */}
@@ -2171,6 +2275,74 @@ export function App() {
         </div>
       </footer>
         </>
+      ) : activeAppView === 'CONTACT_US' ? (
+        <ContactUsPage 
+          onReturnHome={() => { setActiveAppView('LANDING'); window.scrollTo(0, 0); }} 
+          onLaunchAssessment={() => { setActiveAppView('ASSESSMENT_PORTAL'); window.scrollTo(0, 0); }} 
+        />
+      ) : activeAppView === 'ABOUT_US' ? (
+        <AboutUsPage 
+          onReturnHome={() => { setActiveAppView('LANDING'); window.scrollTo(0, 0); }} 
+          onLaunchAssessment={() => { setActiveAppView('ASSESSMENT_PORTAL'); window.scrollTo(0, 0); }} 
+          onContactUs={() => { setActiveAppView('CONTACT_US'); window.scrollTo(0, 0); }}
+        />
+      ) : activeAppView === 'MEET_FOUNDER' ? (
+        <MeetTheFounderPage 
+          onReturnHome={() => { setActiveAppView('LANDING'); window.scrollTo(0, 0); }} 
+          onLaunchAssessment={() => { setActiveAppView('ASSESSMENT_PORTAL'); window.scrollTo(0, 0); }} 
+          onContactUs={() => { setActiveAppView('CONTACT_US'); window.scrollTo(0, 0); }}
+        />
+      ) : activeAppView === 'OUR_METHODOLOGY' ? (
+        <OurMethodologyPage 
+          onReturnHome={() => { setActiveAppView('LANDING'); window.scrollTo(0, 0); }} 
+          onLaunchAssessment={() => { setActiveAppView('ASSESSMENT_PORTAL'); window.scrollTo(0, 0); }} 
+          onContactUs={() => { setActiveAppView('CONTACT_US'); window.scrollTo(0, 0); }}
+        />
+      ) : activeAppView === 'GROWTH_OS_OVERVIEW' ? (
+        <GrowthOSOverviewPage 
+          onReturnHome={() => { setActiveAppView('LANDING'); window.scrollTo(0, 0); }} 
+          onLaunchAssessment={() => { setActiveAppView('ASSESSMENT_PORTAL'); window.scrollTo(0, 0); }} 
+          onContactUs={() => { setActiveAppView('CONTACT_US'); window.scrollTo(0, 0); }}
+        />
+      ) : activeAppView === 'SEVEN_PILLARS' ? (
+        <SevenGrowthPillarsPage 
+          onReturnHome={() => { setActiveAppView('LANDING'); window.scrollTo(0, 0); }} 
+          onLaunchAssessment={() => { setActiveAppView('ASSESSMENT_PORTAL'); window.scrollTo(0, 0); }} 
+          onContactUs={() => { setActiveAppView('CONTACT_US'); window.scrollTo(0, 0); }}
+        />
+      ) : activeAppView === 'BUSINESS_HEALTH_DASHBOARD' ? (
+        <BusinessHealthDashboardPage 
+          onReturnHome={() => { setActiveAppView('LANDING'); window.scrollTo(0, 0); }} 
+          onLaunchAssessment={() => { setActiveAppView('ASSESSMENT_PORTAL'); window.scrollTo(0, 0); }} 
+          onContactUs={() => { setActiveAppView('CONTACT_US'); window.scrollTo(0, 0); }}
+          onExploreInsights={() => { setActiveAppView('EXECUTIVE_INSIGHTS'); window.scrollTo(0, 0); }}
+        />
+      ) : activeAppView === 'EXECUTIVE_INSIGHTS' ? (
+        <ExecutiveBusinessInsightsPage 
+          onReturnHome={() => { setActiveAppView('LANDING'); window.scrollTo(0, 0); }} 
+          onLaunchAssessment={() => { setActiveAppView('ASSESSMENT_PORTAL'); window.scrollTo(0, 0); }} 
+          onContactUs={() => { setActiveAppView('CONTACT_US'); window.scrollTo(0, 0); }}
+        />
+      ) : activeAppView === 'BUSINESS_GROWTH_CONSULTATION' ? (
+        <BusinessGrowthConsultationPage 
+          onReturnHome={() => { setActiveAppView('LANDING'); window.scrollTo(0, 0); }} 
+          onContactUs={() => { setActiveAppView('CONTACT_US'); window.scrollTo(0, 0); }}
+        />
+      ) : activeAppView === 'FULL_BUSINESS_DIAGNOSTIC' ? (
+        <FullBusinessDiagnosticPage 
+          onReturnHome={() => { setActiveAppView('LANDING'); window.scrollTo(0, 0); }} 
+          onContactUs={() => { setActiveAppView('CONTACT_US'); window.scrollTo(0, 0); }}
+        />
+      ) : activeAppView === 'BUSINESS_GROWTH_SPRINT' ? (
+        <BusinessGrowthSprintPage 
+          onReturnHome={() => { setActiveAppView('LANDING'); window.scrollTo(0, 0); }} 
+          onContactUs={() => { setActiveAppView('CONTACT_US'); window.scrollTo(0, 0); }}
+        />
+      ) : activeAppView === 'FRACTIONAL_SALES_HEAD' ? (
+        <FractionalSalesHeadPage 
+          onReturnHome={() => { setActiveAppView('LANDING'); window.scrollTo(0, 0); }} 
+          onContactUs={() => { setActiveAppView('CONTACT_US'); window.scrollTo(0, 0); }}
+        />
       ) : (
         <AssessmentEngine onReturnHome={() => { setActiveAppView('LANDING'); window.scrollTo(0, 0); }} />
       )}
