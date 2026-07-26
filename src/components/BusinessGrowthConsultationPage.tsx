@@ -1,4 +1,5 @@
 import React from 'react';
+import { SharedFooter } from './SharedFooter';
 import { 
   ArrowLeft, ArrowRight, Video, FileText, Target, Map, 
   CheckCircle, Clock, Sparkles, Lightbulb, Compass, ArrowDown, ChevronRight
@@ -7,11 +8,13 @@ import {
 interface BusinessGrowthConsultationPageProps {
   onReturnHome?: () => void;
   onContactUs?: () => void;
+  onNavigate?: (view: string) => void;
 }
 
 export function BusinessGrowthConsultationPage({ 
   onReturnHome, 
-  onContactUs 
+  onContactUs,
+  onNavigate 
 }: BusinessGrowthConsultationPageProps) {
   
   return (
@@ -30,7 +33,7 @@ export function BusinessGrowthConsultationPage({
             <span>Back</span>
           </button>
           
-          <div className="flex items-center gap-3 text-[11px] font-medium text-slate-600">
+          <div className="flex items-center gap-4 text-[11px] font-medium text-slate-600">
             <span className="hidden sm:inline-flex items-center gap-1.5 text-blue-800 bg-blue-50 border border-blue-200 px-2.5 py-0.5 rounded-full font-semibold">
               <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
               Business Growth Consultation™ • KRG ONE
@@ -45,9 +48,9 @@ export function BusinessGrowthConsultationPage({
       <section className="relative overflow-hidden pt-8 pb-10 lg:pt-16 lg:pb-16 bg-gradient-to-b from-blue-50/70 via-slate-50 to-[#f8fafc] border-b border-slate-200">
         <div className="absolute inset-0 z-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#2563eb 0.75px, transparent 0.75px)', backgroundSize: '24px 24px' }}></div>
         
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center space-y-4">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center space-y-4">
           
-          <div className="inline-flex items-center gap-2 bg-blue-100/80 border border-blue-200/80 px-4 py-1.5 rounded-full">
+          <div className="inline-flex items-center gap-4 bg-blue-100/80 border border-blue-200/80 px-4 py-1.5 rounded-full">
             <Sparkles className="w-4 h-4 text-blue-600" />
             <span className="text-[11px] font-bold uppercase tracking-widest text-blue-900">BUSINESS GROWTH CONSULTATION™</span>
           </div>
@@ -56,7 +59,7 @@ export function BusinessGrowthConsultationPage({
             Expert Business Advice.<br className="hidden sm:block" /> Clear Growth Direction.
           </h1>
 
-          <p className="max-w-2xl mx-auto text-slate-600 text-sm sm:text-base font-medium leading-relaxed pt-2">
+          <p className="max-w-2xl mx-auto text-slate-600 text-sm sm:text-base font-medium leading-loose pt-2">
             A focused one-on-one consultation designed to help you understand your business challenges, review your Business Health Assessment™, and identify the highest-impact opportunities for growth.
           </p>
 
@@ -66,7 +69,7 @@ export function BusinessGrowthConsultationPage({
       {/* ---------------------------------------------------- */}
       {/* 2. WHAT YOU'LL RECEIVE                               */}
       {/* ---------------------------------------------------- */}
-      <section className="py-12 bg-white border-b border-slate-200">
+      <section className="py-24 lg:py-32 bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           
           <div className="text-center">
@@ -74,36 +77,36 @@ export function BusinessGrowthConsultationPage({
             <div className="w-12 h-1 bg-blue-600 mx-auto rounded-full"></div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-            <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 text-center flex flex-col items-center gap-3 shadow-sm hover:border-blue-300 transition-colors">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-10 md:gap-16 sm:p-10">
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 sm:p-8 text-center flex flex-col items-center gap-4 shadow-sm hover:border-blue-300 transition-colors">
               <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
                 <FileText className="w-5 h-5" />
               </div>
               <span className="text-sm font-bold text-slate-800">Review of your Business Growth Assessment™</span>
             </div>
             
-            <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 text-center flex flex-col items-center gap-3 shadow-sm hover:border-blue-300 transition-colors">
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 sm:p-8 text-center flex flex-col items-center gap-4 shadow-sm hover:border-blue-300 transition-colors">
               <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
                 <Lightbulb className="w-5 h-5" />
               </div>
               <span className="text-sm font-bold text-slate-800">Discussion of Key Business Challenges</span>
             </div>
 
-            <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 text-center flex flex-col items-center gap-3 shadow-sm hover:border-blue-300 transition-colors">
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 sm:p-8 text-center flex flex-col items-center gap-4 shadow-sm hover:border-blue-300 transition-colors">
               <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
                 <Target className="w-5 h-5" />
               </div>
               <span className="text-sm font-bold text-slate-800">Priority Growth Recommendations</span>
             </div>
 
-            <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 text-center flex flex-col items-center gap-3 shadow-sm hover:border-blue-300 transition-colors">
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 sm:p-8 text-center flex flex-col items-center gap-4 shadow-sm hover:border-blue-300 transition-colors">
               <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
                 <Compass className="w-5 h-5" />
               </div>
               <span className="text-sm font-bold text-slate-800">Expert Business Guidance</span>
             </div>
 
-            <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 text-center flex flex-col items-center gap-3 shadow-sm hover:border-blue-300 transition-colors">
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 sm:p-8 text-center flex flex-col items-center gap-4 shadow-sm hover:border-blue-300 transition-colors">
               <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
                 <Map className="w-5 h-5" />
               </div>
@@ -117,9 +120,9 @@ export function BusinessGrowthConsultationPage({
       {/* ---------------------------------------------------- */}
       {/* 3. DETAILS & PRICE CARD                              */}
       {/* ---------------------------------------------------- */}
-      <section className="py-16 bg-[#f8fafc]">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+      <section className="py-24 lg:py-32 bg-[#f8fafc]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center">
             
             {/* Consultation Details */}
             <div className="space-y-6">
@@ -129,7 +132,7 @@ export function BusinessGrowthConsultationPage({
               </div>
               
               <div className="space-y-4">
-                <div className="flex items-start gap-4">
+                <div className="flex items-start gap-10 md:gap-16 sm:p-10">
                   <div className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center shadow-sm shrink-0">
                     <Clock className="w-5 h-5 text-slate-600" />
                   </div>
@@ -139,7 +142,7 @@ export function BusinessGrowthConsultationPage({
                   </div>
                 </div>
                 
-                <div className="flex items-start gap-4">
+                <div className="flex items-start gap-10 md:gap-16 sm:p-10">
                   <div className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center shadow-sm shrink-0">
                     <Video className="w-5 h-5 text-slate-600" />
                   </div>
@@ -151,7 +154,7 @@ export function BusinessGrowthConsultationPage({
 
                 <div className="pt-4 border-t border-slate-200">
                   <h4 className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2">Ideal For</h4>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-4">
                     <span className="bg-slate-200 text-slate-800 text-xs font-bold px-3 py-1 rounded-full">Business Owners</span>
                     <span className="bg-slate-200 text-slate-800 text-xs font-bold px-3 py-1 rounded-full">MSMEs</span>
                     <span className="bg-slate-200 text-slate-800 text-xs font-bold px-3 py-1 rounded-full">Startups</span>
@@ -198,7 +201,7 @@ export function BusinessGrowthConsultationPage({
       {/* ---------------------------------------------------- */}
       {/* 4. IS THIS RIGHT FOR YOU?                            */}
       {/* ---------------------------------------------------- */}
-      <section className="py-16 bg-white border-y border-slate-200">
+      <section className="py-24 lg:py-32 bg-white border-y border-slate-200">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           
           <div className="text-center space-y-2">
@@ -206,7 +209,7 @@ export function BusinessGrowthConsultationPage({
             <p className="text-slate-600 text-sm font-medium">This consultation is ideal if you want to:</p>
           </div>
 
-          <div className="grid gap-3">
+          <div className="grid gap-4">
             {[
               "Understand your Business Health Report",
               "Improve business performance",
@@ -215,7 +218,7 @@ export function BusinessGrowthConsultationPage({
               "Explore AI and digital transformation",
               "Plan your next stage of growth"
             ].map((item, idx) => (
-              <div key={idx} className="bg-[#f8fafc] border border-slate-200 p-4 rounded-xl flex items-center gap-4">
+              <div key={idx} className="bg-[#f8fafc] border border-slate-200 p-4 rounded-xl flex items-center gap-10 md:gap-16 sm:p-10">
                 <CheckCircle className="w-6 h-6 text-emerald-500 shrink-0" />
                 <span className="font-bold text-slate-800">{item}</span>
               </div>
@@ -228,15 +231,15 @@ export function BusinessGrowthConsultationPage({
       {/* ---------------------------------------------------- */}
       {/* 5. SIMPLE GROWTH JOURNEY                             */}
       {/* ---------------------------------------------------- */}
-      <section className="py-16 bg-gradient-to-b from-slate-900 to-blue-950 text-white text-center border-b border-blue-900">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <section className="py-24 lg:py-32 bg-gradient-to-b from-slate-900 to-blue-950 text-white text-center border-b border-blue-900">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           <div className="space-y-2">
             <h2 className="text-2xl sm:text-3xl font-black font-serif tracking-tight text-white">What Happens After the Consultation?</h2>
             <p className="text-blue-200 text-sm font-medium">A structured pathway to sustainable growth.</p>
           </div>
 
-          <div className="flex flex-col items-center gap-2">
+          <div className="flex flex-col items-center gap-4">
             <div className="bg-white/10 border border-white/20 px-6 py-3 rounded-xl font-bold w-full max-w-sm text-sm">
               Business Growth Assessment™
             </div>
@@ -264,7 +267,7 @@ export function BusinessGrowthConsultationPage({
       {/* ---------------------------------------------------- */}
       {/* 6. LARGE CTA                                         */}
       {/* ---------------------------------------------------- */}
-      <section className="py-16 bg-[#f8fafc] text-center">
+      <section className="py-24 lg:py-32 bg-[#f8fafc] text-center">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
           <div className="space-y-2">
             <h2 className="text-2xl sm:text-3xl font-black text-slate-900 font-serif tracking-tight">Ready to Get Started?</h2>
@@ -273,7 +276,7 @@ export function BusinessGrowthConsultationPage({
           
           <button
             onClick={onContactUs}
-            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm uppercase px-8 py-4 rounded-xl shadow-md transition-all active:scale-95 cursor-pointer"
+            className="inline-flex items-center gap-4 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm uppercase px-8 py-4 rounded-xl shadow-md transition-all active:scale-95 cursor-pointer"
           >
             <span>Book Advisor Consultation</span>
             <ChevronRight className="w-5 h-5" />
@@ -284,17 +287,7 @@ export function BusinessGrowthConsultationPage({
       {/* ---------------------------------------------------- */}
       {/* 7. FOOTER                                            */}
       {/* ---------------------------------------------------- */}
-      <footer className="bg-white border-t border-slate-200 py-8 text-center text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
-          <span>KRG ONE</span>
-          <span className="hidden sm:inline">•</span>
-          <span>Jaipur, India</span>
-          <span className="hidden sm:inline">•</span>
-          <span>+91 7300300330</span>
-          <span className="hidden sm:inline">•</span>
-          <span>enquiry.krgone@gmail.com</span>
-        </div>
-      </footer>
+      <SharedFooter onNavigate={onNavigate} />
 
     </div>
   );

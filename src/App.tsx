@@ -11,6 +11,7 @@ import {
   BookOpen, HelpCircle, ArrowRight, Brain, Settings, Users, Calendar
 , ArrowLeft} from "lucide-react";
 import React, { useState, useEffect, useRef } from 'react';
+import { SharedFooter } from './components/SharedFooter';
 import AssessmentEngine from "./AssessmentEngine";
 import { ContactUsPage } from "./components/ContactUsPage";
 import { AboutUsPage } from "./components/AboutUsPage";
@@ -20,6 +21,11 @@ import { GrowthOSOverviewPage } from "./components/GrowthOSOverviewPage";
 import { SevenGrowthPillarsPage } from "./components/SevenGrowthPillarsPage";
 import { BusinessHealthDashboardPage } from "./components/BusinessHealthDashboardPage";
 import { ExecutiveBusinessInsightsPage } from "./components/ExecutiveBusinessInsightsPage";
+import { PrivacyPolicyPage } from "./components/PrivacyPolicyPage";
+import { TermsAndConditionsPage } from "./components/TermsAndConditionsPage";
+import { DisclaimerPage } from "./components/DisclaimerPage";
+import { RefundPolicyPage } from "./components/RefundPolicyPage";
+import { CookiePolicyPage } from "./components/CookiePolicyPage";
 import { BusinessGrowthConsultationPage } from "./components/BusinessGrowthConsultationPage";
 import { FullBusinessDiagnosticPage } from "./components/FullBusinessDiagnosticPage";
 import { BusinessGrowthSprintPage } from "./components/BusinessGrowthSprintPage";
@@ -88,7 +94,7 @@ const navigationConfig = [
 
 export function App() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [activeAppView, setActiveAppView] = useState<'LANDING' | 'ASSESSMENT_PORTAL' | 'CONTACT_US' | 'ABOUT_US' | 'MEET_FOUNDER' | 'OUR_METHODOLOGY' | 'GROWTH_OS_OVERVIEW' | 'SEVEN_PILLARS' | 'BUSINESS_HEALTH_DASHBOARD' | 'EXECUTIVE_INSIGHTS' | 'BUSINESS_GROWTH_CONSULTATION' | 'FULL_BUSINESS_DIAGNOSTIC' | 'BUSINESS_GROWTH_SPRINT' | 'FRACTIONAL_SALES_HEAD'>('LANDING');
+  const [activeAppView, setActiveAppView] = useState<'LANDING' | 'ASSESSMENT_PORTAL' | 'CONTACT_US' | 'ABOUT_US' | 'MEET_FOUNDER' | 'OUR_METHODOLOGY' | 'GROWTH_OS_OVERVIEW' | 'SEVEN_PILLARS' | 'BUSINESS_HEALTH_DASHBOARD' | 'EXECUTIVE_INSIGHTS' | 'BUSINESS_GROWTH_CONSULTATION' | 'FULL_BUSINESS_DIAGNOSTIC' | 'BUSINESS_GROWTH_SPRINT' | 'FRACTIONAL_SALES_HEAD' | 'PRIVACY_POLICY' | 'TERMS_AND_CONDITIONS' | 'DISCLAIMER' | 'REFUND_POLICY' | 'COOKIE_POLICY'>('LANDING');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -188,7 +194,7 @@ export function App() {
                           }`}
                         >
                           <div className="absolute -top-3 left-0 w-full h-4"></div> {/* Hover bridge */}
-                          <div className="px-3 py-3 mb-1 border-b border-[#c29d2f]/10">
+                          <div className="px-4 py-3 mb-2 border-b border-[#c29d2f]/10">
                             <span className="text-[#c29d2f] text-[11px] font-bold uppercase tracking-[0.15em]">{item.title}</span>
                           </div>
                           <div className="flex flex-col">
@@ -221,7 +227,7 @@ export function App() {
                                     setActiveAppView('FRACTIONAL_SALES_HEAD');
                                     window.scrollTo(0, 0);
                                   } else if (dropItem.includes("Health Dashboard")) {
-                                    setActiveAppView('BUSINESS_HEALTH_DASHBOARD');
+                                    setActiveAppView('ASSESSMENT_PORTAL');
                                     window.scrollTo(0, 0);
                                   } else if (dropItem.includes("Executive Business Insights")) {
                                     setActiveAppView('EXECUTIVE_INSIGHTS');
@@ -234,7 +240,7 @@ export function App() {
                                     window.scrollTo(0, 0);
                                   }
                                 }}
-                                className="px-3 py-2.5 text-[13.5px] text-white hover:text-[#c29d2f] hover:bg-white/5 rounded-xl transition-colors duration-200 flex items-center gap-2 group/drop cursor-pointer"
+                                className="px-5 py-3.5 text-[14px] text-white hover:text-[#c29d2f] hover:bg-white/5 rounded-xl transition-colors duration-200 flex items-center gap-2 group/drop cursor-pointer"
                               >
                                 <span className="w-1.5 h-1.5 rounded-full bg-[#c29d2f]/0 group-hover/drop:bg-[#c29d2f] transition-colors"></span>
                                 {dropItem}
@@ -328,7 +334,7 @@ export function App() {
                 {/* Mobile Dropdown Sub-menu */}
                 {item.dropdown && (
                   <div 
-                    className={`overflow-hidden transition-all duration-300 flex flex-col gap-1 pl-4 ${
+                    className={`overflow-hidden transition-all duration-300 flex flex-col gap-2 pl-4 ${
                       activeDropdown === item.title ? 'max-h-[500px] py-2 opacity-100' : 'max-h-0 opacity-0'
                     }`}
                   >
@@ -361,7 +367,7 @@ export function App() {
                             setActiveAppView('FRACTIONAL_SALES_HEAD');
                             window.scrollTo(0, 0);
                           } else if (dropItem.includes("Health Dashboard")) {
-                            setActiveAppView('BUSINESS_HEALTH_DASHBOARD');
+                            setActiveAppView('ASSESSMENT_PORTAL');
                             window.scrollTo(0, 0);
                           } else if (dropItem.includes("Executive Business Insights")) {
                             setActiveAppView('EXECUTIVE_INSIGHTS');
@@ -395,7 +401,7 @@ export function App() {
         {/* Faint Grid Texture */}
         <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center lg:items-stretch max-w-7xl mx-auto pt-4 pb-4 lg:pt-6 lg:pb-6 px-6 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center lg:items-stretch max-w-7xl mx-auto pt-16 pb-16 lg:pt-24 lg:pb-24 px-6 relative z-10">
           
           {/* Left Column */}
           <div className="lg:col-span-5 flex flex-col items-start justify-between lg:py-2">
@@ -420,7 +426,7 @@ export function App() {
                 <button onClick={(e) => { e.preventDefault(); setActiveAppView('ASSESSMENT_PORTAL'); window.scrollTo(0, 0); }} className="bg-gradient-to-r from-[#d4af37] to-[#e5c158] hover:from-[#c29d2f] hover:to-[#d4af37] text-white font-semibold py-3.5 px-6 rounded-lg flex items-center gap-2 transition-all shadow-md active:scale-95 text-sm lg:text-base">
                   Free Business Growth Assessment <ArrowRight className="w-4 h-4" />
                 </button>
-                <button className="border border-gray-300 hover:border-gray-400 hover:bg-gray-50 text-gray-800 font-semibold py-3.5 px-6 rounded-lg transition-all active:scale-95 bg-white shadow-sm text-sm lg:text-base">
+                <button onClick={(e) => { e.preventDefault(); document.getElementById('growth-os')?.scrollIntoView({ behavior: 'smooth' }); }} className="border border-gray-300 hover:border-gray-400 hover:bg-gray-50 text-gray-800 font-semibold py-3.5 px-6 rounded-lg transition-all active:scale-95 bg-white shadow-sm text-sm lg:text-base">
                   Learn About Growth OS™
                 </button>
               </div>
@@ -578,7 +584,7 @@ export function App() {
                   {/* Panel 2: Priority Actions */}
                   <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-3 flex flex-col">
                     <h4 className="text-[11px] font-medium text-slate-300 mb-2 shrink-0">Priority Actions</h4>
-                    <div className="flex flex-col gap-1.5 flex-1 overflow-y-auto min-h-0 pr-1">
+                    <div className="flex flex-col gap-2.5 flex-1 overflow-y-auto min-h-0 pr-1">
                       {[
                         { num: 1, title: 'Improve Sales Conversion Process', sub: 'High Impact • Quick Win', bg: 'bg-amber-500/20 text-amber-500' },
                         { num: 2, title: 'Strengthen Financial Planning', sub: 'High Impact • Long Term', bg: 'bg-amber-500/20 text-amber-400' },
@@ -636,8 +642,8 @@ export function App() {
       </main>
 
       {/* TRUST & AUTHORITY ENGINE SECTION */}
-      <section id="trust-validation" className="bg-white pt-4 pb-16 border-b border-slate-100 font-sans">
-        <div className="max-w-7xl mx-auto px-6 space-y-12">
+      <section id="trust-validation" className="bg-white py-16 lg:py-24 border-b border-slate-100 font-sans">
+        <div className="max-w-7xl mx-auto px-6 space-y-22">
           
           {/* Top Tagline */}
           <div className="text-center">
@@ -692,7 +698,7 @@ export function App() {
       </section>
 
       {/* BUSINESS CHALLENGES WE SOLVE SECTION */}
-      <section id="framework-pillars" className="bg-slate-50/50 py-16 md:py-20 px-6 border-b border-slate-100 font-sans relative block w-full overflow-hidden">
+      <section id="framework-pillars" className="bg-slate-50/50 py-20 lg:py-28 px-6 border-b border-slate-100 font-sans relative block w-full overflow-hidden">
         {/* Subtle Background Elements */}
         <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-amber-50/60 to-transparent -z-10 pointer-events-none"></div>
         <div className="absolute top-0 left-0 w-full h-full opacity-[0.02] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] -z-10 pointer-events-none"></div>
@@ -709,7 +715,7 @@ export function App() {
             <h2 className="text-4xl md:text-5xl font-black text-[#0a1128] tracking-tight leading-[1.15] mb-6">
               What's Holding <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#c29d2f] to-[#e5c158]">Your Business</span> Back?
             </h2>
-            <div className="text-slate-600 text-[15px] leading-relaxed font-medium max-w-3xl mx-auto space-y-1">
+            <div className="text-slate-600 text-[15px] leading-relaxed font-medium max-w-3xl mx-auto space-y-2">
               <p>Every business wants to grow—but growth doesn't happen by chance.</p>
               <p>Many businesses work hard every day, yet sales, profits, and business performance don't improve as expected.</p>
               <p>The real challenges often remain unnoticed until they start limiting growth.</p>
@@ -821,7 +827,7 @@ export function App() {
       </section>
 
       {/* OUR STRUCTURED APPROACH SECTION */}
-      <section id="structured-approach" className="bg-slate-50/50 py-16 md:py-20 px-6 font-sans relative block w-full overflow-hidden">
+      <section id="structured-approach" className="bg-slate-50/50 py-20 lg:py-28 px-6 font-sans relative block w-full overflow-hidden">
         <div className="max-w-7xl mx-auto relative z-10">
           
           {/* Section Header */}
@@ -836,7 +842,7 @@ export function App() {
             <h2 className="text-4xl md:text-5xl font-black text-[#0a1128] tracking-tight leading-[1.15] mb-6">
               How KRG ONE <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#c29d2f] to-[#e5c158]">Supports</span> Your Business Growth
             </h2>
-            <div className="text-slate-600 text-[16px] leading-relaxed font-medium max-w-3xl mx-auto space-y-1">
+            <div className="text-slate-600 text-[16px] leading-relaxed font-medium max-w-3xl mx-auto space-y-2">
               <p>Our proven approach identifies the right opportunities, prioritizes actions, and supports you in building a stronger, more profitable business.</p>
             </div>
           </div>
@@ -971,7 +977,7 @@ export function App() {
       </section>
 
       {/* GROWTH OS SECTION */}
-      <section id="growth-os" className="bg-[#050b14] py-16 md:py-20 px-6 font-sans relative block w-full overflow-hidden text-white border-b-8 border-r-4 border-[#1e293b] rounded-b-3xl">
+      <section id="growth-os" className="bg-[#050b14] py-20 lg:py-28 px-6 font-sans relative block w-full overflow-hidden text-white border-b-8 border-r-4 border-[#1e293b] rounded-b-3xl">
         {/* Subtle Background Glows */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-amber-600/5 rounded-full blur-[100px] pointer-events-none"></div>
         <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-amber-500/5 rounded-full blur-[80px] pointer-events-none"></div>
@@ -1169,7 +1175,7 @@ export function App() {
       </section>
 
       {/* DASHBOARD SECTION */}
-      <section id="dashboard" className="bg-[#fafafc] py-16 md:py-20 px-6 font-sans relative block w-full overflow-hidden">
+      <section id="dashboard" className="bg-[#fafafc] py-20 lg:py-28 px-6 font-sans relative block w-full overflow-hidden">
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="text-center max-w-4xl mx-auto mb-16">
             <h2 className="text-[2.5rem] md:text-[3rem] font-bold text-[#0f2142] mb-4 tracking-tight">Business Growth Dashboard™</h2>
@@ -1495,7 +1501,7 @@ export function App() {
       </section>
 
       {/* Journey Section */}
-      <section id="journey" className="py-16 md:py-20 bg-[#f8fafc] relative block w-full">
+      <section id="journey" className="py-20 lg:py-28 bg-[#f8fafc] relative block w-full">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <div className="flex items-center justify-center gap-4 mb-6">
@@ -1612,7 +1618,7 @@ export function App() {
                     ))}
                   </div>
 
-                  <button className="w-full bg-[#0f2142] hover:bg-[#1a3363] text-white font-bold py-3.5 px-4 rounded-xl transition-all flex items-center justify-center gap-1.5 text-[13px] uppercase tracking-wide">
+                  <button onClick={(e) => { e.preventDefault(); setActiveAppView('CONTACT_US'); window.scrollTo(0, 0); }} className="w-full bg-[#0f2142] hover:bg-[#1a3363] text-white font-bold py-3.5 px-4 rounded-xl transition-all flex items-center justify-center gap-1.5 text-[13px] uppercase tracking-wide">
                     Apply Now <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -1666,7 +1672,7 @@ export function App() {
                     ))}
                   </div>
 
-                  <button className="w-full bg-[#ffb800] hover:bg-[#f0ad00] text-black font-bold py-4 px-4 rounded-xl transition-all flex items-center justify-center gap-1.5 text-[14px] uppercase tracking-wide">
+                  <button onClick={(e) => { e.preventDefault(); setActiveAppView('CONTACT_US'); window.scrollTo(0, 0); }} className="w-full bg-[#ffb800] hover:bg-[#f0ad00] text-black font-bold py-4 px-4 rounded-xl transition-all flex items-center justify-center gap-1.5 text-[14px] uppercase tracking-wide">
                     Apply Now <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -1716,7 +1722,7 @@ export function App() {
                     ))}
                   </div>
 
-                  <button className="w-full bg-[#0f2142] hover:bg-[#1a3363] text-white font-bold py-3.5 px-4 rounded-xl transition-all flex items-center justify-center gap-1.5 text-[13px] uppercase tracking-wide">
+                  <button onClick={(e) => { e.preventDefault(); setActiveAppView('CONTACT_US'); window.scrollTo(0, 0); }} className="w-full bg-[#0f2142] hover:bg-[#1a3363] text-white font-bold py-3.5 px-4 rounded-xl transition-all flex items-center justify-center gap-1.5 text-[13px] uppercase tracking-wide">
                     Apply Now <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -1765,7 +1771,7 @@ export function App() {
                     ))}
                   </div>
 
-                  <button className="w-full bg-[#0f2142] hover:bg-[#1a3363] text-white font-bold py-3.5 px-4 rounded-xl transition-all flex items-center justify-center gap-1.5 text-[13px] uppercase tracking-wide">
+                  <button onClick={(e) => { e.preventDefault(); setActiveAppView('CONTACT_US'); window.scrollTo(0, 0); }} className="w-full bg-[#0f2142] hover:bg-[#1a3363] text-white font-bold py-3.5 px-4 rounded-xl transition-all flex items-center justify-center gap-1.5 text-[13px] uppercase tracking-wide">
                     Apply Now <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -1796,7 +1802,7 @@ export function App() {
       </section>
 
       {/* Industries Section */}
-      <section id="industries" className="py-16 md:py-20 relative block w-full overflow-hidden bg-[#fafcff]">
+      <section id="industries" className="py-20 lg:py-28 relative block w-full overflow-hidden bg-[#fafcff]">
         {/* Grid Background */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:linear-gradient(to_bottom,white_10%,transparent_90%)] opacity-30 z-0 pointer-events-none"></div>
         
@@ -1895,7 +1901,7 @@ export function App() {
       </section>
 
       {/* Founder Section */}
-      <section id="founder" className="py-16 md:py-20 relative block w-full overflow-hidden bg-[#fafcff]">
+      <section id="founder" className="py-20 lg:py-28 relative block w-full overflow-hidden bg-[#fafcff]">
         {/* Grid Background */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:linear-gradient(to_bottom,white_10%,transparent_90%)] opacity-30 z-0 pointer-events-none"></div>
 
@@ -1976,7 +1982,7 @@ export function App() {
       </section>
 
       {/* FAQ Section */}
-      <section id="faq" className="py-16 md:py-20 relative block w-full overflow-hidden bg-white">
+      <section id="faq" className="py-20 lg:py-28 relative block w-full overflow-hidden bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           
           <div className="text-center mb-12 md:mb-16">
@@ -2070,210 +2076,42 @@ export function App() {
       </section>
 
       {/* CTA Section */}
-      <section id="cta" className="py-16 md:py-20 relative block w-full overflow-hidden bg-[#fafcff]">
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 pointer-events-none"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <section id="cta" className="py-20 lg:py-32 bg-[#f8fafc] text-center relative overflow-hidden border-t border-slate-100">
+        <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#0f2142 1px, transparent 1px)', backgroundSize: '32px 32px' }}></div>
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 relative z-10">
           
-          <div className="text-center mb-12 relative">
-            <div className="flex items-center justify-center gap-4 mb-4">
-              <div className="h-px bg-gradient-to-r from-transparent to-[#ffb800] w-12 sm:w-24"></div>
-              <span className="text-[#ffb800] font-bold text-[13px] tracking-[0.2em] uppercase">READY TO GROW YOUR BUSINESS?</span>
-              <div className="h-px bg-gradient-to-l from-transparent to-[#ffb800] w-12 sm:w-24"></div>
-            </div>
-            
-            <h2 className="text-[2.5rem] sm:text-[3.5rem] font-bold text-[#0f2142] mb-4 leading-[1.1] font-serif tracking-tight">
-              Take the First Step Towards<br />Smarter Business Growth<span className="text-[#ffb800]">.</span>
+          <div className="space-y-4">
+            <span className="text-[#d4af37] text-xs sm:text-sm font-black uppercase tracking-[0.2em] block">
+              CONTINUE YOUR BUSINESS GROWTH JOURNEY
+            </span>
+            <h2 className="text-3xl sm:text-5xl font-black text-[#0f2142] tracking-tight font-serif leading-tight">
+              Free Business Growth Assessment™
             </h2>
-            <p className="text-[1.125rem] text-slate-600 max-w-3xl mx-auto font-medium leading-relaxed">
-              Start with a <strong className="text-black font-bold">Free Business Growth Assessment™</strong> and discover practical<br className="hidden sm:block" />opportunities to improve performance, profitability, and long-term business growth.
+            <p className="text-base sm:text-xl text-slate-600 font-medium leading-relaxed max-w-2xl mx-auto">
+              Discover how your business performs across all seven pillars and receive your personalized Business Health Dashboard™.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto mb-10 relative">
-            {/* Connecting line between cards on desktop */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100px] h-[2px] bg-gradient-to-r from-transparent via-[#ffeaab] to-transparent hidden md:block z-0"></div>
-
-            {/* Card 1 */}
-            <div className="bg-[#fffdf7] border-2 border-[#ffeaab] rounded-[20px] p-6 sm:p-8 shadow-sm relative overflow-hidden flex flex-col h-full z-10 transition-shadow hover:shadow-md">
-              <div className="flex items-start gap-5 mb-6">
-                <div className="w-[70px] h-[70px] rounded-full bg-[#fffdf7] flex items-center justify-center text-[#ffb800] shrink-0 border border-[#ffeaab] shadow-[0_2px_10px_-4px_rgba(255,184,0,0.4)]">
-                  <TrendingUpIcon className="w-8 h-8 stroke-[1.5]" />
-                </div>
-                <div className="pt-1">
-                  <h3 className="text-[1.375rem] sm:text-[1.5rem] font-bold text-[#0f2142] leading-tight mb-2 font-serif tracking-tight">
-                    Free Business<br />Growth Assessment™
-                  </h3>
-                  <p className="text-[14px] text-slate-600 leading-relaxed font-medium">
-                    Discover your current business health, identify growth opportunities, and receive actionable insights.
-                  </p>
-                </div>
-              </div>
-
-              <div className="border-t border-slate-100 pt-6 flex-1 mb-6">
-                <ul className="space-y-3">
-                  {[
-                    "15–20 Minutes",
-                    "Business Growth Score™",
-                    "Growth Insights™",
-                    "Executive Summary"
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-center gap-3">
-                      <div className="w-5 h-5 rounded-full bg-[#ffb800] text-white flex items-center justify-center shrink-0">
-                        <Check className="w-3 h-3 stroke-[3]" />
-                      </div>
-                      <span className="text-[14px] sm:text-[15px] text-slate-800 font-medium">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <button className="w-full py-3.5 px-6 bg-gradient-to-r from-[#d99c00] to-[#ffb800] hover:from-[#c28c00] hover:to-[#e6a600] text-white font-bold rounded-[10px] shadow-[0_4px_12px_-4px_rgba(255,184,0,0.5)] transition-all flex items-center justify-center gap-2 text-[1rem] group">
-                Start Free Assessment 
-                <ArrowRight className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" />
-              </button>
-            </div>
-
-            {/* Card 2 */}
-            <div className="bg-[#f8fbff] border-2 border-[#e6f0ff] rounded-[20px] p-6 sm:p-8 shadow-sm relative overflow-hidden flex flex-col h-full z-10 transition-shadow hover:shadow-md">
-              <div className="flex items-start gap-5 mb-6">
-                <div className="w-[70px] h-[70px] rounded-full bg-[#f8fbff] flex items-center justify-center text-[#2563eb] shrink-0 border border-[#e6f0ff] shadow-[0_2px_10px_-4px_rgba(37,99,235,0.2)]">
-                  <Calendar className="w-8 h-8 stroke-[1.5]" />
-                </div>
-                <div className="pt-1">
-                  <h3 className="text-[1.375rem] sm:text-[1.5rem] font-bold text-[#0f2142] leading-tight mb-2 font-serif tracking-tight">
-                    Book a Business<br />Growth Consultation™
-                  </h3>
-                  <p className="text-[14px] text-slate-600 leading-relaxed font-medium">
-                    Discuss your assessment results and explore the best path forward with a Business Growth Advisor.
-                  </p>
-                </div>
-              </div>
-
-              <div className="border-t border-slate-100 pt-6 flex-1 mb-6">
-                <ul className="space-y-3">
-                  {[
-                    "60-Minute Session",
-                    "Review Assessment",
-                    "Business Growth Opportunities",
-                    "Next-Step Action Plan"
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-center gap-3">
-                      <div className="w-5 h-5 rounded-full bg-[#2563eb] text-white flex items-center justify-center shrink-0">
-                        <Check className="w-3 h-3 stroke-[3]" />
-                      </div>
-                      <span className="text-[14px] sm:text-[15px] text-slate-800 font-medium">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <button className="w-full py-3.5 px-6 bg-[#0f2142] hover:bg-black text-white font-bold rounded-[10px] shadow-[0_4px_12px_-4px_rgba(15,33,66,0.4)] transition-all flex items-center justify-center gap-2 text-[1rem] group">
-                Book Consultation 
-                <ArrowRight className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" />
-              </button>
-            </div>
-
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 pt-6">
+            <button
+              onClick={() => setActiveAppView('ASSESSMENT_PORTAL')}
+              className="w-full sm:w-auto bg-[#ffb800] hover:bg-[#e6a600] text-[#0f2142] font-extrabold text-sm uppercase tracking-wider px-8 py-4 rounded-xl shadow-[0_4px_12px_-4px_rgba(255,184,0,0.5)] transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-3"
+            >
+              <span>Take Free Assessment</span>
+              <ArrowRight className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => setActiveAppView('CONTACT_US')}
+              className="w-full sm:w-auto bg-white hover:bg-slate-50 text-[#0f2142] font-extrabold text-sm uppercase tracking-wider px-8 py-4 rounded-xl shadow-sm transition-all active:scale-95 border border-slate-200 cursor-pointer flex items-center justify-center gap-3"
+            >
+              <Phone className="w-5 h-5" />
+              <span>Book Consultation</span>
+            </button>
           </div>
-
-          {/* Bottom Banner */}
-          <div className="max-w-5xl mx-auto bg-white border border-slate-200 rounded-[12px] py-4 px-6 sm:px-8 shadow-sm flex flex-wrap md:flex-nowrap items-center justify-center md:justify-between gap-4 md:gap-6">
-            {[
-              { icon: Lock, label: "No Obligation" },
-              { icon: Handshake, label: "Professional NDA" },
-              { icon: Target, label: "Practical Guidance" },
-              { icon: BarChart2, label: "Measurable Outcomes" }
-            ].map((item, i) => (
-              <div key={i} className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-[#fafcff] flex items-center justify-center text-[#0f2142] shrink-0 border border-slate-100">
-                  <item.icon className="w-4 h-4" />
-                </div>
-                <span className="text-[13px] sm:text-[14px] font-bold text-[#0f2142] whitespace-nowrap">{item.label}</span>
-              </div>
-            ))}
-          </div>
-
         </div>
       </section>
 
-      {/* Footer Section */}
-      <footer className="bg-[#030816] pt-12 pb-8 relative overflow-hidden border-t border-[#c29d2f]/20 shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-[#c29d2f]/10 to-transparent blur-[120px] pointer-events-none rounded-full transform translate-x-1/3 -translate-y-1/3"></div>
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-[#f59e0b]/5 to-transparent blur-[120px] pointer-events-none rounded-full transform -translate-x-1/2 translate-y-1/2"></div>
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-[0.03] pointer-events-none"></div>
-        
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          
-          {/* Top Row: Logo & Confidentiality */}
-          <div className="flex flex-col lg:flex-row justify-between items-start gap-8 lg:gap-12 mb-10">
-            
-            {/* Left: Company Info */}
-            <div className="lg:max-w-sm pt-2">
-              <div className="mb-2">
-                <span className="text-[2.5rem] font-bold tracking-tight text-white leading-none font-serif">KRG <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#c29d2f] to-[#e5c158]">ONE</span></span>
-              </div>
-              <p className="text-[#c29d2f] text-[13px] font-semibold tracking-[0.1em] uppercase">Turning Knowledge into Revenue Growth</p>
-            </div>
-
-            {/* Right: Confidentiality Card */}
-            <div className="w-full lg:max-w-2xl mt-4 lg:mt-0">
-              <div className="relative border border-[#c29d2f]/20 rounded-xl p-5 sm:p-7 bg-gradient-to-br from-[#c29d2f]/[0.02] to-transparent overflow-hidden group hover:border-[#c29d2f]/40 transition-colors duration-500 shadow-xl">
-                <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-[#c29d2f] to-transparent opacity-70"></div>
-                <h4 className="text-[#c29d2f] text-[11px] sm:text-[12px] font-bold tracking-[0.15em] uppercase mb-2 flex items-center gap-2">
-                  <Lock className="w-3.5 h-3.5" /> Confidentiality Commitment
-                </h4>
-                <p className="text-slate-300/80 text-[13px] sm:text-[14px] leading-relaxed font-light">
-                  Every engagement is protected through a professional Non-Disclosure Agreement (NDA). Your business information, financial data, and strategic discussions remain strictly confidential.
-                </p>
-              </div>
-            </div>
-            
-          </div>
-
-          <div className="w-full h-px bg-gradient-to-r from-transparent via-[#c29d2f]/20 to-transparent mb-8"></div>
-
-          {/* Main Navigation */}
-          <div className="flex flex-wrap items-center justify-center gap-y-3 mb-10 text-[13px] sm:text-[14px] font-medium text-slate-300/80 tracking-wide">
-            <button onClick={() => { setActiveAppView('LANDING'); window.scrollTo(0, 0); }} className="hover:text-[#c29d2f] transition-colors duration-300 cursor-pointer">Home</button>
-            <span className="text-[#c29d2f]/30 mx-4 sm:mx-6 hidden sm:inline">|</span>
-            <button onClick={() => { setActiveAppView('ASSESSMENT_PORTAL'); window.scrollTo(0, 0); }} className="hover:text-[#c29d2f] transition-colors duration-300 cursor-pointer">Business Growth Assessment™</button>
-            <span className="text-[#c29d2f]/30 mx-4 sm:mx-6 hidden sm:inline">|</span>
-            <a href="#" className="hover:text-[#c29d2f] transition-colors duration-300">Solutions</a>
-            <span className="text-[#c29d2f]/30 mx-4 sm:mx-6 hidden sm:inline">|</span>
-            <a href="#" className="hover:text-[#c29d2f] transition-colors duration-300">Growth OS™</a>
-            <span className="text-[#c29d2f]/30 mx-4 sm:mx-6 hidden lg:inline">|</span>
-            <a href="#" className="hover:text-[#c29d2f] transition-colors duration-300">Industries</a>
-            <span className="text-[#c29d2f]/30 mx-4 sm:mx-6 hidden sm:inline">|</span>
-            <a href="#" className="hover:text-[#c29d2f] transition-colors duration-300">Resources</a>
-            <span className="text-[#c29d2f]/30 mx-4 sm:mx-6 hidden sm:inline">|</span>
-            <button onClick={() => { setActiveAppView('ABOUT_US'); window.scrollTo(0, 0); }} className="hover:text-[#c29d2f] transition-colors duration-300 cursor-pointer">About Us</button>
-            <span className="text-[#c29d2f]/30 mx-4 sm:mx-6 hidden sm:inline">|</span>
-            <button onClick={() => { setActiveAppView('CONTACT_US'); window.scrollTo(0, 0); }} className="hover:text-[#c29d2f] transition-colors duration-300 cursor-pointer text-[#d4af37]">Contact Us</button>
-          </div>
-
-          {/* Legal Navigation */}
-          <div className="flex flex-wrap items-center justify-center gap-y-3 mb-8 text-[12px] sm:text-[13px] font-medium text-slate-400/60 tracking-wider uppercase">
-            <a href="#" className="hover:text-[#c29d2f] transition-colors duration-300">Privacy Policy</a>
-            <span className="text-[#c29d2f]/30 mx-4 sm:mx-6 hidden sm:inline">|</span>
-            <a href="#" className="hover:text-[#c29d2f] transition-colors duration-300">Terms of Service</a>
-            <span className="text-[#c29d2f]/30 mx-4 sm:mx-6 hidden sm:inline">|</span>
-            <a href="#" className="hover:text-[#c29d2f] transition-colors duration-300">Compliance</a>
-          </div>
-
-          <div className="w-full h-px bg-gradient-to-r from-transparent via-[#c29d2f]/20 to-transparent mb-8"></div>
-
-          {/* Bottom Copyright & Trust */}
-          <div className="flex flex-col md:flex-row flex-wrap items-center justify-center gap-y-4 text-[13px] sm:text-[14px] text-slate-300/90 font-medium tracking-wide">
-            <span className="hover:text-[#c29d2f] transition-colors cursor-pointer mr-2 md:mr-0">© {new Date().getFullYear()} KRGONE. All Rights Reserved.</span>
-            <span className="text-[#c29d2f] mx-4 sm:mx-6 hidden md:inline font-bold">|</span>
-            <span className="hover:text-[#c29d2f] transition-colors cursor-pointer hidden sm:inline">Business Growth Consulting</span>
-            <span className="text-[#c29d2f] mx-4 sm:mx-6 hidden md:inline font-bold">|</span>
-            <span className="hover:text-[#c29d2f] transition-colors cursor-pointer hidden sm:inline">Growth OS™</span>
-            <span className="text-[#c29d2f] mx-4 sm:mx-6 hidden md:inline font-bold">|</span>
-            <span className="hover:text-[#c29d2f] transition-colors cursor-pointer hidden sm:inline">AI-Enabled Consulting</span>
-          </div>
-
-        </div>
-      </footer>
+      <SharedFooter onNavigate={(view) => { setActiveAppView(view as any); window.scrollTo(0, 0); }} />
         </>
       ) : activeAppView === 'CONTACT_US' ? (
         <ContactUsPage 
@@ -2309,6 +2147,7 @@ export function App() {
           onReturnHome={() => { setActiveAppView('LANDING'); window.scrollTo(0, 0); }} 
           onLaunchAssessment={() => { setActiveAppView('ASSESSMENT_PORTAL'); window.scrollTo(0, 0); }} 
           onContactUs={() => { setActiveAppView('CONTACT_US'); window.scrollTo(0, 0); }}
+        onNavigate={(view) => { setActiveAppView(view as any); window.scrollTo(0, 0); }}
         />
       ) : activeAppView === 'BUSINESS_HEALTH_DASHBOARD' ? (
         <BusinessHealthDashboardPage 
@@ -2327,21 +2166,45 @@ export function App() {
         <BusinessGrowthConsultationPage 
           onReturnHome={() => { setActiveAppView('LANDING'); window.scrollTo(0, 0); }} 
           onContactUs={() => { setActiveAppView('CONTACT_US'); window.scrollTo(0, 0); }}
+        onNavigate={(view) => { setActiveAppView(view as any); window.scrollTo(0, 0); }}
         />
       ) : activeAppView === 'FULL_BUSINESS_DIAGNOSTIC' ? (
         <FullBusinessDiagnosticPage 
           onReturnHome={() => { setActiveAppView('LANDING'); window.scrollTo(0, 0); }} 
           onContactUs={() => { setActiveAppView('CONTACT_US'); window.scrollTo(0, 0); }}
+        onNavigate={(view) => { setActiveAppView(view as any); window.scrollTo(0, 0); }}
         />
       ) : activeAppView === 'BUSINESS_GROWTH_SPRINT' ? (
         <BusinessGrowthSprintPage 
           onReturnHome={() => { setActiveAppView('LANDING'); window.scrollTo(0, 0); }} 
           onContactUs={() => { setActiveAppView('CONTACT_US'); window.scrollTo(0, 0); }}
+        onNavigate={(view) => { setActiveAppView(view as any); window.scrollTo(0, 0); }}
         />
       ) : activeAppView === 'FRACTIONAL_SALES_HEAD' ? (
         <FractionalSalesHeadPage 
           onReturnHome={() => { setActiveAppView('LANDING'); window.scrollTo(0, 0); }} 
           onContactUs={() => { setActiveAppView('CONTACT_US'); window.scrollTo(0, 0); }}
+        onNavigate={(view) => { setActiveAppView(view as any); window.scrollTo(0, 0); }}
+        />
+      ) : activeAppView === 'PRIVACY_POLICY' ? (
+        <PrivacyPolicyPage 
+          onReturnHome={() => { setActiveAppView('LANDING'); window.scrollTo(0, 0); }}
+        />
+            ) : activeAppView === 'TERMS_AND_CONDITIONS' ? (
+        <TermsAndConditionsPage 
+          onReturnHome={() => { setActiveAppView('LANDING'); window.scrollTo(0, 0); }}
+        />
+            ) : activeAppView === 'DISCLAIMER' ? (
+        <DisclaimerPage 
+          onReturnHome={() => { setActiveAppView('LANDING'); window.scrollTo(0, 0); }}
+        />
+            ) : activeAppView === 'REFUND_POLICY' ? (
+        <RefundPolicyPage 
+          onReturnHome={() => { setActiveAppView('LANDING'); window.scrollTo(0, 0); }}
+        />
+            ) : activeAppView === 'COOKIE_POLICY' ? (
+        <CookiePolicyPage 
+          onReturnHome={() => { setActiveAppView('LANDING'); window.scrollTo(0, 0); }}
         />
       ) : (
         <AssessmentEngine onReturnHome={() => { setActiveAppView('LANDING'); window.scrollTo(0, 0); }} />

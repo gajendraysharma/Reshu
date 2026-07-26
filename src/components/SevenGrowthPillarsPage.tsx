@@ -1,4 +1,5 @@
 import React from 'react';
+import { SharedFooter } from './SharedFooter';
 import { 
   ArrowLeft, ArrowRight, Sparkles, Compass, TrendingUp, Megaphone, 
   Settings, DollarSign, Users, Cpu, ShieldCheck, CheckCircle2, 
@@ -9,9 +10,11 @@ interface SevenGrowthPillarsPageProps {
   onReturnHome?: () => void;
   onLaunchAssessment?: () => void;
   onContactUs?: () => void;
+  onNavigate?: (view: string) => void;
 }
 
-export function SevenGrowthPillarsPage({ onReturnHome, onLaunchAssessment, onContactUs }: SevenGrowthPillarsPageProps) {
+export function SevenGrowthPillarsPage({ onReturnHome, onLaunchAssessment, onContactUs,
+  onNavigate }: SevenGrowthPillarsPageProps) {
   const pillars = [
     {
       num: "01",
@@ -84,13 +87,13 @@ export function SevenGrowthPillarsPage({ onReturnHome, onLaunchAssessment, onCon
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <button
             onClick={onReturnHome}
-            className="inline-flex items-center gap-2 text-xs font-bold text-slate-700 hover:text-blue-600 uppercase tracking-wider transition-colors cursor-pointer group"
+            className="inline-flex items-center gap-4 text-xs font-bold text-slate-700 hover:text-blue-600 uppercase tracking-wider transition-colors cursor-pointer group"
           >
             <ArrowLeft className="w-4 h-4 text-blue-600 group-hover:-translate-x-1 transition-transform" />
             <span>Back to Home</span>
           </button>
           
-          <div className="flex items-center gap-4 text-xs font-medium text-slate-600">
+          <div className="flex items-center gap-10 md:gap-16 sm:p-10 text-xs font-medium text-slate-600">
             <span className="hidden sm:inline-flex items-center gap-1.5 text-blue-800 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full font-semibold">
               <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
               The 7 Growth Pillars • KRGONE Business Growth OS™
@@ -117,7 +120,7 @@ export function SevenGrowthPillarsPage({ onReturnHome, onLaunchAssessment, onCon
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center space-y-3">
           
           {/* Section Badge */}
-          <div className="inline-flex items-center gap-2 bg-blue-100/80 border border-blue-200/80 px-4 py-1.5 rounded-full">
+          <div className="inline-flex items-center gap-4 bg-blue-100/80 border border-blue-200/80 px-4 py-1.5 rounded-full">
             <Sparkles className="w-4 h-4 text-blue-600" />
             <span className="text-xs font-bold uppercase tracking-widest text-blue-900">THE 7 GROWTH PILLARS • KRGONE Business Growth OS™</span>
           </div>
@@ -131,13 +134,11 @@ export function SevenGrowthPillarsPage({ onReturnHome, onLaunchAssessment, onCon
           </h1>
 
           {/* Subtitle / Intro */}
-          <p className="max-w-3xl mx-auto text-slate-600 text-sm sm:text-base md:text-lg font-normal leading-relaxed">
+          <p className="max-w-3xl mx-auto text-slate-600 text-sm sm:text-base md:text-lg font-normal leading-loose">
             The <strong className="text-slate-900 font-bold">KRGONE Business Growth OS™</strong> evaluates your business across seven interconnected pillars that drive long-term growth, operational excellence, and business resilience. Together, these pillars provide a comprehensive view of your organization's current performance and future growth potential.
           </p>
-
         </div>
       </section>
-
       {/* ---------------------------------------------------- */}
       {/* 2. THE 7 PILLARS GRID                                */}
       {/* ---------------------------------------------------- */}
@@ -156,11 +157,11 @@ export function SevenGrowthPillarsPage({ onReturnHome, onLaunchAssessment, onCon
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-8 gap-10 md:gap-16 sm:p-10 max-w-6xl mx-auto">
             {pillars.map((pillar, idx) => (
               <div 
                 key={idx}
-                className="bg-[#f8fafc] rounded-2xl p-7 border border-slate-200 shadow-xs hover:border-blue-500 hover:bg-white hover:shadow-md transition-all space-y-3 flex flex-col justify-between group"
+                className={`bg-[#f8fafc] rounded-2xl p-8 sm:p-10 border border-slate-200 shadow-xs hover:border-blue-500 hover:bg-white hover:shadow-md transition-all space-y-3 flex flex-col justify-between group lg:col-span-2 ${idx === 4 ? 'lg:col-start-2' : ''}`}
               >
                 <div className="space-y-3">
                   <div className="flex items-center justify-between border-b border-slate-200/80 pb-3">
@@ -181,7 +182,7 @@ export function SevenGrowthPillarsPage({ onReturnHome, onLaunchAssessment, onCon
                     </p>
                   </div>
 
-                  <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
+                  <p className="text-xs sm:text-sm text-slate-600 font-medium leading-loose">
                     {pillar.desc}
                   </p>
                 </div>
@@ -210,13 +211,13 @@ export function SevenGrowthPillarsPage({ onReturnHome, onLaunchAssessment, onCon
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-8 gap-10 md:gap-16 sm:p-10 max-w-6xl mx-auto">
             {outcomes.map((item, idx) => (
               <div 
                 key={idx}
-                className="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs hover:border-blue-400 transition-all space-y-2 flex flex-col justify-center"
+                className={`bg-white rounded-2xl p-4 border border-slate-200 shadow-xs hover:border-blue-400 transition-all space-y-2 flex flex-col justify-center lg:col-span-2 ${idx === 4 ? 'lg:col-start-2' : ''}`}
               >
-                <div className="flex items-center gap-2.5 text-blue-700 font-extrabold text-sm sm:text-base">
+                <div className="flex items-center gap-4.5 text-blue-700 font-extrabold text-sm sm:text-base">
                   <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
                   <span>{item.label}</span>
                 </div>
@@ -226,89 +227,51 @@ export function SevenGrowthPillarsPage({ onReturnHome, onLaunchAssessment, onCon
               </div>
             ))}
           </div>
-
         </div>
       </section>
 
       {/* ---------------------------------------------------- */}
       {/* 4. CONTINUE YOUR GROWTH JOURNEY (CTA)                */}
       {/* ---------------------------------------------------- */}
-      <section className="py-6 bg-gradient-to-b from-blue-50/60 to-slate-50 border-b border-slate-200">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-3">
+      <section className="py-20 lg:py-32 bg-gradient-to-br from-blue-900 via-[#0f2142] to-slate-900 text-center relative overflow-hidden">
+        <div className="absolute inset-0 z-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '32px 32px' }}></div>
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 relative z-10">
           
-          <div className="space-y-3">
-            <span className="text-blue-600 text-xs font-black uppercase tracking-widest block">
+          <div className="space-y-4">
+            <span className="text-blue-400 text-xs sm:text-sm font-black uppercase tracking-[0.2em] block">
               CONTINUE YOUR BUSINESS GROWTH JOURNEY
             </span>
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight font-serif">
+            <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight font-serif leading-tight">
               Free Business Growth Assessment™
             </h2>
-            <p className="text-xs sm:text-base text-slate-600 font-medium leading-relaxed max-w-2xl mx-auto">
+            <p className="text-base sm:text-xl text-blue-100/90 font-medium leading-relaxed max-w-2xl mx-auto">
               Discover how your business performs across all seven pillars and receive your personalized Business Health Dashboard™.
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-md mx-auto pt-2">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 pt-6">
             <button
               onClick={onLaunchAssessment}
-              className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider py-4 px-8 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer"
+              className="w-full sm:w-auto bg-blue-500 hover:bg-blue-400 text-white font-extrabold text-sm uppercase tracking-wider px-8 py-4 rounded-xl shadow-lg transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-3"
             >
               <span>Take Free Assessment</span>
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-5 h-5" />
             </button>
-
-            {onContactUs && (
-              <button
-                onClick={onContactUs}
-                className="w-full sm:w-auto bg-white hover:bg-slate-50 border border-slate-300 text-slate-800 font-bold text-xs sm:text-sm uppercase tracking-wider py-4 px-8 rounded-xl flex items-center justify-center gap-2 transition-all shadow-xs cursor-pointer"
-              >
-                <Phone className="w-4 h-4 text-blue-600" />
-                <span>Book Consultation</span>
-              </button>
-            )}
+            <button
+              onClick={onContactUs}
+              className="w-full sm:w-auto bg-white/10 hover:bg-white/20 text-white font-extrabold text-sm uppercase tracking-wider px-8 py-4 rounded-xl shadow-lg transition-all active:scale-95 border border-white/20 cursor-pointer flex items-center justify-center gap-3 backdrop-blur-sm"
+            >
+              <Phone className="w-5 h-5" />
+              <span>Book Consultation</span>
+            </button>
           </div>
 
         </div>
       </section>
-
       {/* ---------------------------------------------------- */}
       {/* 5. FOOTER DETAILS                                    */}
       {/* ---------------------------------------------------- */}
-      <footer className="bg-slate-900 text-slate-300 py-10 px-4 sm:px-8 text-xs font-medium border-t border-slate-800">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-          
-          <div className="space-y-1">
-            <div className="font-extrabold text-white text-sm tracking-wider uppercase flex items-center justify-center md:justify-start gap-2">
-              <span className="text-blue-500 font-serif text-lg">KRGONE</span>
-              <span>•</span>
-              <span className="text-slate-400 text-xs">Knowledge. Revenue. Growth.</span>
-            </div>
-            <p className="text-slate-400 text-[11px]">
-              KRGONE Business Growth OS™ • Jaipur, Rajasthan, India
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-4 text-slate-300">
-            <a href="tel:+917300300330" className="flex items-center gap-1.5 hover:text-blue-400 transition-colors">
-              <Phone className="w-3.5 h-3.5 text-blue-400" />
-              <span>+91 7300300330</span>
-            </a>
-            <a href="mailto:enquiry.krgone@gmail.com" className="flex items-center gap-1.5 hover:text-blue-400 transition-colors">
-              <Mail className="w-3.5 h-3.5 text-blue-400" />
-              <span>enquiry.krgone@gmail.com</span>
-            </a>
-            <a href="https://www.krgone.vercel.app" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-blue-400 transition-colors">
-              <Globe className="w-3.5 h-3.5 text-blue-400" />
-              <span>www.krgone.vercel.app</span>
-            </a>
-          </div>
-
-          <p className="text-slate-500 text-[11px]">
-            © {new Date().getFullYear()} KRGONE. All rights reserved.
-          </p>
-
-        </div>
-      </footer>
+      <SharedFooter onNavigate={onNavigate} />
 
     </div>
   );

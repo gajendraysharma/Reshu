@@ -99,7 +99,7 @@ export function ContactUsPage({ onReturnHome, onLaunchAssessment }: ContactUsPag
             <span>Back to Home</span>
           </button>
           
-          <div className="flex items-center gap-4 text-xs font-medium text-slate-600">
+          <div className="flex items-center gap-8 sm:p-10 text-xs font-medium text-slate-600">
             <span className="hidden sm:inline-flex items-center gap-1.5 text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full font-semibold">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
               Advisory Desk Online (SLA: 4-12 hrs)
@@ -137,7 +137,7 @@ export function ContactUsPage({ onReturnHome, onLaunchAssessment }: ContactUsPag
           </p>
 
           {/* SLA & NDA BADGES ROW */}
-          <div className="flex flex-wrap items-center justify-center gap-4 text-xs font-semibold text-slate-700">
+          <div className="flex flex-wrap items-center justify-center gap-8 sm:p-10 text-xs font-semibold text-slate-700">
             <div className="flex items-center gap-2 bg-white border border-slate-200/80 px-4 py-2 rounded-xl shadow-xs">
               <ShieldCheck className="w-4 h-4 text-amber-600" />
               <span>100% Protected by Mutual NDA</span>
@@ -156,17 +156,17 @@ export function ContactUsPage({ onReturnHome, onLaunchAssessment }: ContactUsPag
       </section>
 
       {/* MAIN CONTENT GRID */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           
           {/* LEFT COLUMN: CONTACT CHANNELS & HQ DETAILS (5 COLS) */}
           <div className="lg:col-span-5 space-y-6">
             
             {/* Direct Partner Hotline Card */}
-            <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white rounded-2xl p-6 sm:p-8 shadow-xl group transition-all duration-300">
+            <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white rounded-2xl p-8 sm:p-10 shadow-xl group transition-all duration-300">
               <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-[#d4af37] to-[#8a6a12]"></div>
               
-              <div className="flex items-start gap-4">
+              <div className="flex items-start gap-8 sm:p-10">
                 <div className="p-3 bg-white/10 border border-white/20 rounded-xl text-[#d4af37]">
                   <Phone className="w-6 h-6" />
                 </div>
@@ -198,8 +198,8 @@ export function ContactUsPage({ onReturnHome, onLaunchAssessment }: ContactUsPag
             </div>
 
             {/* Official Email Desk Card */}
-            <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex items-start gap-4 mb-4">
+            <div className="bg-white border border-slate-200 rounded-2xl p-8 sm:p-10 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-start gap-8 sm:p-10 mb-4">
                 <div className="p-3 bg-blue-50 border border-blue-100 rounded-xl text-blue-600">
                   <Mail className="w-6 h-6" />
                 </div>
@@ -228,8 +228,8 @@ export function ContactUsPage({ onReturnHome, onLaunchAssessment }: ContactUsPag
             </div>
 
             {/* Corporate HQ & Regional Presence */}
-            <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex items-start gap-4 mb-4">
+            <div className="bg-white border border-slate-200 rounded-2xl p-8 sm:p-10 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-start gap-8 sm:p-10 mb-4">
                 <div className="p-3 bg-amber-50 border border-amber-100 rounded-xl text-amber-700">
                   <Building2 className="w-6 h-6" />
                 </div>
@@ -258,7 +258,7 @@ export function ContactUsPage({ onReturnHome, onLaunchAssessment }: ContactUsPag
             </div>
 
             {/* NDA Commitment Guarantee Card */}
-            <div className="bg-amber-50/80 border border-amber-200 rounded-2xl p-6 shadow-xs">
+            <div className="bg-amber-50/80 border border-amber-200 rounded-2xl p-8 sm:p-10 shadow-xs">
               <div className="flex gap-3">
                 <Lock className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
                 <div>
@@ -273,7 +273,7 @@ export function ContactUsPage({ onReturnHome, onLaunchAssessment }: ContactUsPag
           </div>
 
           {/* RIGHT COLUMN: EXECUTIVE INQUIRY FORM (7 COLS) */}
-          <div className="lg:col-span-7 bg-white border border-slate-200 rounded-3xl p-6 sm:p-10 shadow-xl relative">
+          <div className="lg:col-span-7 bg-white border border-slate-200 rounded-3xl p-8 sm:p-10 sm:p-10 shadow-xl relative">
             
             <div className="mb-8 border-b border-slate-100 pb-6">
               <div className="inline-block bg-blue-50 border border-blue-200 text-blue-800 font-bold text-[11px] uppercase tracking-wider px-3 py-1 rounded-md mb-2">
@@ -340,7 +340,7 @@ export function ContactUsPage({ onReturnHome, onLaunchAssessment }: ContactUsPag
                 )}
 
                 {/* ROW 1: Name & Executive Role */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
                       Full Name <span className="text-rose-500">*</span>
@@ -379,7 +379,7 @@ export function ContactUsPage({ onReturnHome, onLaunchAssessment }: ContactUsPag
                 </div>
 
                 {/* ROW 2: Company & Industry */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
                       Company Name <span className="text-rose-500">*</span>
@@ -421,7 +421,7 @@ export function ContactUsPage({ onReturnHome, onLaunchAssessment }: ContactUsPag
                 </div>
 
                 {/* ROW 3: Email & Mobile Number */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
                       Corporate Email Address <span className="text-rose-500">*</span>
@@ -458,7 +458,7 @@ export function ContactUsPage({ onReturnHome, onLaunchAssessment }: ContactUsPag
                 </div>
 
                 {/* ROW 4: Annual Revenue & Engagement Focus */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
                       Annual Revenue Scale
@@ -555,7 +555,7 @@ export function ContactUsPage({ onReturnHome, onLaunchAssessment }: ContactUsPag
       </section>
 
       {/* FAQ SECTION */}
-      <section className="bg-slate-100/80 border-t border-b border-slate-200/80 py-16">
+      <section className="bg-slate-100/80 border-t border-b border-slate-200/80 py-20 lg:py-32">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <span className="text-xs font-bold text-blue-700 uppercase tracking-widest block mb-2">Frequently Asked Questions</span>
@@ -570,7 +570,7 @@ export function ContactUsPage({ onReturnHome, onLaunchAssessment }: ContactUsPag
               >
                 <button
                   onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                  className="w-full text-left p-5 sm:p-6 flex items-center justify-between gap-4 focus:outline-none cursor-pointer"
+                  className="w-full text-left p-5 sm:p-8 sm:p-10 flex items-center justify-between gap-8 sm:p-10 focus:outline-none cursor-pointer"
                 >
                   <span className="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2.5">
                     <HelpCircle className="w-4 h-4 text-blue-600 shrink-0" />
@@ -591,7 +591,7 @@ export function ContactUsPage({ onReturnHome, onLaunchAssessment }: ContactUsPag
       </section>
 
       {/* FOOTER CALLOUT */}
-      <section className="py-12 bg-slate-900 text-white text-center">
+      <section className="py-20 lg:py-32 bg-slate-900 text-white text-center">
         <div className="max-w-3xl mx-auto px-4">
           <h3 className="text-xl sm:text-2xl font-bold text-white font-serif mb-3">Prefer an Immediate Business Growth Audit?</h3>
           <p className="text-xs sm:text-sm text-slate-300 mb-6 font-normal">

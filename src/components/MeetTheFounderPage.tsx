@@ -84,7 +84,7 @@ export function MeetTheFounderPage({ onReturnHome, onLaunchAssessment, onContact
             <span>Back to Home</span>
           </button>
           
-          <div className="flex items-center gap-4 text-xs font-medium text-slate-600">
+          <div className="flex items-center gap-8 sm:p-10 text-xs font-medium text-slate-600">
             <span className="hidden sm:inline-flex items-center gap-1.5 text-blue-800 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full font-semibold">
               <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
               Meet the Founder • KRGONE Business Growth OS™
@@ -127,7 +127,7 @@ export function MeetTheFounderPage({ onReturnHome, onLaunchAssessment, onContact
           </div>
 
           {/* Hero Portrait & Quote Layout */}
-          <div className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-xl max-w-5xl mx-auto">
+          <div className="bg-white rounded-3xl p-8 sm:p-10 sm:p-10 border border-slate-200 shadow-xl max-w-5xl mx-auto">
             <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
               
               {/* Left Column: Portrait */}
@@ -155,7 +155,7 @@ export function MeetTheFounderPage({ onReturnHome, onLaunchAssessment, onContact
                 </div>
 
                 {/* Professional Quote */}
-                <div className="p-6 rounded-2xl bg-gradient-to-br from-blue-50/90 to-indigo-50/50 border-l-4 border-l-blue-600 border border-blue-100 shadow-xs space-y-3">
+                <div className="p-8 sm:p-10 rounded-2xl bg-gradient-to-br from-blue-50/90 to-indigo-50/50 border-l-4 border-l-blue-600 border border-blue-100 shadow-xs space-y-3">
                   <p className="text-base sm:text-lg italic text-slate-800 font-serif leading-relaxed">
                     "Businesses don't grow by working harder—they grow by building better systems, stronger leadership, and disciplined execution."
                   </p>
@@ -197,7 +197,7 @@ export function MeetTheFounderPage({ onReturnHome, onLaunchAssessment, onContact
       {/* ---------------------------------------------------- */}
       {/* 2. ABOUT THE FOUNDER (SHORT STORY)                   */}
       {/* ---------------------------------------------------- */}
-      <section className="py-16 md:py-20 bg-white border-b border-slate-200">
+      <section className="py-20 lg:py-32 md:py-20 bg-white border-b border-slate-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
           
           <div className="text-center space-y-2">
@@ -224,7 +224,7 @@ export function MeetTheFounderPage({ onReturnHome, onLaunchAssessment, onContact
       {/* ---------------------------------------------------- */}
       {/* 3. AREAS OF EXPERTISE (6 ICONS)                      */}
       {/* ---------------------------------------------------- */}
-      <section className="py-16 md:py-20 bg-[#f4f6fb] border-b border-slate-200">
+      <section className="py-20 lg:py-32 md:py-20 bg-[#f4f6fb] border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           <div className="text-center max-w-3xl mx-auto space-y-2">
@@ -239,7 +239,7 @@ export function MeetTheFounderPage({ onReturnHome, onLaunchAssessment, onContact
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {expertiseList.map((item, idx) => (
               <div 
                 key={idx}
@@ -264,7 +264,7 @@ export function MeetTheFounderPage({ onReturnHome, onLaunchAssessment, onContact
       {/* ---------------------------------------------------- */}
       {/* 4. PROFESSIONAL HIGHLIGHTS (4 KPI CARDS)             */}
       {/* ---------------------------------------------------- */}
-      <section className="py-16 md:py-20 bg-white border-b border-slate-200">
+      <section className="py-20 lg:py-32 md:py-20 bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           <div className="text-center max-w-3xl mx-auto space-y-2">
@@ -279,7 +279,7 @@ export function MeetTheFounderPage({ onReturnHome, onLaunchAssessment, onContact
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {highlights.map((item, idx) => (
               <div 
                 key={idx}
@@ -304,7 +304,7 @@ export function MeetTheFounderPage({ onReturnHome, onLaunchAssessment, onContact
       {/* ---------------------------------------------------- */}
       {/* 5. FOUNDER'S PHILOSOPHY                              */}
       {/* ---------------------------------------------------- */}
-      <section className="py-16 md:py-20 bg-gradient-to-b from-blue-50/60 to-slate-50 border-b border-slate-200">
+      <section className="py-20 lg:py-32 md:py-20 bg-gradient-to-b from-blue-50/60 to-slate-50 border-b border-slate-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
           
           <span className="text-blue-600 text-xs font-black uppercase tracking-widest block">
@@ -333,7 +333,7 @@ export function MeetTheFounderPage({ onReturnHome, onLaunchAssessment, onContact
       {/* ---------------------------------------------------- */}
       {/* 6. WORK WITH THE FOUNDER (CONSULTATION CTA)          */}
       {/* ---------------------------------------------------- */}
-      <section className="py-16 md:py-20 bg-white">
+      <section className="py-20 lg:py-32 md:py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="bg-gradient-to-br from-slate-900 via-[#0c2340] to-slate-900 text-white rounded-3xl p-8 sm:p-12 shadow-2xl relative overflow-hidden text-center space-y-8">
@@ -353,7 +353,7 @@ export function MeetTheFounderPage({ onReturnHome, onLaunchAssessment, onContact
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:p-10 pt-2">
               <button
                 onClick={onContactUs}
                 className="w-full sm:w-auto bg-[#ff6f3c] hover:bg-[#e05b2a] text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider py-4 px-8 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg active:scale-95 cursor-pointer"

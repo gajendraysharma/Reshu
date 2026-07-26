@@ -155,21 +155,7 @@ export const CoverPage: React.FC<{ data: ProcessedDossierData }> = ({ data }) =>
       <div className="z-10 w-full bg-[#0a192f] border-t-2 border-[#c29d2f] py-3 px-6 flex items-center justify-center gap-3 text-white text-[8pt] font-medium mt-auto">
         <div className="flex items-center gap-3 text-slate-200 font-sans whitespace-nowrap">
           <span className="font-extrabold text-[#c29d2f] tracking-wider">KRGONE</span>
-          <span className="text-[#c29d2f]/70 font-light">|</span>
-          <div className="flex items-center gap-1.5 text-slate-200 whitespace-nowrap">
-            <MapPin className="w-3.5 h-3.5 text-[#c29d2f] shrink-0" />
-            <span>Jaipur, India</span>
-          </div>
-          <span className="text-[#c29d2f]/70 font-light">|</span>
-          <div className="flex items-center gap-1.5 text-slate-200 whitespace-nowrap">
-            <Phone className="w-3.5 h-3.5 text-[#c29d2f] shrink-0" />
-            <span>+91 7300300330</span>
-          </div>
-          <span className="text-[#c29d2f]/70 font-light">|</span>
-          <div className="flex items-center gap-1.5 text-slate-200 whitespace-nowrap">
-            <Mail className="w-3.5 h-3.5 text-[#c29d2f] shrink-0" />
-            <span>enquiry.krgone@gmail.com</span>
-          </div>
+
           <span className="text-[#c29d2f]/70 font-light">|</span>
           <div className="flex items-center gap-1.5 text-slate-200 whitespace-nowrap">
             <Globe className="w-3.5 h-3.5 text-[#c29d2f] shrink-0" />

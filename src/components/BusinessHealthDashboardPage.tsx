@@ -80,7 +80,7 @@ export function BusinessHealthDashboardPage({
             <span>Back to Home</span>
           </button>
           
-          <div className="flex items-center gap-4 text-xs font-medium text-slate-600">
+          <div className="flex items-center gap-8 sm:p-10 text-xs font-medium text-slate-600">
             <span className="hidden sm:inline-flex items-center gap-1.5 text-blue-800 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full font-semibold">
               <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
               Business Health Dashboard™ • KRGONE Business Growth OS™
@@ -128,7 +128,7 @@ export function BusinessHealthDashboardPage({
         {/* ---------------------------------------------------- */}
         {/* 2. BUSINESS HEALTH INDEX™ SCORE CARD                 */}
         {/* ---------------------------------------------------- */}
-        <div className="bg-white rounded-3xl p-4 sm:p-6 border-2 border-blue-200 shadow-md relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="bg-white rounded-3xl p-4 sm:p-8 sm:p-10 border-2 border-blue-200 shadow-md relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
           
           <div className="space-y-3 max-w-xl text-center md:text-left">
             <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3.5 py-1 rounded-full">
@@ -159,7 +159,7 @@ export function BusinessHealthDashboardPage({
           </div>
 
           {/* Big Circular Score Dial */}
-          <div className="flex flex-col items-center justify-center bg-slate-50 border border-slate-200 rounded-3xl p-6 min-w-[220px] text-center shadow-inner space-y-1 relative">
+          <div className="flex flex-col items-center justify-center bg-slate-50 border border-slate-200 rounded-3xl p-8 sm:p-10 min-w-[220px] text-center shadow-inner space-y-1 relative">
             <span className="text-xs font-extrabold uppercase tracking-widest text-slate-500">
               HEALTH INDEX SCORE
             </span>
@@ -194,7 +194,7 @@ export function BusinessHealthDashboardPage({
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             
             {/* RADAR CHART (5 cols) */}
             <div className="lg:col-span-5 bg-[#f8fafc] rounded-2xl p-3 border border-slate-200 flex flex-col items-center justify-center min-h-[280px]">
@@ -271,7 +271,7 @@ export function BusinessHealthDashboardPage({
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:p-10">
             {priorityFocusAreas.map((card, idx) => {
               const CardIcon = card.icon;
               return (
@@ -309,7 +309,7 @@ export function BusinessHealthDashboardPage({
         {/* ---------------------------------------------------- */}
         {/* 5. WHAT THIS MEANS (3-4 LINES CALLOUT BOX)          */}
         {/* ---------------------------------------------------- */}
-        <div className="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white rounded-2xl p-4 sm:p-6 shadow-lg relative overflow-hidden space-y-3">
+        <div className="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white rounded-2xl p-4 sm:p-8 sm:p-10 shadow-lg relative overflow-hidden space-y-3">
           <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-blue-500/20 rounded-full blur-3xl pointer-events-none"></div>
 
           <div className="flex items-center gap-2 text-blue-300 text-xs font-black uppercase tracking-widest">
@@ -327,44 +327,44 @@ export function BusinessHealthDashboardPage({
         </div>
 
         {/* ---------------------------------------------------- */}
-        {/* 6. NEXT STEP → EXPLORE DETAILED BUSINESS INSIGHTS    */}
+        {/* 6. CONTINUE YOUR GROWTH JOURNEY (CTA)                */}
         {/* ---------------------------------------------------- */}
-        <div className="bg-white rounded-2xl p-6 border-2 border-blue-200 shadow-md text-center space-y-3">
-          <div className="space-y-1 max-w-2xl mx-auto">
-            <span className="text-blue-600 text-xs font-black uppercase tracking-widest block">
-              NEXT STEP
-            </span>
-            <h3 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-serif">
-              Explore Detailed Business Insights
-            </h3>
-            <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
-              Unlock multi-layered strategic recommendations, deep diagnostic findings, and your 90-day execution sprint plan.
-            </p>
-          </div>
+        <div className="bg-gradient-to-br from-blue-900 via-[#0f2142] to-slate-900 text-center relative overflow-hidden rounded-2xl p-8 sm:p-12 shadow-2xl">
+          <div className="absolute inset-0 z-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '32px 32px' }}></div>
+          <div className="space-y-8 relative z-10">
+            <div className="space-y-4">
+              <span className="text-blue-400 text-xs sm:text-sm font-black uppercase tracking-[0.2em] block">
+                CONTINUE YOUR BUSINESS GROWTH JOURNEY
+              </span>
+              <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight font-serif leading-tight">
+                Free Business Growth Assessment™
+              </h2>
+              <p className="text-base sm:text-xl text-blue-100/90 font-medium leading-relaxed max-w-2xl mx-auto">
+                Discover how your business performs across all seven pillars and receive your personalized Business Health Dashboard™.
+              </p>
+            </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-            <button
-              onClick={onExploreInsights || onLaunchAssessment}
-              className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider py-4 px-8 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer"
-            >
-              <span>Explore Detailed Business Insights</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-
-            {onContactUs && (
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 pt-6">
               <button
-                onClick={onContactUs}
-                className="w-full sm:w-auto bg-white hover:bg-slate-50 border border-slate-300 text-slate-800 font-bold text-xs sm:text-sm uppercase tracking-wider py-4 px-8 rounded-xl flex items-center justify-center gap-2 transition-all shadow-xs cursor-pointer"
+                onClick={onLaunchAssessment}
+                className="w-full sm:w-auto bg-blue-500 hover:bg-blue-400 text-white font-extrabold text-sm uppercase tracking-wider px-8 py-4 rounded-xl shadow-lg transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-3"
               >
-                <Phone className="w-4 h-4 text-blue-600" />
-                <span>Book Advisor Consultation</span>
+                <span>Take Free Assessment</span>
+                <ArrowRight className="w-5 h-5" />
               </button>
-            )}
+              {onContactUs && (
+                <button
+                  onClick={onContactUs}
+                  className="w-full sm:w-auto bg-white/10 hover:bg-white/20 text-white font-extrabold text-sm uppercase tracking-wider px-8 py-4 rounded-xl shadow-lg transition-all active:scale-95 border border-white/20 cursor-pointer flex items-center justify-center gap-3 backdrop-blur-sm"
+                >
+                  <Phone className="w-5 h-5" />
+                  <span>Book Consultation</span>
+                </button>
+              )}
+            </div>
           </div>
         </div>
-
       </div>
-
     </div>
   );
 }

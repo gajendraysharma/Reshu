@@ -224,7 +224,7 @@ export function AboutUsPage({ onReturnHome, onLaunchAssessment, onContactUs }: A
             <span>Back to Home</span>
           </button>
           
-          <div className="flex items-center gap-4 text-xs font-medium text-slate-600">
+          <div className="flex items-center gap-8 sm:p-10 text-xs font-medium text-slate-600">
             <span className="hidden sm:inline-flex items-center gap-1.5 text-blue-800 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full font-semibold">
               <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
               About KRGONE • Business Growth OS™
@@ -275,7 +275,7 @@ export function AboutUsPage({ onReturnHome, onLaunchAssessment, onContactUs }: A
           </div>
 
           {/* Hero Action Buttons */}
-          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4 max-w-md mx-auto">
+          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-8 sm:p-10 max-w-md mx-auto">
             <button
               onClick={onLaunchAssessment}
               className="w-full sm:w-auto bg-[#275df5] hover:bg-[#1848d1] text-white font-black text-xs sm:text-sm uppercase tracking-wider py-3.5 px-7 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer"
@@ -299,7 +299,7 @@ export function AboutUsPage({ onReturnHome, onLaunchAssessment, onContactUs }: A
       {/* ---------------------------------------------------- */}
       {/* 2. OUR VISION & OUR MISSION                          */}
       {/* ---------------------------------------------------- */}
-      <section className="py-16 md:py-20 bg-white border-b border-slate-200">
+      <section className="py-20 lg:py-32 md:py-20 bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           
           <div className="text-center max-w-2xl mx-auto space-y-2">
@@ -362,7 +362,7 @@ export function AboutUsPage({ onReturnHome, onLaunchAssessment, onContactUs }: A
       {/* ---------------------------------------------------- */}
       {/* 3. WHAT WE DO (5 CORE SERVICES)                      */}
       {/* ---------------------------------------------------- */}
-      <section className="py-16 md:py-20 bg-[#f4f6fb] border-b border-slate-200">
+      <section className="py-20 lg:py-32 md:py-20 bg-[#f4f6fb] border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           <div className="text-center max-w-3xl mx-auto space-y-2">
@@ -381,7 +381,7 @@ export function AboutUsPage({ onReturnHome, onLaunchAssessment, onContactUs }: A
             {whatWeDoList.map((service, idx) => (
               <div 
                 key={idx}
-                className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs hover:border-[#275df5] hover:shadow-md transition-all space-y-3 flex flex-col justify-between group"
+                className="bg-white rounded-2xl p-8 sm:p-10 border border-slate-200 shadow-xs hover:border-[#275df5] hover:shadow-md transition-all space-y-3 flex flex-col justify-between group"
               >
                 <div className="space-y-3">
                   <div className="w-10 h-10 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center group-hover:scale-105 transition-transform">
@@ -409,7 +409,7 @@ export function AboutUsPage({ onReturnHome, onLaunchAssessment, onContactUs }: A
       {/* ---------------------------------------------------- */}
       {/* 4. WHY KRGONE? (4 KEY DIFFERENTIATORS)               */}
       {/* ---------------------------------------------------- */}
-      <section className="py-16 md:py-20 bg-white border-b border-slate-200">
+      <section className="py-20 lg:py-32 md:py-20 bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           <div className="text-center max-w-3xl mx-auto space-y-2">
@@ -424,11 +424,11 @@ export function AboutUsPage({ onReturnHome, onLaunchAssessment, onContactUs }: A
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {whyKrgoneList.map((item, idx) => (
               <div 
                 key={idx}
-                className="bg-[#f8fafc] rounded-2xl p-6 border border-slate-200 shadow-xs hover:border-emerald-500/50 transition-all space-y-3"
+                className="bg-[#f8fafc] rounded-2xl p-8 sm:p-10 border border-slate-200 shadow-xs hover:border-emerald-500/50 transition-all space-y-3"
               >
                 <div className="w-8 h-8 rounded-full bg-emerald-100 border border-emerald-200 flex items-center justify-center text-emerald-700 font-extrabold text-sm">
                   ✔
@@ -451,9 +451,9 @@ export function AboutUsPage({ onReturnHome, onLaunchAssessment, onContactUs }: A
       {/* ---------------------------------------------------- */}
       {/* 9. CONFIDENTIALITY COMMITMENT                        */}
       {/* ---------------------------------------------------- */}
-      <section className="py-12 bg-[#f4f6fb] border-b border-slate-200">
+      <section className="py-20 lg:py-32 bg-[#f4f6fb] border-b border-slate-200">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white border border-blue-200 rounded-2xl p-6 sm:p-8 flex flex-col md:flex-row items-center gap-6 shadow-md">
+          <div className="bg-white border border-blue-200 rounded-2xl p-8 sm:p-10 flex flex-col md:flex-row items-center gap-8 shadow-md">
             <div className="w-12 h-12 rounded-full bg-blue-50 border border-blue-200 flex items-center justify-center text-[#275df5] shrink-0">
               <Lock className="w-6 h-6" />
             </div>
@@ -472,7 +472,7 @@ export function AboutUsPage({ onReturnHome, onLaunchAssessment, onContactUs }: A
       {/* ---------------------------------------------------- */}
       {/* 10. FAQS SECTION                                     */}
       {/* ---------------------------------------------------- */}
-      <section className="py-16 md:py-20 bg-white border-b border-slate-200">
+      <section className="py-20 lg:py-32 md:py-20 bg-white border-b border-slate-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           
           <div className="text-center space-y-2">
@@ -491,7 +491,7 @@ export function AboutUsPage({ onReturnHome, onLaunchAssessment, onContactUs }: A
                 className="bg-[#f8fafc] border border-slate-200 rounded-2xl p-5 shadow-xs space-y-2 cursor-pointer transition-all hover:border-blue-300 hover:bg-white"
                 onClick={() => setOpenFaq(openFaq === i ? null : i)}
               >
-                <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center justify-between gap-8 sm:p-10">
                   <h4 className="text-xs sm:text-sm font-bold text-slate-900 tracking-tight pr-2">
                     {faq.q}
                   </h4>

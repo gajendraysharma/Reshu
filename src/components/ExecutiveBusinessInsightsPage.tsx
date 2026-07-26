@@ -121,7 +121,7 @@ export function ExecutiveBusinessInsightsPage({
         {/* ---------------------------------------------------- */}
         {/* 3. KEY STRENGTHS & GROWTH OPPORTUNITIES              */}
         {/* ---------------------------------------------------- */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:p-10">
           
           {/* Key Strengths */}
           <div className="space-y-3">
@@ -205,25 +205,44 @@ export function ExecutiveBusinessInsightsPage({
         </div>
 
         {/* ---------------------------------------------------- */}
-        {/* 5. NEXT STEP                                         */}
+        {/* 5. CONTINUE YOUR GROWTH JOURNEY (CTA)                */}
         {/* ---------------------------------------------------- */}
-        <div className="bg-white border-2 border-blue-200 rounded-2xl p-4 shadow-sm text-center flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="text-left max-w-lg">
-            <h4 className="text-lg font-black text-slate-900 font-serif">What's Next?</h4>
-            <p className="text-xs text-slate-600 font-medium">The following pages provide a detailed review of each business pillar, along with practical recommendations and an implementation roadmap.</p>
+        <div className="bg-gradient-to-br from-blue-900 via-[#0f2142] to-slate-900 text-center relative overflow-hidden rounded-2xl p-8 sm:p-12 shadow-2xl">
+          <div className="absolute inset-0 z-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '32px 32px' }}></div>
+          <div className="space-y-8 relative z-10">
+            <div className="space-y-4">
+              <span className="text-blue-400 text-xs sm:text-sm font-black uppercase tracking-[0.2em] block">
+                CONTINUE YOUR BUSINESS GROWTH JOURNEY
+              </span>
+              <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight font-serif leading-tight">
+                Free Business Growth Assessment™
+              </h2>
+              <p className="text-base sm:text-xl text-blue-100/90 font-medium leading-relaxed max-w-2xl mx-auto">
+                Discover how your business performs across all seven pillars and receive your personalized Business Health Dashboard™.
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 pt-6">
+              <button
+                onClick={onLaunchAssessment}
+                className="w-full sm:w-auto bg-blue-500 hover:bg-blue-400 text-white font-extrabold text-sm uppercase tracking-wider px-8 py-4 rounded-xl shadow-lg transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-3"
+              >
+                <span>Take Free Assessment</span>
+                <ArrowRight className="w-5 h-5" />
+              </button>
+              {onContactUs && (
+                <button
+                  onClick={onContactUs}
+                  className="w-full sm:w-auto bg-white/10 hover:bg-white/20 text-white font-extrabold text-sm uppercase tracking-wider px-8 py-4 rounded-xl shadow-lg transition-all active:scale-95 border border-white/20 cursor-pointer flex items-center justify-center gap-3 backdrop-blur-sm"
+                >
+                  <Phone className="w-5 h-5" />
+                  <span>Book Consultation</span>
+                </button>
+              )}
+            </div>
           </div>
-          
-          <button
-            onClick={onNextStep || onReturnHome}
-            className="shrink-0 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase px-5 py-3 rounded-xl flex items-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer w-full sm:w-auto justify-center"
-          >
-            <span>Detailed 7-Pillar Business Analysis</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
         </div>
-
       </div>
-
     </div>
   );
 }

@@ -1,9 +1,0 @@
-import re
-
-with open('src/components/DashboardReport.tsx', 'r') as f:
-    content = f.read()
-
-content = content.replace("import React, { useState } from 'react';", "import React, { useState } from 'react';\nimport PrintDossier from './PrintDossier';")
-
-with open('src/components/DashboardReport.tsx', 'w') as f:
-    f.write(content)

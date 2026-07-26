@@ -94,7 +94,7 @@ export function OurMethodologyPage({ onReturnHome, onLaunchAssessment, onContact
             <span>Back to Home</span>
           </button>
           
-          <div className="flex items-center gap-4 text-xs font-medium text-slate-600">
+          <div className="flex items-center gap-8 sm:p-10 text-xs font-medium text-slate-600">
             <span className="hidden sm:inline-flex items-center gap-1.5 text-blue-800 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full font-semibold">
               <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
               Our Methodology • KRGONE Business Growth OS™
@@ -143,7 +143,7 @@ export function OurMethodologyPage({ onReturnHome, onLaunchAssessment, onContact
       {/* ---------------------------------------------------- */}
       {/* 2. 5-STEP GROWTH FRAMEWORK (CONNECTED CARDS)          */}
       {/* ---------------------------------------------------- */}
-      <section className="py-16 md:py-24 bg-white border-b border-slate-200">
+      <section className="py-20 lg:py-32 md:py-20 lg:py-32 bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           <div className="text-center max-w-3xl mx-auto space-y-2">
@@ -158,11 +158,11 @@ export function OurMethodologyPage({ onReturnHome, onLaunchAssessment, onContact
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 relative">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-8 sm:p-10 relative">
             {frameworkSteps.map((step, idx) => (
               <div 
                 key={idx}
-                className="bg-[#f8fafc] rounded-2xl p-6 border border-slate-200 shadow-xs hover:border-blue-500 hover:bg-white hover:shadow-md transition-all space-y-4 flex flex-col justify-between relative group"
+                className="bg-[#f8fafc] rounded-2xl p-8 sm:p-10 border border-slate-200 shadow-xs hover:border-blue-500 hover:bg-white hover:shadow-md transition-all space-y-4 flex flex-col justify-between relative group"
               >
                 <div className="space-y-3">
                   <div className="flex items-center justify-between border-b border-slate-200/80 pb-3">
@@ -203,7 +203,7 @@ export function OurMethodologyPage({ onReturnHome, onLaunchAssessment, onContact
       {/* ---------------------------------------------------- */}
       {/* 3. WHAT MAKES OUR METHODOLOGY DIFFERENT (5 CARDS)    */}
       {/* ---------------------------------------------------- */}
-      <section className="py-16 md:py-20 bg-[#f4f6fb] border-b border-slate-200">
+      <section className="py-20 lg:py-32 md:py-20 bg-[#f4f6fb] border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           <div className="text-center max-w-3xl mx-auto space-y-2">
@@ -218,7 +218,7 @@ export function OurMethodologyPage({ onReturnHome, onLaunchAssessment, onContact
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {differentiators.map((item, idx) => (
               <div 
                 key={idx}
@@ -244,7 +244,7 @@ export function OurMethodologyPage({ onReturnHome, onLaunchAssessment, onContact
       {/* ---------------------------------------------------- */}
       {/* 4. OUR COMMITMENT                                     */}
       {/* ---------------------------------------------------- */}
-      <section className="py-16 md:py-20 bg-gradient-to-b from-blue-50/60 to-slate-50 border-b border-slate-200">
+      <section className="py-20 lg:py-32 md:py-20 bg-gradient-to-b from-blue-50/60 to-slate-50 border-b border-slate-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
           
           <span className="text-blue-600 text-xs font-black uppercase tracking-widest block">
@@ -273,7 +273,7 @@ export function OurMethodologyPage({ onReturnHome, onLaunchAssessment, onContact
       {/* ---------------------------------------------------- */}
       {/* 5. DUAL ACTION CTAS                                  */}
       {/* ---------------------------------------------------- */}
-      <section className="py-16 md:py-20 bg-white">
+      <section className="py-20 lg:py-32 md:py-20 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           
           <div className="text-center space-y-2">
