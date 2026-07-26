@@ -53,29 +53,29 @@ export function AssessmentEngine({ onReturnHome }: { onReturnHome?: () => void }
   const [activePlanTab, setActivePlanTab] = useState<'EXECUTIVE_SUMMARY' | 'PRIORITY_MATRIX' | 'ROADMAP' | 'PILLARS'>('EXECUTIVE_SUMMARY');
   
   const [formData, setFormData] = useState({
-    fullName: 'Rajesh Sharma',
-    email: 'rajesh.sharma@example.com',
-    mobileNumber: '+91 9829012345',
-    role: 'Founder/CEO',
+    fullName: '',
+    email: '',
+    mobileNumber: '',
+    role: '',
     roleOther: '',
-    companyName: 'Apex Industrial Solutions',
-    industry: 'Manufacturing',
+    companyName: '',
+    industry: '',
     industryOther: '',
-    businessSize: '26–50 Employees',
-    revenue: '₹5 Crores – ₹25 Crores',
-    state: 'Rajasthan',
-    city: 'Jaipur',
+    businessSize: '',
+    revenue: '',
+    state: '',
+    city: '',
     cityOther: '',
-    customerType: 'B2B',
-    challenges: ['Operational Inefficiency & Lack of Systems', 'Inconsistent Sales & Revenue Growth'] as string[],
+    customerType: '',
+    challenges: [] as string[],
     challengesOther: '',
-    goals: ['Increase Revenue & Sales', 'Improve Operational Efficiency'] as string[],
+    goals: [] as string[],
     goalsOther: '',
-    howHeard: 'Referral',
+    howHeard: '',
     howHeardOther: '',
-    focusArea: 'Operational Automation & Process Systems',
-    declarationAccurate: true,
-    declarationPrivacy: true
+    focusArea: '',
+    declarationAccurate: false,
+    declarationPrivacy: false
   });
   
   const [profileError, setProfileError] = useState('');

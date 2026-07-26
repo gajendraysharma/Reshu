@@ -1,350 +1,257 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { 
-  Target, CheckCircle2, Calendar, 
-  ShieldAlert, Award, Download, PhoneCall, FileText 
+  Calendar, CheckCircle2, Zap, Target, 
+  TrendingUp, Clock, ListChecks, MessageSquare
 } from 'lucide-react';
-import { PillarRecommendationResult } from '../business-engine/recommendation-engine/interfaces';
 
 interface PlanRoadmapTabProps {
-  report: any; // UnifiedReport
-  formData: any; // Form profile metrics
-  handlePrintPDF?: () => void;
-  setActiveTab?: (tab: string) => void;
+  report: {
+    pillarScores: Record<string, number>;
+    overallScore: number;
+  };
+  formData: any;
+  handlePrintPDF: () => void;
+  setActiveTab: (tab: string) => void;
   isGeneratingPDF?: boolean;
   pdfStatusMessage?: string;
 }
 
-export const PlanRoadmapTab: React.FC<PlanRoadmapTabProps> = ({ 
-  report, 
+export const PlanRoadmapTab: React.FC<PlanRoadmapTabProps> = ({
+  report,
   formData,
   handlePrintPDF,
   setActiveTab,
   isGeneratingPDF = false,
-  pdfStatusMessage = '',
+  pdfStatusMessage = ''
 }) => {
-  const [activePillar, setActivePillar] = useState<string>(
-    Object.keys(report?.recommendations?.pillarRecommendations || {})[0] || 'p1'
-  );
-  
-  const recommendations: Record<string, PillarRecommendationResult> = report?.recommendations?.pillarRecommendations || {};
-  const currentRec = recommendations[activePillar];
+  // Logic to find lowest pillars
+  const pillarNames = Object.keys(report.pillarScores || {});
+  const sortedPillars = pillarNames.length > 0 
+    ? [...pillarNames].sort((a, b) => report.pillarScores[a] - report.pillarScores[b])
+    : ['General'];
+  const lowestPillar = sortedPillars[0];
 
-  const compName = report?.profile?.company?.companyName || formData?.companyName || 'Your Enterprise';
-  const industry = report?.profile?.business?.industry || formData?.industry || 'Commercial Vertical';
-  const selectedChallenge = formData?.challenges && formData.challenges.length > 0 
-    ? formData.challenges.join(', ') 
-    : 'Core Operational Leakage';
+  const getDynamicContent = (pillar: string) => {
+    switch (pillar) {
+      case 'Sales & Revenue':
+        return {
+          p1: ["Audit current sales conversion rates.", "Define top 3 revenue priorities.", "Set immediate weekly sales KPIs."],
+          p1Outcome: "Identified revenue leaks and established sales accountability.",
+          p2: ["Standardize deal progression in CRM.", "Improve lead qualification criteria.", "Conduct weekly sales performance reviews."],
+          p2Outcome: "Increased sales velocity and predictable pipeline management.",
+          p3: ["Scale high-performing lead channels.", "Optimize pricing for maximum margin.", "Deploy automated follow-up sequences."],
+          p3Outcome: "A sustainable, scalable revenue engine with predictable growth."
+        };
+      case 'Operations & Process':
+        return {
+          p1: ["Map high-leverage delivery workflows.", "Identify 3 major operational bottlenecks.", "Set output and speed targets."],
+          p1Outcome: "Clear visibility into process friction and baseline throughput.",
+          p2: ["Draft core Standard Operating Procedures (SOPs).", "Implement cloud-based task tracking.", "Automate departmental hand-offs."],
+          p2Outcome: "Eliminated manual rework and reduced service delivery variance.",
+          p3: ["Integrate cross-departmental automation.", "Optimize resource allocation.", "Deploy quality assurance benchmarks."],
+          p3Outcome: "Frictionless operations capable of 2x-3x current volume."
+        };
+      case 'Technology & Business Innovation':
+        return {
+          p1: ["Audit current tech-stack efficiency.", "Identify manual data entry points.", "Prioritize digital tool upgrades."],
+          p1Outcome: "Comprehensive roadmap for digital transformation and AI readiness.",
+          p2: ["Deploy core automation for repetitive tasks.", "Migrate critical data to unified systems.", "Train team on new digital tools."],
+          p2Outcome: "Reduced administrative burden through technological leverage.",
+          p3: ["Scale AI and digital adoption.", "Optimize data-driven decision loops.", "Implement real-time BI dashboards."],
+          p3Outcome: "A digitally-advanced enterprise with automated intelligence."
+        };
+      default:
+        return {
+          p1: ["Review Business Health assessment findings.", "Define top 3 business priorities.", "Set monthly revenue and KPI targets."],
+          p1Outcome: "Clear priorities and alignment across the leadership team.",
+          p2: ["Improve sales pipeline management.", "Standardize key business processes (SOPs).", "Conduct weekly KPI reviews."],
+          p2Outcome: "Improved efficiency, sales discipline, and operational consistency.",
+          p3: ["Optimize high-performing initiatives.", "Implement business dashboards.", "Expand AI and digital adoption."],
+          p3Outcome: "A scalable business with measurable and sustainable growth systems."
+        };
+    }
+  };
+
+  const actions = getDynamicContent(lowestPillar);
 
   return (
-    <div className="space-y-6 font-sans">
-      
-      {/* ---------------------------------------------------- */}
-      {/* 1. COMPACT TOP HEADER BANNER WITH DOWNLOAD PDF BUTTON */}
-      {/* ---------------------------------------------------- */}
-      <div className="bg-[#0f172a] text-white p-5 sm:p-6 rounded-2xl shadow-md border border-slate-800 relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
-        <div className="absolute top-0 right-0 w-72 h-72 bg-gradient-to-br from-amber-500/15 via-indigo-500/5 to-transparent rounded-full blur-3xl pointer-events-none transform translate-x-1/3 -translate-y-1/3"></div>
-        
-        <div className="relative z-10 space-y-2 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 bg-amber-500/20 border border-amber-500/30 px-2.5 py-0.5 rounded-full text-amber-300 text-[11px] font-bold uppercase tracking-wider">
-              <Calendar className="w-3 h-3 text-amber-400" /> Master 90-Day Execution Plan
-            </span>
-            <span className="text-[11px] text-slate-400 font-semibold">
-              Industry: <span className="text-slate-200 font-bold">{industry}</span>
-            </span>
-          </div>
-
-          <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-            90-Day Operational Roadmap for <span className="text-amber-400">{compName}</span>
-          </h2>
-          
-          <p className="text-xs text-slate-300 font-medium leading-relaxed max-w-xl">
-            A time-phased execution roadmap designed to systematically plug operational leakage, build SOP playbooks, and scale unit economics. Full technical playbooks are available in your PDF report.
+    <div className="space-y-6 animate-fade-in pb-12">
+      {/* HEADER SECTION */}
+      <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm overflow-hidden relative">
+        <div className="absolute top-0 right-0 p-8 opacity-5">
+          <Calendar className="w-32 h-32 text-indigo-600" />
+        </div>
+        <div className="relative z-10">
+          <h2 className="text-xl font-black text-slate-900 mb-1">90-Day Business Growth Plan™</h2>
+          <p className="text-sm font-bold text-indigo-600 uppercase tracking-widest">Transform Strategy into Measurable Business Results</p>
+          <p className="text-sm text-slate-500 mt-4 max-w-3xl leading-relaxed font-medium">
+            This action plan is generated from your <strong>Business Growth Assessment™</strong> and prioritizes the activities that will deliver the greatest business impact over the next 90 days.
           </p>
         </div>
-
-        {/* Action Buttons Header Block */}
-        <div className="relative z-10 w-full md:w-auto flex flex-col sm:flex-row md:flex-col items-stretch sm:items-center gap-2.5 shrink-0">
-          {handlePrintPDF && (
-            <button
-              onClick={handlePrintPDF}
-              disabled={isGeneratingPDF}
-              className="w-full bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-black text-xs uppercase tracking-wider py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer disabled:opacity-60"
-            >
-              <Download className="w-4 h-4 text-slate-950" />
-              <span>{isGeneratingPDF ? (pdfStatusMessage || 'Generating PDF...') : 'Download PDF Report'}</span>
-            </button>
-          )}
-
-          {setActiveTab && (
-            <button
-              onClick={() => setActiveTab('booking')}
-              className="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-xs uppercase tracking-wider py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer"
-            >
-              <PhoneCall className="w-3.5 h-3.5 text-amber-400" />
-              <span>Book Diagnostic Call</span>
-            </button>
-          )}
-        </div>
       </div>
 
-      {/* ---------------------------------------------------- */}
-      {/* 2. SUMMARY BOX WITH PROMINENT PDF DOWNLOAD BUTTON    */}
-      {/* ---------------------------------------------------- */}
-      <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <FileText className="w-4 h-4 text-amber-600 shrink-0" />
-            <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider">
-              90-Day Execution Summary
-            </h3>
-          </div>
-          <p className="text-xs text-slate-600 font-semibold leading-relaxed">
-            Detailed sprint schedules, individual staff responsibility matrices (RACI), and swimlane SOP diagrams are formatted inside your complete downloadable PDF dossier.
-          </p>
-        </div>
-
-        {handlePrintPDF && (
-          <button
-            onClick={handlePrintPDF}
-            disabled={isGeneratingPDF}
-            className="inline-flex items-center gap-2 text-xs font-bold text-slate-900 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3.5 py-2 rounded-xl transition-all cursor-pointer shrink-0 disabled:opacity-50"
-          >
-            <Download className="w-4 h-4 text-amber-600" />
-            <span>Download Report</span>
-          </button>
-        )}
-      </div>
-
-      {/* ---------------------------------------------------- */}
-      {/* 3. 3-PHASE TIME-PHASED ROADMAP CARDS (DETAILED DIRECTIVES) */}
-      {/* ---------------------------------------------------- */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        
-        {/* PHASE 1: DAYS 1-30 */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-3.5 flex flex-col justify-between hover:shadow-md transition-all">
-          <div className="space-y-3">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-              <span className="bg-rose-50 border border-rose-200 text-rose-700 text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-md">
-                Days 1–30 • Emergency Risk Mitigation & Stabilization
-              </span>
-              <ShieldAlert className="w-4 h-4 text-rose-600" />
-            </div>
-
-            <h3 className="text-xs sm:text-sm font-black text-slate-900 uppercase tracking-tight">
-              Emergency Risk Mitigation & Stabilization Sprints
-            </h3>
-
-            <p className="text-xs text-slate-600 font-medium leading-relaxed">
-              Isolate and plug immediate cash flow leakages and severe operational friction points. Deploy basic end-of-day daily tracking templates for all operational staff members. Set up absolute tracking metrics for the primary user challenge selected: <strong>{selectedChallenge}</strong>. Stop daily administrative tasks from reaching the executive founder layer by establishing a strict delegation rule.
-            </p>
-          </div>
-
-          <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500 font-bold">
-            <span>Focus: Leakage Containment</span>
-            <span className="text-rose-700 font-extrabold">Days 1–30</span>
-          </div>
-        </div>
-
-        {/* PHASE 2: DAYS 31-60 */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-3.5 flex flex-col justify-between hover:shadow-md transition-all">
-          <div className="space-y-3">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-              <span className="bg-amber-50 border border-amber-200 text-amber-700 text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-md">
-                Days 31–60 • Process Standardization & Architecture
-              </span>
-              <Target className="w-4 h-4 text-amber-600" />
-            </div>
-
-            <h3 className="text-xs sm:text-sm font-black text-slate-900 uppercase tracking-tight">
-              Process Standardization & Workflow Architecture Sprints
-            </h3>
-
-            <p className="text-xs text-slate-600 font-medium leading-relaxed">
-              Begin the formal drafting and deployment of step-by-step Standard Operating Procedures (SOPs) across your lowest-performing operational pillars. Build clean cloud-based tracking systems to monitor team output, optimize customer acquisition channels, and map customer retention journeys to maximize your lifetime client value metrics.
-            </p>
-          </div>
-
-          <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500 font-bold">
-            <span>Focus: Operational Codification</span>
-            <span className="text-amber-700 font-extrabold">Days 31–60</span>
-          </div>
-        </div>
-
-        {/* PHASE 3: DAYS 61-90 */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-3.5 flex flex-col justify-between hover:shadow-md transition-all">
-          <div className="space-y-3">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-              <span className="bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-md">
-                Days 61–90 • System Optimization & Capital Scaling
-              </span>
-              <Award className="w-4 h-4 text-emerald-600" />
-            </div>
-
-            <h3 className="text-xs sm:text-sm font-black text-slate-900 uppercase tracking-tight">
-              System Optimization & Capital Scaling Sprints
-            </h3>
-
-            <p className="text-xs text-slate-600 font-medium leading-relaxed">
-              Integrate scalable automation tools and modern business software models. Transition your management team to a formal weekly performance review cycle based on concrete KPIs rather than personal feelings. Review the unit profit margins across all core product lines to maximize revenue efficiency.
-            </p>
-          </div>
-
-          <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500 font-bold">
-            <span>Focus: Automated Scaling</span>
-            <span className="text-emerald-700 font-extrabold">Days 61–90</span>
-          </div>
-        </div>
-
-      </div>
-
-      {/* ---------------------------------------------------- */}
-      {/* 4. PILLAR-SPECIFIC SPRINT OBJECTIVES                 */}
-      {/* ---------------------------------------------------- */}
-      <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
-          <div>
-            <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider">Pillar-Specific Tactical Actions</h3>
-            <p className="text-[11px] text-slate-400 font-semibold mt-0.5">Filter by business pillar to view targeted 30/60/90-day action items.</p>
-          </div>
-          <span className="text-[10px] font-bold text-slate-500 bg-slate-100 border border-slate-200 px-3 py-1 rounded-full self-start sm:self-auto">
-            Interactive Sprint Matrix
-          </span>
-        </div>
-
-        {/* Pillar Filter Tabs */}
-        <div className="flex flex-wrap gap-2">
-          {Object.values(recommendations).map((rec: PillarRecommendationResult) => (
-            <button
-              key={rec.pillarId}
-              onClick={() => setActivePillar(rec.pillarId)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border cursor-pointer ${
-                activePillar === rec.pillarId 
-                  ? 'bg-slate-900 border-slate-900 text-amber-400 shadow-sm font-black' 
-                  : 'bg-slate-50 text-slate-600 hover:bg-slate-100 border-slate-200'
-              }`}
-            >
-              {rec.entry.pillarName}
-            </button>
-          ))}
-        </div>
-
-        {/* Selected Pillar Details */}
-        {currentRec && (
-          <div className="space-y-4 animate-fade-in pt-1">
-            <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* PHASE 1 */}
+        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col group hover:border-rose-300 transition-all shadow-sm">
+          <div className="bg-rose-50 p-5 border-b border-rose-100">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-rose-500 text-white flex items-center justify-center shrink-0 shadow-sm group-hover:scale-110 transition-transform">
+                <Clock className="w-5 h-5" />
+              </div>
               <div>
-                <h4 className="text-xs sm:text-sm font-black text-slate-900 uppercase tracking-wide">{currentRec.entry.title}</h4>
-                <p className="text-[11px] text-slate-500 font-semibold mt-0.5">Pillar Code: {currentRec.entry.recommendationCode}</p>
+                <h3 className="text-[13px] font-black text-rose-900 uppercase tracking-tight">Days 1–30</h3>
+                <p className="text-[11px] font-bold text-rose-600 uppercase">Stabilize & Prioritize</p>
               </div>
-              <div className="flex flex-wrap gap-2 text-[10px] font-bold">
-                <span className="bg-white border border-slate-200 px-2.5 py-1 rounded-md text-slate-700 shadow-2xs">
-                  Score Band: {currentRec.entry.scoreBand}
-                </span>
-                <span className="bg-white border border-slate-200 px-2.5 py-1 rounded-md text-slate-700 shadow-2xs">
-                  Maturity: {currentRec.entry.maturityBand}
-                </span>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
-              
-              <div className="bg-white border-l-4 border-l-rose-500 rounded-xl p-3.5 shadow-2xs border border-slate-200 space-y-2">
-                <h5 className="font-black text-slate-900 uppercase tracking-wide text-[10px] flex items-center gap-1.5 text-rose-600">
-                  Immediate Sprint
-                </h5>
-                <ul className="space-y-1.5 text-[11px] text-slate-600 font-semibold">
-                  {currentRec.entry.immediateActions.map((action, i) => (
-                    <li key={i} className="flex items-start gap-1.5 leading-snug">
-                      <CheckCircle2 className="w-3 h-3 text-rose-500 shrink-0 mt-0.5" />
-                      <span>{action}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="bg-white border-l-4 border-l-amber-500 rounded-xl p-3.5 shadow-2xs border border-slate-200 space-y-2">
-                <h5 className="font-black text-slate-900 uppercase tracking-wide text-[10px] flex items-center gap-1.5 text-amber-600">
-                  30-Day Target
-                </h5>
-                <ul className="space-y-1.5 text-[11px] text-slate-600 font-semibold">
-                  {currentRec.entry.plan30Days.map((action, i) => (
-                    <li key={i} className="flex items-start gap-1.5 leading-snug">
-                      <CheckCircle2 className="w-3 h-3 text-amber-500 shrink-0 mt-0.5" />
-                      <span>{action}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="bg-white border-l-4 border-l-blue-500 rounded-xl p-3.5 shadow-2xs border border-slate-200 space-y-2">
-                <h5 className="font-black text-slate-900 uppercase tracking-wide text-[10px] flex items-center gap-1.5 text-blue-600">
-                  60-Day Target
-                </h5>
-                <ul className="space-y-1.5 text-[11px] text-slate-600 font-semibold">
-                  {currentRec.entry.plan60Days.map((action, i) => (
-                    <li key={i} className="flex items-start gap-1.5 leading-snug">
-                      <CheckCircle2 className="w-3 h-3 text-blue-500 shrink-0 mt-0.5" />
-                      <span>{action}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="bg-white border-l-4 border-l-emerald-500 rounded-xl p-3.5 shadow-2xs border border-slate-200 space-y-2">
-                <h5 className="font-black text-slate-900 uppercase tracking-wide text-[10px] flex items-center gap-1.5 text-emerald-600">
-                  90-Day Target
-                </h5>
-                <ul className="space-y-1.5 text-[11px] text-slate-600 font-semibold">
-                  {currentRec.entry.plan90Days.map((action, i) => (
-                    <li key={i} className="flex items-start gap-1.5 leading-snug">
-                      <CheckCircle2 className="w-3 h-3 text-emerald-500 shrink-0 mt-0.5" />
-                      <span>{action}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
             </div>
           </div>
-        )}
+          <div className="p-6 flex-grow space-y-6">
+            <div>
+              <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Business Objective</h4>
+              <p className="text-xs font-bold text-slate-900 leading-relaxed">Build a strong foundation for sustainable growth.</p>
+            </div>
+            <div>
+              <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                <ListChecks className="w-3 h-3" /> Key Focus Areas
+              </h4>
+              <ul className="space-y-2.5">
+                {actions.p1.map((action, i) => (
+                  <li key={i} className="flex gap-2 text-xs text-slate-600 font-bold leading-relaxed">
+                    <CheckCircle2 className="w-4 h-4 text-rose-500 shrink-0" />
+                    {action}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="pt-5 border-t border-slate-50 mt-auto">
+              <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Expected Outcome</h4>
+              <p className="text-xs text-rose-900 font-black leading-relaxed">{actions.p1Outcome}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* PHASE 2 */}
+        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col group hover:border-amber-300 transition-all shadow-sm">
+          <div className="bg-amber-50 p-5 border-b border-amber-100">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-sm group-hover:scale-110 transition-transform">
+                <TrendingUp className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-[13px] font-black text-amber-900 uppercase tracking-tight">Days 31–60</h3>
+                <p className="text-[11px] font-bold text-amber-600 uppercase">Improve & Optimize</p>
+              </div>
+            </div>
+          </div>
+          <div className="p-6 flex-grow space-y-6">
+            <div>
+              <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Business Objective</h4>
+              <p className="text-xs font-bold text-slate-900 leading-relaxed">Increase efficiency and strengthen business performance.</p>
+            </div>
+            <div>
+              <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                <ListChecks className="w-3 h-3" /> Key Focus Areas
+              </h4>
+              <ul className="space-y-2.5">
+                {actions.p2.map((action, i) => (
+                  <li key={i} className="flex gap-2 text-xs text-slate-600 font-bold leading-relaxed">
+                    <CheckCircle2 className="w-4 h-4 text-amber-500 shrink-0" />
+                    {action}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="pt-5 border-t border-slate-50 mt-auto">
+              <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Expected Outcome</h4>
+              <p className="text-xs text-amber-900 font-black leading-relaxed">{actions.p2Outcome}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* PHASE 3 */}
+        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col group hover:border-emerald-300 transition-all shadow-sm">
+          <div className="bg-emerald-50 p-5 border-b border-emerald-100">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-sm group-hover:scale-110 transition-transform">
+                <Zap className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-[13px] font-black text-emerald-900 uppercase tracking-tight">Days 61–90</h3>
+                <p className="text-[11px] font-bold text-emerald-600 uppercase">Scale & Sustain</p>
+              </div>
+            </div>
+          </div>
+          <div className="p-6 flex-grow space-y-6">
+            <div>
+              <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Business Objective</h4>
+              <p className="text-xs font-bold text-slate-900 leading-relaxed">Create systems for long-term business growth.</p>
+            </div>
+            <div>
+              <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                <ListChecks className="w-3 h-3" /> Key Focus Areas
+              </h4>
+              <ul className="space-y-2.5">
+                {actions.p3.map((action, i) => (
+                  <li key={i} className="flex gap-2 text-xs text-slate-600 font-bold leading-relaxed">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                    {action}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="pt-5 border-t border-slate-50 mt-auto">
+              <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Expected Outcome</h4>
+              <p className="text-xs text-emerald-900 font-black leading-relaxed">{actions.p3Outcome}</p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* ---------------------------------------------------- */}
-      {/* 5. BOTTOM ACTION CTA BAR WITH DOWNLOAD PDF BUTTON    */}
-      {/* ---------------------------------------------------- */}
-      <div className="bg-[#0f172a] text-white p-5 rounded-2xl border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="space-y-1 text-center sm:text-left">
-          <h4 className="text-sm font-black uppercase tracking-wide text-white">Download Complete 90-Day Roadmap</h4>
-          <p className="text-xs text-slate-300 font-medium">
-            Get your comprehensive PDF dossier or schedule a 1-on-1 strategy call with a KRG ONE senior advisor.
+      {/* SUCCESS INDICATORS */}
+      <div className="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-xl">
+        <div className="p-6 border-b border-slate-800 bg-slate-800/50">
+          <h3 className="text-sm font-black text-white uppercase tracking-widest flex items-center gap-2">
+            <Zap className="w-4 h-4 text-amber-400" /> Success Indicators
+          </h3>
+          <p className="text-xs text-slate-400 mt-1 font-medium">By completing this roadmap, your business should be positioned to achieve:</p>
+        </div>
+        <div className="p-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              "Improved Revenue Growth",
+              "Better Operational Efficiency",
+              "Stronger Leadership Alignment",
+              "Improved Customer Experience",
+              "Sustainable Business Growth"
+            ].map((indicator, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <div className="w-6 h-6 rounded-lg bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                </div>
+                <span className="text-sm font-bold text-slate-100">{indicator}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* CONSULTATION CTA */}
+      <div className="bg-indigo-600 rounded-2xl p-8 text-white relative overflow-hidden group shadow-2xl">
+        <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-500">
+          <TrendingUp className="w-32 h-32" />
+        </div>
+        <div className="relative z-10">
+          <h3 className="text-lg font-black uppercase tracking-tight mb-2">Business Growth Consultation™</h3>
+          <p className="text-sm font-medium text-indigo-100 leading-relaxed mb-6 max-w-xl">
+            Need expert support implementing this roadmap? Book a Business Growth Consultation™ to review your progress and receive personalized guidance from our senior partners.
           </p>
-        </div>
-
-        <div className="flex items-center gap-3 w-full sm:w-auto shrink-0">
-          {handlePrintPDF && (
-            <button
-              onClick={handlePrintPDF}
-              disabled={isGeneratingPDF}
-              className="flex-1 sm:flex-none bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs uppercase tracking-wider py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer disabled:opacity-50"
-            >
-              <Download className="w-4 h-4 text-slate-950" />
-              <span>{isGeneratingPDF ? 'Preparing PDF...' : 'Download PDF Report'}</span>
-            </button>
-          )}
-
-          {setActiveTab && (
-            <button
-              onClick={() => setActiveTab('booking')}
-              className="flex-1 sm:flex-none bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-xs uppercase tracking-wider py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer"
-            >
-              <PhoneCall className="w-3.5 h-3.5 text-amber-400" />
-              <span>Book Call</span>
-            </button>
-          )}
+          <button 
+            onClick={() => setActiveTab('booking')}
+            className="inline-flex items-center gap-2 bg-white text-indigo-700 px-5 py-2.5 rounded-xl font-black text-[12px] uppercase tracking-wider hover:bg-indigo-50 transition-all shadow-lg active:scale-95"
+          >
+            <MessageSquare className="w-4 h-4" /> Book Consultation Now
+          </button>
         </div>
       </div>
-
     </div>
   );
 };

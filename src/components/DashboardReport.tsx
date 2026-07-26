@@ -38,7 +38,7 @@ export function DashboardReport({ formData = {}, scores = [], onResetAssessment,
     
     if (typeof sessionStorage !== 'undefined' && sessionStorage.getItem(emailKey)) {
       setEmailStatus('sent');
-      setEmailMessage(`Assessment report sent to ${custEmail} & lead alert dispatched to enquiry.krgone@gmail.com`);
+      setEmailMessage(`Assessment report sent to ${custEmail}`);
       return;
     }
 
@@ -54,7 +54,7 @@ export function DashboardReport({ formData = {}, scores = [], onResetAssessment,
     const dispatchEmail = async () => {
       try {
         setEmailStatus('sending');
-        setEmailMessage('Generating PDF dossier & dispatching report emails to customer and KRG ONE lead engine...');
+        setEmailMessage('Generating PDF dossier & dispatching report emails...');
 
         // Wait a brief tick for PrintDossier component to mount in DOM
         await new Promise(r => setTimeout(r, 400));
@@ -77,7 +77,7 @@ export function DashboardReport({ formData = {}, scores = [], onResetAssessment,
         const data = await response.json();
         if (data.success) {
           setEmailStatus('sent');
-          setEmailMessage(`Assessment report & PDF dossier sent to ${custEmail} & lead alert dispatched to enquiry.krgone@gmail.com`);
+          setEmailMessage(`Assessment report & PDF dossier sent to ${custEmail}`);
           if (typeof sessionStorage !== 'undefined') {
             sessionStorage.setItem(emailKey, 'true');
           }
@@ -743,9 +743,6 @@ export function DashboardReport({ formData = {}, scores = [], onResetAssessment,
                 <strong>Automated Dispatch:</strong> {emailMessage}
               </span>
             </div>
-            <span className="text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-md bg-white border border-slate-200 text-slate-700 shrink-0 shadow-2xs">
-              Gmail SMTP Active
-            </span>
           </div>
         )}
 
@@ -803,7 +800,7 @@ export function DashboardReport({ formData = {}, scores = [], onResetAssessment,
         </div>
 
         {/* GLOBAL THREE-COLUMN WORKSPACE */}
-        <div className="grid grid-cols-1 xl:grid-cols-5 gap-8 items-start">
+        <div className="grid grid-cols-1 xl:grid-cols-5 gap-8 items-start relative z-10">
           
           {/* LEFT SIDEBAR (COLUMN A) - Renders exactly ONCE to satisfy Specification 3 */}
           <aside ref={leftSidebarRef} className="xl:col-span-1 sticky top-6 bg-[#FAFBFC] text-slate-800 flex flex-col shrink-0 z-20 shadow-md border border-slate-200/85 rounded-[20px] self-start no-print">

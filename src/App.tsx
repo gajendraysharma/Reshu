@@ -130,7 +130,7 @@ export function App() {
         }`}
       >
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-[90px] lg:h-[108px]">
+          <div className="flex justify-between items-center h-[81px] lg:h-[97px]">
             {/* Brand / Logo */}
             <div 
               className="flex flex-col flex-shrink-0 cursor-pointer group py-2 justify-center" 
@@ -140,7 +140,7 @@ export function App() {
                 window.scrollTo(0, 0); 
               }}
             >
-              <img src="/logo1.png" alt="KRG ONE" className="h-[76px] sm:h-[90px] lg:h-[102px] w-auto object-contain max-h-[93px] lg:max-h-[102px]" />
+              <img src="/logo1.png" alt="KRG ONE" className="h-[68px] sm:h-[81px] lg:h-[92px] w-auto object-contain max-h-[84px] lg:max-h-[92px]" />
             </div>
 
             {/* Right Side: Desktop Navigation & CTA */}
@@ -152,7 +152,7 @@ export function App() {
                   {navigationConfig.map((item, idx) => (
                     <div 
                       key={idx} 
-                      className="relative group h-[80px] flex items-center"
+                      className="relative group h-[72px] flex items-center"
                       onMouseEnter={() => item.dropdown && setActiveDropdown(item.title)}
                       onMouseLeave={() => item.dropdown && setActiveDropdown(null)}
                     >
@@ -189,7 +189,7 @@ export function App() {
                       {/* Dropdown Menu */}
                       {item.dropdown && (
                         <div 
-                          className={`absolute top-[80px] left-1/2 -translate-x-1/2 w-[280px] bg-[#030816] rounded-[16px] shadow-[0_20px_40px_rgba(0,0,0,0.5)] border border-[#c29d2f]/20 p-2 transition-all duration-250 origin-top ${
+                          className={`absolute top-[72px] left-1/2 -translate-x-1/2 w-[280px] bg-[#030816] rounded-[16px] shadow-[0_20px_40px_rgba(0,0,0,0.5)] border border-[#c29d2f]/20 p-2 transition-all duration-250 origin-top ${
                             activeDropdown === item.title ? 'opacity-100 translate-y-0 visible scale-100' : 'opacity-0 -translate-y-2 invisible scale-95'
                           }`}
                         >
